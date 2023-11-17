@@ -2,8 +2,8 @@
 
 - [Sobre](#sobre)
 - [Instalação](#instalação)
+- [Comandos](#Comandos)
 - [Documentação](#documentação)
-- [Termos de uso](#termos-de-uso)
 
 <br>
 
@@ -66,6 +66,28 @@ E rodar a aplicação:
 ```
 code .
 ```
+
+# Comandos
+
+Insert table to database:
+management/commands/tables_to_db.py
+```
+python3 tables_to_db.py
+```
+
+Create model from db content:
+./
+```
+python3 manage.py inspectdb > filter_tables/models.py
+```
+
+Send email (?):
+filter_tables/
+```
+python3 views.py
+```
+
+
 
 # Documentação
 
