@@ -5,7 +5,7 @@ from pathlib import Path
 
 import ipdb
 
-def read_excel_file(path: Path):
+def read_excel_file(path: Path, sheet: str):
     tables_path_content = list(path.iterdir())  
 
     if len(tables_path_content) == 0:
@@ -19,7 +19,7 @@ def read_excel_file(path: Path):
 
                 # PYLIGHTXL (to deal with procx):
                 qwerty = xl.readxl(path_to_table)
-                worksheet = qwerty.ws("CARIACICA")
+                worksheet = qwerty.ws(sheet)
                 data_procx = worksheet.rows
 
                 for_pandas = list()

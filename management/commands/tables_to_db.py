@@ -27,7 +27,7 @@ def insert_table_with_procx(db: Path, df: DataFrame) -> None:
         df.to_sql(table_name, conn, if_exists='replace', index=False)
 
 # Read Excel file into Dataframe:
-dataframe = read_excel_file(tables_path)
+dataframe = read_excel_file(tables_path, "CARIACICA")
 # ipdb.set_trace()
 
 # Insert table to SQLite database:
