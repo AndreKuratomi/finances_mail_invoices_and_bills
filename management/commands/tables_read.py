@@ -28,10 +28,16 @@ def read_excel_file(path: Path, sheet: str):
                 # ipdb.set_trace()
                 df = pd.DataFrame(for_pandas[1:], columns=for_pandas[0])
                 
-                if 'id' not in df.columns:
-                    df['id'] = range(1, df.shape[0]+1)
+                df = df.iloc[:, 0:14]
+                print(df)
 
-                # df.set_index('id', inplace=True, verify_integrity=True)
+                # ORDER BY WHAT?
+
+                if 'ID' not in df.columns:
+                    ID = range(1, df.shape[0]+1)
+                    df.insert(0, "id", ID)
+                    df.set_index('id')
+
                 print(df)
                 # print(df["METAL"])
                 print(df.columns)
