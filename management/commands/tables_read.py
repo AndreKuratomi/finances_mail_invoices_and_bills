@@ -25,10 +25,16 @@ def read_excel_file(path: Path, sheet: str):
                 for_pandas = list()
                 for row in data_procx:
                     for_pandas.append(row)
-
+                # ipdb.set_trace()
                 df = pd.DataFrame(for_pandas[1:], columns=for_pandas[0])
+                
+                if 'id' not in df.columns:
+                    df['id'] = range(1, df.shape[0]+1)
+
+                # df.set_index('id', inplace=True, verify_integrity=True)
                 print(df)
-                print(df["METAL"])
+                # print(df["METAL"])
+                print(df.columns)
                 
                 return df
             else:

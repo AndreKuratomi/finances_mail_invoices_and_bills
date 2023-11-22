@@ -1,5 +1,6 @@
 asgiref==3.7.2
 asttokens==2.4.1
+autopep8==2.0.4
 decorator==5.1.1
 Django==4.2.7
 djangorestframework==3.14.0
@@ -18,9 +19,11 @@ pexpect==4.8.0
 prompt-toolkit==3.0.41
 ptyprocess==0.7.0
 pure-eval==0.2.2
+pycodestyle==2.11.1
 Pygments==2.16.1
 pylightxl==1.61
 python-dateutil==2.8.2
+python-dotenv==1.0.0
 pytz==2023.3.post1
 six==1.16.0
 sqlparse==0.4.4
