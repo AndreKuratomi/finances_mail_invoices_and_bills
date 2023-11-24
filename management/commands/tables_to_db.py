@@ -2,31 +2,36 @@ from pandas import DataFrame
 from pathlib import Path
 import sqlite3
 
-from tables_read import read_excel_file
 from create_model import create_model_from_database
+from tables_read import read_excel_file
+from tables_edition import filter_table_by_yellow
 
 import ipdb
 
 # PATH TO TABLE:
-tables_path = Path("./table_itself/")
+tables_path = Path("./raw_table/")
+
+# PATH TO FILTERED TABLE:
+filtered_tables_path = Path("./filtered_table/")
 
 # PATH TO DB:
 database_path = Path("./db/")
 db = database_path.joinpath("db_sqlite3.db")
 
+
 def insert_table_with_procx(db: Path, df: DataFrame) -> None:
-    # Add id column if not exists:
-    # if 'id' not in df.columns:
-    #     df.insert(0, 'ID', range(1, len(df) + 1))
 
     # Connect to SQLite3 database:
     with sqlite3.connect(db) as conn:
         table_name = "table_name"
         df.to_sql(table_name, conn, if_exists='replace', index=True)
 
+# Read Excel file and return it filtered by color:
+filter_table_by_yellow(tables_path, "CARIACICA") # HOW TO AUTOMIZE THIS PARAMETER???
+
 # Read Excel file into Dataframe:
-dataframe = read_excel_file(tables_path, "CARIACICA")
-# ipdb.set_trace()
+# dataframe = read_excel_file(tables_path, "CARIACICA") # HOW TO AUTOMATIZE THIS PARAMETER???
+dataframe = read_excel_file(filtered_tables_path, "filtered_sheet")
 
 # Insert table to SQLite database:
 insert_table_with_procx(db, dataframe)
