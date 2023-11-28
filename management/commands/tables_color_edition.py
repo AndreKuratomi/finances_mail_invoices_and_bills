@@ -1,5 +1,5 @@
 from openpyxl import load_workbook, Workbook
-# from openpyxl.styles import Font, PatternFill
+import pandas as pd
 from pathlib import Path
 
 import ipdb
@@ -11,7 +11,7 @@ tables_path = Path("./raw_table/")
 # PATH TO FILTERED TABLE:
 filtered_tables_path = Path("./filtered_table/")
 
-
+# DOES NOT WORK FOR NOW BECAUSE IT SAVES A CORRUPTED FILE:
 def filter_table_by_yellow(path: Path, sheet: str):
 
     tables_path_content = list(path.iterdir())  
@@ -38,30 +38,35 @@ def filter_table_by_yellow(path: Path, sheet: str):
                 new_sheet = workbook.create_sheet('filtered_sheet')
                 # wb = new_sheet.active
 
-                print(table_sheet[1])
+                # print(table_sheet[1])
 
                 new_sheet.append([cell.value for cell in table_sheet[1]])
 
                 for row in table_sheet.iter_rows(min_row=2):
                     if any(cell.fill.start_color.rgb == 'FFFFFF00' for cell in row):
                         new_sheet.append([cell.value for cell in row])
-                # ipdb.set_trace()
                 
-                # Saving in a specific folder:
-                this_project_path_for_saving = '/filtered_table'
-                machine_path = os.getcwd()
+                df = pd.DataFrame(new_sheet.values)
+                # ipdb.set_trace()
 
-                full_path_for_saving = machine_path + this_project_path_for_saving
+                return df
 
-                to_string_again = str(file)
+                # # Saving in a specific folder:
+                # this_project_path_for_saving = '/filtered_table'
+                # machine_path = os.getcwd()
 
-                if to_string_again.endswith('.xls'):
-                    workbook.save(full_path_for_saving + '/table_renewed.xls')
-                elif to_string_again.endswith('.xlsx'):
-                    workbook.save(full_path_for_saving + '/table_renewed.xlsx')
-                elif to_string_again.endswith('.xlsm'):
-                    workbook.save(full_path_for_saving + '/table_renewed.xlsm')
-                    print("FILE SAVED!")
+                # full_path_for_saving = machine_path + this_project_path_for_saving
+
+                # to_string_again = str(file)
+
+                # if to_string_again.endswith('.xls'):
+                #     workbook.save(full_path_for_saving + '/table_renewed.xls')
+                # elif to_string_again.endswith('.xlsx'):
+                #     workbook.save(full_path_for_saving + '/table_renewed.xlsx')
+                # elif to_string_again.endswith('.xlsm'):
+                #     workbook.save(full_path_for_saving + '/table_renewed.xlsm')
+                #     # workbook.save('table_renewed.xlsm')
+                #     print("FILE SAVED!")
 
             else:
                 raise Exception('Only .xls, .xlsx, or .xlsm files are supported.')
