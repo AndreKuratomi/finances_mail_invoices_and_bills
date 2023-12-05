@@ -1,6 +1,10 @@
+import os
+
 from django.conf import settings
 from django.core.mail import EmailMessage, mail_admins, send_mail
 from django.template.loader import render_to_string
+
+from dotenv import load_dotenv
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -11,6 +15,11 @@ from .serializers import EmailSerializer
 
 import ipdb
 
+load_dotenv()
+
+host_email = os.getenv("EMAIL_HOST_USER")
+
+# Table to work with:
 table_data = TableName.objects.all()
 
 
@@ -55,7 +64,7 @@ class SendEmailView(APIView):
         send_mail(
             "Envio tabela  {a1} - Novelis".format(a1=request.data['receiver_name']),
             "",
-            "suporte.novelis.prototipo@gmail.com", 
+            "{}".format(host_email), 
             [request.data['receiver_email']], 
             fail_silently=False,
             html_message=table_to_mail
