@@ -10,16 +10,16 @@ import ipdb
 
 from tables_color_edition import filter_table_by_yellow
 
-tables_path = Path("./raw_table/")
-df = filter_table_by_yellow(tables_path, "CARIACICA")
+# tables_path = Path("./raw_table/")
+# df = filter_table_by_yellow(tables_path, "CARIACICA")
 
 
-def read_excel_file(dataframe: DataFrame, edited_table_path: Path, sheet: str):
+def read_excel_file(tables_path: Path, sheet: str):
 # def read_excel_file(pd_df: DataFrame):
-    print(dataframe)
-    dataframe_to_list = dataframe.values.tolist()
+    # print(dataframe)
+    # dataframe_to_list = dataframe.values.tolist()
 
-    tables_path_content = list(edited_table_path.iterdir())  
+    tables_path_content = list(tables_path.iterdir())  
 
     if len(tables_path_content) == 0:
         raise FileNotFoundError("NO TABLE TO WORK WITH!")
@@ -41,19 +41,11 @@ def read_excel_file(dataframe: DataFrame, edited_table_path: Path, sheet: str):
 
             for_pandas = list()
 
-            # Sorting the two lists:
-            data_procx_sorted = sorted(data_procx, key=lambda x: (int(x) if x.isdigit() else x, itemgetter(3, 4, 5, 7, 8, 9, 10, 11, 12)(x)))
-            dataframe_to_list_sorted = sorted(dataframe_to_list, key=lambda x: (int(x) if x.isdigit() else x, itemgetter(3, 4, 5, 7, 8, 9, 10, 11, 12)(x)))
+            for row in data_procx:
+                # print(row)
+                for_pandas.append(row)
 
-            for row1, row2 in zip(data_procx_sorted, dataframe_to_list_sorted):
-                print("row1: {}".format(row1))
-                print("row2: {}".format(row2))
-                if row1[3] == row2[3] and row1[4] == row2[4] and row1[5] == row2[5] and row1[7] == row2[7] and row1[8] == row2[8] and row1[9] == row2[9] and row1[10] == row2[10] and row1[11] == row2[11] and row1[12] == row2[12]:
-                    print('let`s move')
-                    for_pandas.append(row2[6])
-            ipdb.set_trace()
-
-            dataframe["METAL"] = for_pandas
+            df = pd.DataFrame(for_pandas[1:], columns=for_pandas[0])
             
             df = df.iloc[:, 0:14]
             print(df)
@@ -65,11 +57,28 @@ def read_excel_file(dataframe: DataFrame, edited_table_path: Path, sheet: str):
                 df.insert(0, "id", ID)
                 df.set_index('id')
 
-            # print(df)
+            print(df)
+            # ipdb.set_trace()
             print(df["METAL"])
             # print(df.columns)
-            
+
             return df
+
+
+            # # Sorting the two lists:
+            # data_procx_sorted = sorted(data_procx, key=lambda x: (int(x) if x.isdigit() else x, itemgetter(3, 4, 5, 7, 8, 9, 10, 11, 12)(x)))
+            # dataframe_to_list_sorted = sorted(dataframe_to_list, key=lambda x: (int(x) if x.isdigit() else x, itemgetter(3, 4, 5, 7, 8, 9, 10, 11, 12)(x)))
+
+            # for row1, row2 in zip(data_procx_sorted, dataframe_to_list_sorted):
+            #     print("row1: {}".format(row1))
+            #     print("row2: {}".format(row2))
+                # GUAMBIARRA
+            #     if row1[3] == row2[3] and row1[4] == row2[4] and row1[5] == row2[5] and row1[7] == row2[7] and row1[8] == row2[8] and row1[9] == row2[9] and row1[10] == row2[10] and row1[11] == row2[11] and row1[12] == row2[12]:
+            #         print('let`s move')
+            #         for_pandas.append(row2[6])
+            # ipdb.set_trace()
+
+            # dataframe["METAL"] = for_pandas
         
         else:
             raise Exception("Something went wrong...")
