@@ -29,13 +29,15 @@ def insert_table_with_procx(db: Path, df: DataFrame) -> None:
 # Read Excel file and return it filtered by color:
 # DOES NOT WORK FOR NOW BECAUSE IT SAVES A CORRUPTED FILE:
 # filter_table_by_yellow(tables_path, "CARIACICA") # HOW TO AUTOMIZE THIS PARAMETER???
-# pandas_dataframe = filter_table_by_yellow(tables_path, "CARIACICA") # HOW TO AUTOMIZE THIS PARAMETER???
-
+pandas_dataframe = filter_table_by_yellow(tables_path, "CARIACICA") # HOW TO AUTOMIZE THIS PARAMETER???
+# ipdb.set_trace()
 # Read Excel file into Dataframe:
 # dataframe = read_excel_file(pandas_dataframe, tables_path, "CARIACICA") # HOW TO AUTOMATIZE THIS PARAMETER???
-dataframe = read_excel_file(tables_path, "CARIACICA") # HOW TO AUTOMATIZE THIS PARAMETER???
+# dataframe = read_excel_file(tables_path, "CARIACICA") # HOW TO AUTOMATIZE THIS PARAMETER???
+# dataframe = read_excel_file(filtered_tables_path, "filtered_sheet") # HOW TO AUTOMATIZE THIS PARAMETER???
 
 # Insert table to SQLite database:
-insert_table_with_procx(db, dataframe)
+insert_table_with_procx(db, pandas_dataframe)
+# insert_table_with_procx(db, dataframe)
 
 create_model_from_database(db)
