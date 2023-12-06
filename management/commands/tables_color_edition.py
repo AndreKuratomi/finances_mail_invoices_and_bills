@@ -14,31 +14,32 @@ filtered_tables_path = Path("./filtered_table/")
 def get_cell_properties(cell):
     properties = {}
     properties['value'] = cell.value
-    # properties['font_color'] = cell.font.color.rgb
     properties['background_color'] = cell.fill.fgColor.rgb if cell.fill.patternType != 'none' else None
     properties['data_type'] = cell.data_type
     return properties
 
-# DOES NOT WORK FOR NOW BECAUSE IT SAVES A CORRUPTED FILE:
+# IN MEMORIAN LADY MARITACA:
 def filter_table_by_yellow(path: Path, sheet: str):
-
     tables_path_content = list(path.iterdir())  
 
     if len(tables_path_content) == 0:
         raise FileNotFoundError("NO TABLE TO WORK WITH!")
+    elif len(tables_path_content) > 1:
+        raise FileNotFoundError("HEY! ONLY ONE TABLE IS ALLOWED!")
     
     for file in tables_path_content:
         if file.is_file():
             path_to_table = str(file)
             if path_to_table.endswith('.xls') or path_to_table.endswith('.xlsx') or path_to_table.endswith('.xlsm'):
 
-                # Edit the character lerolero:
+                # Edit the character to find the table not mattering the name:
                 specific_char = "/"
                 index = path_to_table.find(specific_char)
                 path_content = path.joinpath(path_to_table[index+1:])
+                # print(path_content)
 
                 # OPENPYXL (to deal with colors):
-                workbook = load_workbook(data_only = True, filename=path_content)
+                workbook = load_workbook(data_only=True, filename=path_content)
                 table_sheet = workbook[sheet]
 
                 # First row and all rows with yellow cells in colors list and changes saved:
@@ -51,10 +52,10 @@ def filter_table_by_yellow(path: Path, sheet: str):
 
                 for row in table_sheet.iter_rows(min_row=2):
                     filtered_row = [get_cell_properties(cell) for cell in row]
-                    for a in filtered_row:
-                        if a.get('background_color') == 'FFFFFF00':
-                            print(filtered_row)
-                            new_sheet.append([cell.value for cell in row])
+                    if filtered_row[3].get('background_color') == 'FFFFFF00':
+                        print(filtered_row)
+                        new_sheet.append([cell.value for cell in row])
+                    # for a in filtered_row:
                 # ipdb.set_trace()
                     # if any(cell.fill.fgColor.rgb == 'FFFFFF00' for cell in row):
                     #     print('AMARELO')
@@ -70,7 +71,8 @@ def filter_table_by_yellow(path: Path, sheet: str):
                 df = df.iloc[:, 0:14]
                 print(df)
 
-                # ORDER BY WHAT?
+                # ORDER BY WHAT? Previs~o de chegada DESC:
+                # df.sort_values(by='PREVISÃO DE CHEGADA')
 
                 if 'ID' not in df.columns:
                     ID = range(1, df.shape[0]+1)
@@ -78,9 +80,7 @@ def filter_table_by_yellow(path: Path, sheet: str):
                     df.set_index('id')
 
                 print(df)
-                # ipdb.set_trace()
                 print(df["METAL"])
-                # print(df.columns)
 
                 return df
 
@@ -104,4 +104,4 @@ def filter_table_by_yellow(path: Path, sheet: str):
             else:
                 raise Exception('Only .xls, .xlsx, or .xlsm files are supported.')
         else:
-            raise Exception("Something went wrong...")
+            raise Exception("Something went wrong... ")
