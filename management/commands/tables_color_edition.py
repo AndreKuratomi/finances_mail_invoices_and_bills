@@ -1,7 +1,9 @@
 from openpyxl import load_workbook, Workbook
 import pandas as pd
 from pathlib import Path
+from unidecode import unidecode
 
+import datetime
 import ipdb
 import os
 
@@ -32,7 +34,7 @@ def filter_table_by_yellow(path: Path, sheet: str):
             path_to_table = str(file)
             if path_to_table.endswith('.xls') or path_to_table.endswith('.xlsx') or path_to_table.endswith('.xlsm'):
 
-                # Edit the character to find the table not mattering the name:
+                # Edit the character to find the table to work with not mattering the name:
                 specific_char = "/"
                 index = path_to_table.find(specific_char)
                 path_content = path.joinpath(path_to_table[index+1:])
@@ -44,21 +46,13 @@ def filter_table_by_yellow(path: Path, sheet: str):
 
                 # First row and all rows with yellow cells in colors list and changes saved:
                 new_sheet = workbook.create_sheet('filtered_sheet')
-                # wb = new_sheet.active
-
-                # print(table_sheet[1])
-
                 new_sheet.append([cell.value for cell in table_sheet[1]])
 
                 for row in table_sheet.iter_rows(min_row=2):
                     filtered_row = [get_cell_properties(cell) for cell in row]
                     if filtered_row[3].get('background_color') == 'FFFFFF00':
-                        print(filtered_row)
+                        # print(filtered_row)
                         new_sheet.append([cell.value for cell in row])
-                    # for a in filtered_row:
-                # ipdb.set_trace()
-                    # if any(cell.fill.fgColor.rgb == 'FFFFFF00' for cell in row):
-                    #     print('AMARELO')
                 
                 rows = list()
                 headers = [cell.value for cell in new_sheet[1]]
@@ -68,19 +62,27 @@ def filter_table_by_yellow(path: Path, sheet: str):
                 
                 df = pd.DataFrame(rows, columns=headers)
                 
+                # FIlter dataframe fromcolumn 0 to 14th:
                 df = df.iloc[:, 0:14]
-                print(df)
-
-                # ORDER BY WHAT? Previs~o de chegada DESC:
-                # df.sort_values(by='PREVISÃO DE CHEGADA')
+                # print(df)
+                # ipdb.set_trace()
 
                 if 'ID' not in df.columns:
                     ID = range(1, df.shape[0]+1)
                     df.insert(0, "id", ID)
                     df.set_index('id')
 
+                # REMOVE CHARACTER ACCENTS FROM COLUMN TITLES:
+                df.columns = [unidecode(col) for col in df.columns]
                 print(df)
-                print(df["METAL"])
+
+                # ORDER BY:
+                df['PREVISAO DE CHEGADA'] = pd.to_datetime(df['PREVISAO DE CHEGADA'], errors='coerce')
+                df = df.sort_values(by='PREVISAO DE CHEGADA', ascending=False)
+
+                print(df['METAL'])
+                print(df)
+
 
                 return df
 

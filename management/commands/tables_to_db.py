@@ -11,27 +11,20 @@ import ipdb
 # PATH TO TABLE:
 tables_path = Path("./raw_table/")
 
-# PATH TO FILTERED TABLE:
-filtered_tables_path = Path("./filtered_table/")
-
 # PATH TO DB:
 database_path = Path("./db/")
 db = database_path.joinpath("db_sqlite3.db")
 
 
 def insert_table_with_procx(db: Path, df: DataFrame) -> None:
-
     # Connect to SQLite3 database:
     with sqlite3.connect(db) as conn:
         table_name = "table_name"
         df.to_sql(table_name, conn, if_exists='replace', index=True)
 
-# Read Excel file and return it filtered by color:
-# DOES NOT WORK FOR NOW BECAUSE IT SAVES A CORRUPTED FILE:
-# filter_table_by_yellow(tables_path, "CARIACICA") # HOW TO AUTOMIZE THIS PARAMETER???
+# Read Excel file and return it filtered by color into Dataframe:
 pandas_dataframe = filter_table_by_yellow(tables_path, "CARIACICA") # HOW TO AUTOMIZE THIS PARAMETER???
-# ipdb.set_trace()
-# Read Excel file into Dataframe:
+
 # dataframe = read_excel_file(pandas_dataframe, tables_path, "CARIACICA") # HOW TO AUTOMATIZE THIS PARAMETER???
 # dataframe = read_excel_file(tables_path, "CARIACICA") # HOW TO AUTOMATIZE THIS PARAMETER???
 # dataframe = read_excel_file(filtered_tables_path, "filtered_sheet") # HOW TO AUTOMATIZE THIS PARAMETER???
