@@ -62,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.middleware.charset.CharsetMiddleware',
 ]
 
 ROOT_URLCONF = 'novelis_table_filter_mail_project.urls'
@@ -125,6 +126,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
+
+DEFAUT_CHARSET = 'ISO-8859-1'
 
 
 # Static files (CSS, JavaScript, Images)
