@@ -91,7 +91,7 @@ WSGI_APPLICATION = 'novelis_table_filter_mail_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'management', 'commands', 'db', 'db_sqlite3.db'),
+        'NAME': os.path.join(BASE_DIR, 'management_before_django', 'db', 'db_sqlite3.db'),
     }
 }
 
