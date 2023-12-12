@@ -1,10 +1,14 @@
+import os
+
 from pandas import DataFrame
 from pathlib import Path
 import sqlite3
 
+from dotenv import load_dotenv
+
 from create_model import create_model_from_database
-# from management_before_django.table_management_scripts.not_used.tables_read_procx import read_excel_file
 from tables_color_edition import filter_table_by_yellow
+from ..robot_sharepoint.robot_to_login_and_take_path_to_content import robot_for_sharepoint
 
 import ipdb
 
@@ -14,6 +18,30 @@ tables_path = Path("../raw_table/")
 # PATH TO DB:
 database_path = Path("../db/")
 db = database_path.joinpath("db_sqlite3.db")
+
+
+load_dotenv()
+
+# ENVS:
+# Keys for login:
+username = os.getenv("USERNAME")
+password = os.getenv("PASSWORD")
+
+# Input ids:
+username_input_id = os.getenv("USER_INPUT_ID")
+password_input_id = os.getenv("PASSWORD_INPUT_ID")
+hover_selector = os.getenv("HOVER_SELECTOR")
+download_selector = os.getenv("DOWNLOAD_SELECTOR")
+
+# Sharepoint URL:
+sharepoint_url = os.getenv("SHAREPOINT_URL")
+
+# Download directory:
+download_directory = os.getenv("DOWNLOAD_DIRECTORY")
+
+
+# PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
+robot_for_sharepoint(username, password, username_input_id, password_input_id, sharepoint_url, download_directory)
 
 
 def insert_table_with_procx(db: Path, df: DataFrame) -> None:
