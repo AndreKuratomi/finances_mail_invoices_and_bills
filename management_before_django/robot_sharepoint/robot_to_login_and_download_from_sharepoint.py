@@ -17,14 +17,27 @@ import ipdb
 def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: str,
                         #   hover_selec: str, download_selec: str, 
                           share_url: str, download_dir: str):
-    
-    # CHECK IF DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
+    print(download_dir)
+    # CHECK IF VIRTUAL DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-    dir_to_path = Path(default_download_dir)
-    dir_content = list(dir_to_path.iterdir())
+    dir_to_origin_path = Path(default_download_dir)
+    origin_dir_content = list(dir_to_origin_path.iterdir())
 
-    if len(dir_content) > 0:
-        dir_content.clear()
+    if len(origin_dir_content) > 0:
+        os.remove(default_download_dir)
+        # shutil.rmtree(default_download_dir) # very agressive...
+        # os.mkdir(default_download_dir)
+
+
+    # CHECK IF DESTINATION DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
+    dir_to_destiny_path = Path(download_dir)
+    destiny_dir_content = list(dir_to_destiny_path.iterdir())
+
+    if len(destiny_dir_content) > 0:
+        # ipdb.set_trace()
+        # os.remove(download_dir)
+        shutil.rmtree(download_dir) # very agressive...
+        os.mkdir(dir_to_destiny_path)
 
     # CONNECT TO BROWSER:
     # Driver instance:

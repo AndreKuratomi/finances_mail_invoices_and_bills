@@ -1,4 +1,6 @@
 import os
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from pandas import DataFrame
 from pathlib import Path
@@ -8,9 +10,12 @@ from dotenv import load_dotenv
 
 from create_model import create_model_from_database
 from tables_color_edition import filter_table_by_yellow
-from ..robot_sharepoint.robot_to_login_and_take_path_to_content import robot_for_sharepoint
+from robot_sharepoint.robot_to_login_and_download_from_sharepoint import robot_for_sharepoint
+# robot_to_login_and_take_path_to_content import robot_for_sharepoint
+# from robot_sharepoint.robot_to_login_and_take_path_to_content import robot_for_sharepoint
 
 import ipdb
+
 
 # PATH TO TABLE:
 tables_path = Path("../raw_table/")
@@ -18,7 +23,6 @@ tables_path = Path("../raw_table/")
 # PATH TO DB:
 database_path = Path("../db/")
 db = database_path.joinpath("db_sqlite3.db")
-
 
 load_dotenv()
 
@@ -59,6 +63,5 @@ pandas_dataframe = filter_table_by_yellow(tables_path, "CARIACICA") # HOW TO AUT
 
 # Insert table to SQLite database:
 insert_table_with_procx(db, pandas_dataframe)
-# insert_table_with_procx(db, dataframe)
 
 create_model_from_database(db)
