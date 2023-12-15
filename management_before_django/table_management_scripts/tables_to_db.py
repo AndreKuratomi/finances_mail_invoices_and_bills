@@ -11,8 +11,6 @@ from dotenv import load_dotenv
 from create_model import create_model_from_database
 from tables_color_edition import filter_table_by_yellow
 from robot_sharepoint.robot_to_login_and_download_from_sharepoint import robot_for_sharepoint
-# robot_to_login_and_take_path_to_content import robot_for_sharepoint
-# from robot_sharepoint.robot_to_login_and_take_path_to_content import robot_for_sharepoint
 
 import ipdb
 
@@ -57,11 +55,8 @@ def insert_table_with_procx(db: Path, df: DataFrame) -> None:
 # Read Excel file and return it filtered by color into Dataframe:
 pandas_dataframe = filter_table_by_yellow(tables_path, "CARIACICA") # HOW TO AUTOMIZE THIS PARAMETER???
 
-# dataframe = read_excel_file(pandas_dataframe, tables_path, "CARIACICA") # HOW TO AUTOMATIZE THIS PARAMETER???
-# dataframe = read_excel_file(tables_path, "CARIACICA") # HOW TO AUTOMATIZE THIS PARAMETER???
-# dataframe = read_excel_file(filtered_tables_path, "filtered_sheet") # HOW TO AUTOMATIZE THIS PARAMETER???
-
 # Insert table to SQLite database:
 insert_table_with_procx(db, pandas_dataframe)
 
+# Create Django model
 create_model_from_database(db)

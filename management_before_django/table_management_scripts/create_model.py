@@ -26,3 +26,6 @@ def create_model_from_database(path_to_db: Path) -> None:
                 print(line)
             else:
                 file.write(line)
+
+    command = f'cd ../.. && python3 manage.py runserver'
+    os.system(command)
