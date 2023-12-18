@@ -1,7 +1,11 @@
 from openpyxl import load_workbook, Workbook
 import pandas as pd
+
 from pathlib import Path
+
 from unidecode import unidecode
+
+from tqdm import tqdm
 
 import datetime
 import ipdb
@@ -20,9 +24,9 @@ def get_cell_properties(cell):
     properties['data_type'] = cell.data_type
     return properties
 
-# IN MEMORIAN LADY MARITACA:
+# IN MEMORIAN LADY MARITACA (data_only=True):
 def filter_table_by_yellow(path: Path, sheet: str):
-    print(path)
+    # print(path)
     tables_path_content = list(path.iterdir())  
 
     if len(tables_path_content) == 0:
@@ -47,18 +51,19 @@ def filter_table_by_yellow(path: Path, sheet: str):
 
                 # First row and all rows with yellow cells in colors list and changes saved:
                 new_sheet = workbook.create_sheet('filtered_sheet')
-                new_sheet.append([cell.value for cell in table_sheet[1]])
+                new_sheet.append([cell.value for cell in tqdm(table_sheet[1], "")])
 
-                for row in table_sheet.iter_rows(min_row=2):
+                for row in tqdm(table_sheet.iter_rows(min_row=2), "Filtering rows by color..."):
                     filtered_row = [get_cell_properties(cell) for cell in row]
                     if filtered_row[3].get('background_color') == 'FFFFFF00':
                         # print(filtered_row)
                         new_sheet.append([cell.value for cell in row])
                 
+                # Preparing list for dataframe:
                 rows = list()
-                headers = [cell.value for cell in new_sheet[1]]
+                headers = [cell.value for cell in tqdm(new_sheet[1], "Inserting filtered tables' heardes into list before dataframe...")]
 
-                for row in new_sheet.iter_rows(min_row=2):
+                for row in tqdm(new_sheet.iter_rows(min_row=2), "Inserting filtered tables into list before dataframe..."):
                     rows.append([cell.value for cell in row])
                 
                 df = pd.DataFrame(rows, columns=headers)
@@ -74,17 +79,15 @@ def filter_table_by_yellow(path: Path, sheet: str):
                     df.set_index('id')
 
                 # REMOVE CHARACTER ACCENTS FROM COLUMN TITLES:
-                df.columns = [unidecode(col) for col in df.columns]
-                print(df)
+                df.columns = [unidecode(col) for col in tqdm(df.columns, "Removing character accents from column titles...")]
+                # print(df)
 
                 # ORDER BY:
                 df['PREVISAO DE CHEGADA'] = pd.to_datetime(df['PREVISAO DE CHEGADA'], errors='coerce')
                 df = df.sort_values(by='PREVISAO DE CHEGADA', ascending=False)
 
-                print(df['METAL'])
-                print(df)
-
-
+                # print(df['METAL'])
+                # print(df)
                 return df
 
             else:

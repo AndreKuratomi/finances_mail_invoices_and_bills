@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 
 from create_model import create_model_from_database
 from tables_color_edition import filter_table_by_yellow
+
 from robot_sharepoint.robot_to_login_and_download_from_sharepoint import robot_for_sharepoint
 
 import ipdb
@@ -59,4 +60,4 @@ pandas_dataframe = filter_table_by_yellow(tables_path, "CARIACICA") # HOW TO AUT
 insert_table_with_procx(db, pandas_dataframe)
 
 # Create Django model
-create_model_from_database(db)
+create_model_from_database()
