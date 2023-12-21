@@ -77,14 +77,14 @@ class SendEmailView(APIView):
                         if field_value == None:
                             # print(field_value)
                             field_value = '-'
-                            table_html += "<td>{}</td>".format(field_value)
+                            table_html += "<td style='text-align: center;'>{}</td>".format(field_value)
                             counter += 1
                         else:
                             field_value = getattr(instance, field2.name).strftime('%d-%m-%Y %H:%M:%S')
-                            table_html += "<td>{}</td>".format(field_value)
+                            table_html += "<td style='text-align: center;'>{}</td>".format(field_value)
                             counter += 1
                     else:
-                        table_html += "<td>{}</td>".format(getattr(instance, field2.name))
+                        table_html += "<td style='text-align: center;'>{}</td>".format(getattr(instance, field2.name))
                         counter += 1
                 table_html += "</tr>"
             
