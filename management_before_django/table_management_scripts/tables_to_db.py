@@ -12,6 +12,7 @@ from create_model import create_model_from_database
 from tables_color_edition import filter_table_by_yellow
 
 from robot_sharepoint.robot_to_login_and_download_from_sharepoint import robot_for_sharepoint
+from robot_sharepoint.recursive_robot import recursive_robot
 
 import ipdb
 
@@ -35,6 +36,8 @@ username_input_id = os.getenv("USER_INPUT_ID")
 password_input_id = os.getenv("PASSWORD_INPUT_ID")
 hover_selector = os.getenv("HOVER_SELECTOR")
 download_selector = os.getenv("DOWNLOAD_SELECTOR")
+# hover_selector = "div[data-selection-index='1']"
+# download_selector = "button[data-automationid='downloadCommand']"
 
 # Sharepoint URL:
 sharepoint_url = os.getenv("SHAREPOINT_URL")
@@ -42,9 +45,11 @@ sharepoint_url = os.getenv("SHAREPOINT_URL")
 # Download directory:
 download_directory = os.getenv("DOWNLOAD_DIRECTORY")
 
-
+# TAKING INPUT IDS WITH SELENIUM ROBOT:
+input_ids = recursive_robot(username, sharepoint_url)
+print(input_ids)
 # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
-robot_for_sharepoint(username, password, username_input_id, password_input_id, sharepoint_url, download_directory)
+robot_for_sharepoint(username, password, input_ids["user_input_id"], input_ids["password_input_id"], hover_selector, download_selector, sharepoint_url, download_directory)
 
 
 def insert_table_with_procx(db: Path, df: DataFrame) -> None:
