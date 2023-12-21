@@ -26,7 +26,7 @@ Esta aplicação utiliza o framework <b>Django</b> e o banco de dados <b>SQLite3
 
 - Uma <b>ferramenta cliente de API REST</b>. Por exemplo, o <b>[Insomnia](https://insomnia.rest/download)</b> ou o <b>[Postman](https://www.postman.com/product/rest-client/)</b>.
 
-- <p> E versionar o diretório para receber o clone da aplicação:</p>
+- <p> E versionar o diretório escolhido para receber o clone da aplicação:</p>
 
 ```
 git init
@@ -73,29 +73,13 @@ code .
 
 # Comandos
 
-Inserir tabela no projeto vinda do sharepoint:
+Para todos os procedimentos necessarios basta rodar apenas o comando abaixot:
 
-./
-
-```
-cd management/commands/robot_sharepoint && python3 robot_to_manage_sharepoint.py
-```
-
-Filtrar a planilha por cor e inseri-la numa banco de dados SQLite3 e transforma-la numa model django:
+./management_before_django/table_management_scripts/
 
 ```
-cd .. && python3 tables_to_db.py
+python3 tables_to_db.py
 ```
-
-Ativar django:
-
-```
-cd ../.. && python3 manage.py runserver
-```
-
-E envia-la por email usando um cliente API (futuramente o front) como na imagem a seguir:
-
-![Insomnia](./assets/insomnia.png "Insomnia!")
 
 <br>
 
