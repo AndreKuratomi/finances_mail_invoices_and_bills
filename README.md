@@ -36,7 +36,7 @@ git init
 <h5>1. Fazer o clone do reposítório <span>python_django_tables_filter_mail</span> na sua máquina pelo terminal do computador ou pelo do IDE:</h5>
 
 ```
-git clone https://github.com/AndreKuratomi/vba_python_django.git
+git clone https://github.com/AndreKuratomi/tables_to_db_and_mail.git
 ```
 
 <p>Entrar na pasta criada:</p>
