@@ -21,7 +21,7 @@ from tqdm import tqdm
 import ipdb
 
 def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: str,
-                        #   hover_selec: str, download_selec: str, 
+                          hover_selec: str, download_selec: str, 
                           share_url: str, download_dir: str, progress_bar: bool = True):
     
     # CHECK IF VIRTUAL DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
@@ -104,6 +104,7 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     # username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, username_input_id)))
     username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, user_id)))
     pbar2.update(1)
+
     # Enter username and submit the form:
     username_input.send_keys(username)
     pbar2.update(1)
@@ -114,26 +115,25 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     # password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, password_input_id)))
     password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, pass_id)))
     pbar2.update(1)
+
     # Enter password and submit the form:
     password_input.send_keys(password)
     password_input.send_keys(Keys.RETURN)
     pbar2.update(1)
+
     # Hovering an element:
-    item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
-    # driver.execute_script("arguments[0].hover();", item)
-    # item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, hover_selector)))
-    # item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, hover_selec)))
+    item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, hover_selec)))
+    # item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
     item.click()
     pbar2.update(1)
+
     # Create an instance of ActionChains and perform the hover action
     actions = ActionChains(driver)
     actions.move_to_element(item).perform()
     pbar2.update(1)
 
-    download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
-    # driver.execute_script("arguments[0].click();", download)
-    # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, download_selector)))
-    # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, download_selec)))
+    download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, download_selec)))
+    # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
     download.click()
     pbar2.update(1)
 
