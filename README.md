@@ -58,7 +58,7 @@ Windows:
 ```
 py -m venv venv --upgrade-deps
 ```
-
+<br>
 Ative o seu ambiente virtual com o comando:
 
 Linux:
@@ -79,7 +79,7 @@ Obs: Eventualmente, pode ser necessário abrir o PowerShell como administrador.
 ```
 venv\Scripts\activate
 ```
-
+<br>
 Instalar suas dependências:
 
 ```
