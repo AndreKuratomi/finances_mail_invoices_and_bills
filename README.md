@@ -47,7 +47,7 @@ cd python_django_tables_filter_mail
 
 Após feito o clone do repositório, instalar:
 
-O ambiente virtual e atualizar suas dependências com o seguinte comando:
+<h6>O ambiente virtual e atualizar suas dependências com o seguinte comando:</h6>
 
 Linux:
 ```
@@ -59,7 +59,7 @@ Windows:
 py -m venv venv --upgrade-deps
 ```
 <br>
-Ative o seu ambiente virtual com o comando:
+<h6>Ative o seu ambiente virtual com o comando:</h6>
 
 Linux:
 ```
@@ -80,13 +80,13 @@ Obs: Eventualmente, pode ser necessário abrir o PowerShell como administrador.
 venv\Scripts\activate
 ```
 <br>
-Instalar suas dependências:
+<h6>Instalar suas dependências:</h6>
 
 ```
 pip install -r requirements.txt
 ```
 
-E rodar a aplicação:
+<h6>E rodar a aplicação:</h6>
 
 ```
 code .
