@@ -32,21 +32,24 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
 
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
     pbar1.update(1)
-
     dir_to_origin_path = Path(default_download_dir)
     pbar1.update(1)
 
     origin_dir_content = list(dir_to_origin_path.iterdir())
     pbar1.update(1)
 
+    print(origin_dir_content)
+    print(default_download_dir)
+
 
     if len(origin_dir_content) > 0:
+        # ipdb.set_trace()
         pbar1.update(1)
-        os.remove(default_download_dir)
-        pbar1.update(1)
+        # os.remove(default_download_dir)
 
-        # shutil.rmtree(default_download_dir) # very agressive...
-        # os.mkdir(default_download_dir)
+        shutil.rmtree(default_download_dir) # very agressive...
+        os.mkdir(default_download_dir)
+        pbar1.update(1)
 
 
     # CHECK IF DESTINATION DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
@@ -65,6 +68,7 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
         os.mkdir(dir_to_destiny_path)
 
     pbar1.close()
+    # ipdb.set_trace()
 
     # CONNECT TO BROWSER:
     # Tqdm2-3 (Connect to browser and download the file):
@@ -74,9 +78,9 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
 
     # Driver instance:
     options = webdriver.EdgeOptions()
+    # options.add_argument('headless')
     pbar2.update(1)
 
-    # options.add_argument('headless')
     driver = webdriver.Edge(options=options)
     pbar2.update(1)
 
@@ -122,8 +126,8 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     pbar2.update(1)
 
     # Hovering an element:
-    item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, hover_selec)))
-    # item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
+    # item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, hover_selec)))
+    item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
     item.click()
     pbar2.update(1)
 
@@ -132,12 +136,18 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     actions.move_to_element(item).perform()
     pbar2.update(1)
 
-    download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, download_selec)))
-    # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
-    download.click()
+    # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, download_selec)))
+    download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
     pbar2.update(1)
 
-    time.sleep(5)
+    time.sleep(1)
+    download.click()
+    
+    while len(list(Path(default_download_dir).iterdir())) == 0:
+        time.sleep(1)
+        if progress_bar:
+            pbar2.update(1)
+    pbar2.close()
 
     # CHECKING IF FILE WAS CORRECTLY DOWNLOADED:
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
@@ -145,33 +155,29 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     dir_to_path = Path(default_download_dir)
     dir_content = list(dir_to_path.iterdir())
     
-    while len(list(Path(default_download_dir).iterdir())) == 0:
-        time.sleep(1)
-        if progress_bar:
-            pbar2.update(1)
-    pbar2.close()
-    
     # Tqdm3-3 (Move downloaded file):
     if progress_bar:
-        # print()
         pbar3 = tqdm(desc="Moving downloaded files", total=9)
         pbar3.update(1)
     for file in dir_content:
+
         pbar3.update(1)
         if file.is_file():
             pbar3.update(1)
             path_to_table = str(file)
             pbar3.update(1)
 
-            specific_char = "/"
-            pbar3.update(1)
-            index = path_to_table.rfind(specific_char)
-            pbar3.update(1)
-            path_content = path_to_table[index+1:]
-            pbar3.update(1)
+            # specific_char = "/"
+            # pbar3.update(1)
+            # index = path_to_table.rfind(specific_char)
+            # pbar3.update(1)
+            # path_content = path_to_table[index+1:]
+            # pbar3.update(1)
             # print(path_content)
             shutil.move(path_to_table, download_dir)
             pbar3.update(1)
+            # ipdb.set_trace()
+
             if progress_bar:
                 pbar3.update(1)
 
