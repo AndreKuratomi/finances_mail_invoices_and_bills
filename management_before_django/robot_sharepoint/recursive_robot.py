@@ -34,7 +34,7 @@ def recursive_robot(username: str, share_url: str, progress_bar: bool = True):
     # Navigate to Sharepoint login page and maximize its window:
     driver.get(share_url)
     pbar.update(1)
-
+    # ipdb.set_trace()
     # LOGIN:
     # Find username input field by its ID and enter email address:
     username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
