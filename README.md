@@ -45,27 +45,48 @@ git clone https://github.com/AndreKuratomi/tables_to_db_and_mail.git
 cd python_django_tables_filter_mail
 ```
 
-Após feito o clone do repositório KenzieDoc, instalar:
+Após feito o clone do repositório, instalar:
 
-O ambiente virtual e atualizar suas dependências com o seguinte comando:
+<h6>O ambiente virtual e atualizar suas dependências com o seguinte comando:</h6>
 
+Linux:
 ```
 python3 -m venv venv --upgrade-deps
 ```
 
-Ative o seu ambiente virtual com o comando:
+Windows:
+```
+py -m venv venv --upgrade-deps
+```
+<br>
+<h6>Ative o seu ambiente virtual com o comando:</h6>
 
+Linux:
 ```
 source/venv/bin/activate
 ```
 
-Instalar suas dependências:
+Windows:
+
+No sistema operacional Windows é necessário antes configurar o Execution Policy do PowerShell:
+
+```
+Get-ExecutionPolicy # para verificar o tipo de política de execução
+Set-ExecutionPolicy RemoteSigned # para alterar o tipo de política se o comando acima mostrar 'Restricted'
+```
+Obs: Eventualmente, pode ser necessário abrir o PowerShell como administrador.
+
+```
+venv\Scripts\activate
+```
+<br>
+<h6>Instalar suas dependências:</h6>
 
 ```
 pip install -r requirements.txt
 ```
 
-E rodar a aplicação:
+<h6>E rodar a aplicação:</h6>
 
 ```
 code .
