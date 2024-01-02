@@ -2,3 +2,4 @@ venv/
 .not_used/
 *.pyc
 .env
+env/
