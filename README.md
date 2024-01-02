@@ -40,6 +40,7 @@ git clone https://github.com/AndreKuratomi/tables_to_db_and_mail.git
 ```
 
 Windows:
+
 Obs: Caso apareca algum erro semelhante a este: 
 
 ```
