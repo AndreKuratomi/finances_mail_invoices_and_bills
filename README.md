@@ -39,6 +39,19 @@ git init
 git clone https://github.com/AndreKuratomi/tables_to_db_and_mail.git
 ```
 
+Windows:
+Obs: Caso apareca algum erro semelhante a este: 
+
+```
+unable to access 'https://github.com/AndreKuratomi/tables_to_db_and_mail.git/': SSL certificate problem: self-signed certificate in certificate chain
+```
+
+Configure o git para desabilitar a certificação SSL:
+
+```
+git config --global http.sslVerify "false"
+```
+
 <p>Entrar na pasta criada:</p>
 
 ```
