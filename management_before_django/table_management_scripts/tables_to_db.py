@@ -28,7 +28,8 @@ load_dotenv()
 
 # ENVS:
 # Keys for login:
-username = os.getenv("USERNAME")
+username = os.getenv("USERN")
+# username = "naoresponda@jcgestaoderiscos.com.br"
 password = os.getenv("PASSWORD")
 
 # Input ids:
@@ -44,6 +45,8 @@ sharepoint_url = os.getenv("SHAREPOINT_URL")
 
 # Download directory:
 download_directory = os.getenv("DOWNLOAD_DIRECTORY")
+# download_directory = "/Users/andre.kuratomi/OneDrive - JC Gestao de Riscos/Área de Trabalho/tables_to_db_mail/tables_to_db_and_mail/management_before_django/raw_table/"
+# ipdb.set_trace()
 
 # TAKING INPUT IDS WITH SELENIUM ROBOT:
 input_ids = recursive_robot(username, sharepoint_url)

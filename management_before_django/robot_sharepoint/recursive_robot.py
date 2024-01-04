@@ -23,6 +23,9 @@ def recursive_robot(username: str, share_url: str, progress_bar: bool = True):
     # Driver instance:
     options = webdriver.EdgeOptions()
     options.add_argument('headless')
+    # For Windows OS:
+    options.add_argument('-inprivate')
+
     pbar.update(1)
 
     # options.add_argument('headless')
@@ -33,11 +36,46 @@ def recursive_robot(username: str, share_url: str, progress_bar: bool = True):
 
     # Navigate to Sharepoint login page and maximize its window:
     driver.get(share_url)
+    driver.maximize_window()
     pbar.update(1)
+
+
+    # # CHECK IF IT IS LOGGED AND IF SO UNLOGS:
+    # if "https://jcgestaoderiscos.sharepoint.com/sites/testes.desenvolvimento/SitePages/Home.aspx" in driver.current_url:
+    #     print("oi")
+
+    #     pre_logout_link = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[id='O365_MainLink_Me']")))
+    #     pre_logout_link.click()
+    #     pbar.update(1)
+
+    #     logout_link = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "a[id='mectrl_body_signOut']")))
+    #     logout_link.click()
+    #     pbar.update(1)
+
+    #     driver.quit()
     # ipdb.set_trace()
+
+
+    # # Driver instance:
+    # options = webdriver.EdgeOptions()
+    # # options.add_argument('headless')
+    # pbar.update(1)
+
+    # # options.add_argument('headless')
+    driver = webdriver.Edge(options=options)
+    # pbar.update(1)
+
+    # # driver = webdriver.Edge(options=options)
+
+    # Navigate to Sharepoint login page and maximize its window:
+    driver.get(share_url)
+    driver.maximize_window()
+    pbar.update(1)
+
     # LOGIN:
     # Find username input field by its ID and enter email address:
     username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
+    # ipdb.set_trace()
     pbar.update(1)
 
     # Enter username and submit the form:
@@ -58,7 +96,8 @@ def recursive_robot(username: str, share_url: str, progress_bar: bool = True):
     password_input_id = password_input.get_attribute("id")
     dict["password_input_id"] = password_input_id
     pbar.update(1)
-
-    driver.close()
+    # driver.close()
+    driver.quit()
+    # ipdb.set_trace()
 
     return dict
