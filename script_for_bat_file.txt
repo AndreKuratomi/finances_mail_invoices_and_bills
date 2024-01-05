@@ -1,0 +1,49 @@
+chcp 65001 > nul
+
+@echo off
+
+
+REM Check if the script is running as administrator 
+NET SESSION >nul 2>&1
+IF %ERRORLEVEL% EQU 0 (
+    echo Running as administrator...
+) ELSE (
+    echo EXECUTAR COMO ADMINISTRADOR! Senao nao anda...
+    echo Para isso, pressione o botao direito sobre o mesmo arquivo e selecione 'Executar como adminstrador', ok?
+    echo Passar bem.
+    pause
+    exit
+)
+
+
+REM Entering directories...
+
+echo CurrentDirectory: %CD%
+echo whatIsThis: %UserProfile%
+
+cd "C:\Users\andre.kuratomi\OneDrive - JC Gestao de Riscos\Área de Trabalho\tables_to_db_mail\tables_to_db_and_mail\"
+
+
+REM Activating virtual environment...
+
+call ".\env\Scripts\activate"
+
+cd ".\management_before_django\table_management_scripts\"
+
+IF %ERRORLEVEL% NEQ 0 ( 
+	echo Failed to enter directories. 
+	goto :eof 
+)
+
+
+REM Running script...
+
+py tables_to_db.py 
+
+IF %ERRORLEVEL% NEQ 0 ( 
+	echo Script execution failed. 
+	goto :eof 
+)
+
+echo Script executed successfully.
+pause

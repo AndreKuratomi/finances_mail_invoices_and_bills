@@ -7,6 +7,8 @@ from django.template.loader import render_to_string
 
 from dotenv import load_dotenv
 
+from pathlib import Path
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,6 +16,23 @@ from rest_framework.views import APIView
 from tqdm import tqdm
 
 from .models import TableName
+
+# # While there's no model:
+# model_dir = './models.py'
+# count = 1
+# do_we_have_tablename = False
+
+# while not do_we_have_tablename:
+#     try:
+#         from .models import TableName
+#         do_we_have_tablename = True
+#     except ImportError:
+#         print(count)
+#         time.sleep(count)
+#         count += 1
+#     # module = __import__('models', fromlist=[''])
+#     # do_we_have_tablename = hasattr(module, 'TableName')
+    
 from .serializers import EmailSerializer
 
 import ipdb
@@ -23,8 +42,10 @@ load_dotenv()
 host_email = os.getenv("EMAIL_HOST_USER")
 
 # Table to work with:
-table_data = TableName.objects.all()
 
+
+table_data = TableName.objects.all()
+# ipdb.set_trace()
 
 class SendEmailView(APIView):
     def post(self):

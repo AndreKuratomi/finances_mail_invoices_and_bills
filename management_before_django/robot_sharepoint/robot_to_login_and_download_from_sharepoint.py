@@ -14,6 +14,9 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+
+from selenium.webdriver.edge.options import Options
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -88,8 +91,11 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
         pbar2.update(1)
 
     # Driver instance:
-    options = webdriver.EdgeOptions()
-    # options.add_argument('headless')
+    options = Options()
+    # options = webdriver.EdgeOptions()
+    # options.use_chromium = True
+    options.add_argument('--headless=new')
+    # options.add_argument('--no-sandbox')
     # For Windows OS:
     options.add_argument('-inprivate')
     pbar2.update(1)
@@ -137,6 +143,7 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     password_input.send_keys(Keys.RETURN)
     pbar2.update(1)
 
+    # time.sleep(10)
     # Hovering an element:
     item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
     pbar2.update(1)

@@ -19,8 +19,14 @@ import ipdb
 
 def create_model_from_database() -> None:
     # from 'python3 manage.py inspectdb > filter_tables/models.py' to a command:
-    command = f'cd ../.. && python3 manage.py inspectdb > filter_tables/models.py'
+
+    # Linux:
+    # command = f'cd ../.. && python3 manage.py inspectdb > filter_tables/models.py'
+
+    # Windows
+    command = f'cd ../.. && py manage.py inspectdb > filter_tables/models.py'
     os.system(command)
+
     # ipdb.set_trace()
     time.sleep(1)  # wait for file to be created
 
