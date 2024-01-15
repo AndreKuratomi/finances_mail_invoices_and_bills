@@ -24,9 +24,13 @@ from tqdm import tqdm
 
 import ipdb
 
-def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: str,
+def robot_for_outlook(username: str, password: str, user_id: str, pass_id: str,
                           hover_selec: str, download_selec: str, 
                           share_url: str, download_dir: str, progress_bar: bool = True):
+    
+
+
+    ipdb.set_trace()
     
     # CHECK IF VIRTUAL DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
     # Tqdm1-3 (Check whether directories are empty):
