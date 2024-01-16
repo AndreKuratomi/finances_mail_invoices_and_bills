@@ -5,10 +5,9 @@ import shutil
 import stat
 import time
 
-from pathlib import Path
+from dotenv import load_dotenv
 
-from pyvirtualdisplay import Display
-# from msedge.selenium_tools import Edge, EdgeOptions
+from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -24,67 +23,17 @@ from tqdm import tqdm
 
 import ipdb
 
+load_dotenv()
+
+# .envs:
+outlook_url = os.getenv("OUTLOOK_URL")
+user_outlook = os.getenv("USER_OUTLOOK")
+user_outlook_password = os.getenv("USER_OUTLOOK_PASSWORD")
+
 def robot_for_outlook(username: str, password: str, user_id: str, pass_id: str,
-                          hover_selec: str, download_selec: str, 
-                          share_url: str, download_dir: str, progress_bar: bool = True):
+                        hover_selec: str, download_selec: str, 
+                        outlook_url: str, download_dir: str, progress_bar: bool = True):
     
-
-
-    ipdb.set_trace()
-    
-    # CHECK IF VIRTUAL DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
-    # Tqdm1-3 (Check whether directories are empty):
-    if progress_bar:
-        pbar1 = tqdm(desc="Check whether directories are empty", total=13)
-        pbar1.update(1)
-
-    default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-    pbar1.update(1)
-
-    dir_to_origin_path = Path(default_download_dir)
-    pbar1.update(1)
-
-    origin_dir_content = list(dir_to_origin_path.iterdir())
-    pbar1.update(1)
-
-    print(origin_dir_content)
-    print(default_download_dir)
-
-    if len(origin_dir_content) > 0:
-        # ipdb.set_trace()
-        pbar1.update(1)
-        # os.remove(default_download_dir)
-
-        # Windows:
-        # Grant default_download_dir read, write and execute permissions:
-        os.chmod(default_download_dir, stat.S_IRWXU)
-        pbar1.update(1)
-
-        shutil.rmtree(default_download_dir) # very agressive...
-        pbar1.update(1)
-
-        os.mkdir(default_download_dir)
-        pbar1.update(1)
-
-
-    # CHECK IF DESTINATION DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
-    # ipdb.set_trace()
-    dir_to_destiny_path = Path(download_dir)
-    pbar1.update(1)
-
-    destiny_dir_content = list(dir_to_destiny_path.iterdir())
-    pbar1.update(1)
-
-    if len(destiny_dir_content) > 0:
-        pbar1.update(1)
-        shutil.rmtree(download_dir) # very agressive...
-
-        pbar1.update(1)
-        os.mkdir(dir_to_destiny_path)
-        pbar1.update(1)
-
-    pbar1.close()
-
     # CONNECT TO BROWSER:
     # Tqdm2-3 (Connect to browser and download the file):
     if progress_bar:
@@ -93,10 +42,8 @@ def robot_for_outlook(username: str, password: str, user_id: str, pass_id: str,
 
     # Driver instance:
     options = Options()
-    # options = webdriver.EdgeOptions()
-    # options.use_chromium = True
-    options.add_argument('--headless=new')
-    # options.add_argument('--no-sandbox')
+    # options.add_argument('--headless=new')
+
     # For Windows OS:
     options.add_argument('-inprivate')
     pbar2.update(1)
@@ -105,8 +52,7 @@ def robot_for_outlook(username: str, password: str, user_id: str, pass_id: str,
     pbar2.update(1)
 
     # Navigate to Sharepoint login page and maximize its window:
-    # driver.get(sharepoint_url)
-    driver.get(share_url)
+    driver.get(outlook_url)
     pbar2.update(1)
     # options.add_argument("--disable-infobars")
     driver.maximize_window()
@@ -135,67 +81,156 @@ def robot_for_outlook(username: str, password: str, user_id: str, pass_id: str,
     password_input.send_keys(Keys.RETURN)
     pbar2.update(1)
 
-    # time.sleep(10)
     # Hovering an element:
-    item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
-    pbar2.update(1)
-    item.click()
+    input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "input[placeholder='Pesquisar']")))
     pbar2.update(1)
 
-    item2 = item.find_element(By.CSS_SELECTOR, "button[data-automationid='FieldRender-DotDotDot']")
-    item2.click()
-    download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+    time.sleep(3)
+
+    input.send_keys("017919")
     pbar2.update(1)
-    download.click()
+    input.send_keys(Keys.RETURN)
+    pbar2.update(1)
 
-    # ipdb.set_trace()
+    time.sleep(1)
 
-    # Linux:
-    # # Create an instance of ActionChains and perform the hover action
-    # actions = ActionChains(driver)
-    # actions.move_to_element(item).perform()
-    # pbar2.update(1)
+    email = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "div[aria-label*='nfe.noreply@barueri.sp.gov.br']")))
+
+    # Wait for the element to become stale:
+    WebDriverWait(driver, 10).until(EC.staleness_of(email))
+
+    # Wait for the element to re-appear:
+    email = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "div[aria-label*='nfe.noreply@barueri.sp.gov.br']")))
+    email.click()
+
+    time.sleep(1)
+
+    answer_all_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[aria-label='Responder a todos']")))
+    answer_all_button.click()
+
+    # OK, NOW HOW COULD I ATTACH THE FILES BY CNPJ AS THE EMAIL ANSWER IS OPENED?
+
+    ipdb.set_trace()
+
     # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+    # pbar2.update(1)
     # download.click()
 
-    time.sleep(1)
-    pbar2.update(1)
-    time.sleep(1)
+    # # CHECK IF VIRTUAL DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
+    # # Tqdm1-3 (Check whether directories are empty):
+    # if progress_bar:
+    #     pbar1 = tqdm(desc="Check whether directories are empty", total=13)
+    #     pbar1.update(1)
+
+    # default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+    # pbar1.update(1)
+
+    # dir_to_origin_path = Path(default_download_dir)
+    # pbar1.update(1)
+
+    # origin_dir_content = list(dir_to_origin_path.iterdir())
+    # pbar1.update(1)
+
+    # print(origin_dir_content)
+    # print(default_download_dir)
+
+    # if len(origin_dir_content) > 0:
+    #     # ipdb.set_trace()
+    #     pbar1.update(1)
+    #     # os.remove(default_download_dir)
+
+    #     # Windows:
+    #     # Grant default_download_dir read, write and execute permissions:
+    #     os.chmod(default_download_dir, stat.S_IRWXU)
+    #     pbar1.update(1)
+
+    #     shutil.rmtree(default_download_dir) # very agressive...
+    #     pbar1.update(1)
+
+    #     os.mkdir(default_download_dir)
+    #     pbar1.update(1)
+
+
+    # # CHECK IF DESTINATION DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
+    # # ipdb.set_trace()
+    # dir_to_destiny_path = Path(download_dir)
+    # pbar1.update(1)
+
+    # destiny_dir_content = list(dir_to_destiny_path.iterdir())
+    # pbar1.update(1)
+
+    # if len(destiny_dir_content) > 0:
+    #     pbar1.update(1)
+    #     shutil.rmtree(download_dir) # very agressive...
+
+    #     pbar1.update(1)
+    #     os.mkdir(dir_to_destiny_path)
+    #     pbar1.update(1)
+
+    # pbar1.close()
+
+
+    # # time.sleep(10)
+    # # Hovering an element:
+    # item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
+    # pbar2.update(1)
+    # item.click()
+    # pbar2.update(1)
+
+    # item2 = item.find_element(By.CSS_SELECTOR, "button[data-automationid='FieldRender-DotDotDot']")
+    # item2.click()
+    # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+    # pbar2.update(1)
+    # download.click()
+
+    # # ipdb.set_trace()
+
+    # # Linux:
+    # # # Create an instance of ActionChains and perform the hover action
+    # # actions = ActionChains(driver)
+    # # actions.move_to_element(item).perform()
+    # # pbar2.update(1)
+    # # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+    # # download.click()
+
+    # time.sleep(1)
+    # pbar2.update(1)
+    # time.sleep(1)
     
-    while len(list(Path(default_download_dir).iterdir())) == 0:
-        time.sleep(1)
-        if progress_bar:
-            pbar2.update(1)
-    pbar2.close()
-    driver.quit()
-    # ipdb.set_trace()
+    # while len(list(Path(default_download_dir).iterdir())) == 0:
+    #     time.sleep(1)
+    #     if progress_bar:
+    #         pbar2.update(1)
+    # pbar2.close()
+    # driver.quit()
+    # # ipdb.set_trace()
 
-    # CHECKING IF FILE WAS CORRECTLY DOWNLOADED:
-    default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-    print(default_download_dir)
-    dir_to_path = Path(default_download_dir)
-    dir_content = list(dir_to_path.iterdir())
+    # # CHECKING IF FILE WAS CORRECTLY DOWNLOADED:
+    # default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+    # print(default_download_dir)
+    # dir_to_path = Path(default_download_dir)
+    # dir_content = list(dir_to_path.iterdir())
     
-    # Tqdm3-3 (Move downloaded file):
-    if progress_bar:
-        pbar3 = tqdm(desc="Moving downloaded files", total=9)
-        pbar3.update(1)
+    # # Tqdm3-3 (Move downloaded file):
+    # if progress_bar:
+    #     pbar3 = tqdm(desc="Moving downloaded files", total=9)
+    #     pbar3.update(1)
 
-    for file in dir_content:
-        pbar3.update(1)
-        if file.is_file():
-            pbar3.update(1)
-            path_to_table = str(file)
-            pbar3.update(1)
+    # for file in dir_content:
+    #     pbar3.update(1)
+    #     if file.is_file():
+    #         pbar3.update(1)
+    #         path_to_table = str(file)
+    #         pbar3.update(1)
 
-            shutil.move(path_to_table, download_dir)
-            pbar3.update(1)
+    #         shutil.move(path_to_table, download_dir)
+    #         pbar3.update(1)
 
-            if progress_bar:
-                pbar3.update(1)
+    #         if progress_bar:
+    #             pbar3.update(1)
 
-        else:
-            raise Exception("Something went wrong... check the file itself")
+    #     else:
+    #         raise Exception("Something went wrong... check the file itself")
         
 
     if progress_bar:
