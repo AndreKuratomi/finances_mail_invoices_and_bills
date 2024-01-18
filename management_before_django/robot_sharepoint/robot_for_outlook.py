@@ -16,6 +16,8 @@ from selenium.webdriver.common.by import By
 
 from selenium.webdriver.edge.options import Options
 
+from selenium.common.exceptions import StaleElementReferenceException, TimeoutException
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -62,7 +64,7 @@ def robot_for_outlook(username: str, password: str, user_id: str, pass_id: str,
     # LOGIN:
     # Find username input field by its ID and enter email address:
     # username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, username_input_id)))
-    username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, user_id)))
+    username_input = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.ID, user_id)))
     pbar2.update(1)
 
     # Enter username and submit the form:
@@ -73,7 +75,7 @@ def robot_for_outlook(username: str, password: str, user_id: str, pass_id: str,
 
     # Wait for the password input to be visible and then enter password and submit the form:
     # password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, password_input_id)))
-    password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, pass_id)))
+    password_input = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.ID, pass_id)))
     pbar2.update(1)
 
     # Enter password and submit the form:
@@ -81,8 +83,10 @@ def robot_for_outlook(username: str, password: str, user_id: str, pass_id: str,
     password_input.send_keys(Keys.RETURN)
     pbar2.update(1)
 
-    # Hovering an element:
-    input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "input[placeholder='Pesquisar']")))
+    # INSIDE OUTLOOK:
+
+    # Pesquisar input:
+    input = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "input[placeholder='Pesquisar']")))
     pbar2.update(1)
 
     time.sleep(3)
@@ -94,23 +98,64 @@ def robot_for_outlook(username: str, password: str, user_id: str, pass_id: str,
 
     time.sleep(1)
 
-    email = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "div[aria-label*='nfe.noreply@barueri.sp.gov.br']")))
+    # Email found click:
+    email = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "div[aria-label*='nfe.noreply@barueri.sp.gov.br']")))
 
-    # Wait for the element to become stale:
-    WebDriverWait(driver, 10).until(EC.staleness_of(email))
+    #     # Wait for the element to become stale:
+    # WebDriverWait(driver, 30).until(EC.staleness_of(email))
 
-    # Wait for the element to re-appear:
-    email = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "div[aria-label*='nfe.noreply@barueri.sp.gov.br']")))
+    #     # Wait for the element to re-appear:
+    # email = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "div[aria-label*='nfe.noreply@barueri.sp.gov.br']")))
     email.click()
 
     time.sleep(1)
 
-    answer_all_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[aria-label='Responder a todos']")))
+    answer_all_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[aria-label='Responder a todos']")))
     answer_all_button.click()
 
-    # OK, NOW HOW COULD I ATTACH THE FILES BY CNPJ AS THE EMAIL ANSWER IS OPENED?
+    # attach_button = WebDriverWait(driver, 30).until(EC.invisibility_of_element_located((By.CSS_SELECTOR, "button[aria-label='Anexar arquivo']")))
+    attach_button = WebDriverWait(driver, 30).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[aria-label='Anexar arquivo']")))
+    time.sleep(2)
+    attach_button.click()
 
+    
+    # Wait for the element to become stale:
+    # WebDriverWait(driver, 30).until(EC.invisibility_of_element_located((By.CSS_SELECTOR, "button[aria-label='Anexar arquivo']")))
+    # WebDriverWait(driver, 30).until(EC.staleness_of(attach_button))
+    # attach_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[aria-label='Anexar arquivo']")))
+    time.sleep(2)
+    what_to_attach_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[name='Carregar e compartilhar']")))
+    print(what_to_attach_button)
+    if StaleElementReferenceException:
+        print("NOT HERE")
+        WebDriverWait(driver, 50).until(EC.staleness_of(attach_button))
+        what_to_attach_button.click()
+    else: 
+        what_to_attach_button.click()
+
+    time.sleep(2)
+    dialog_box = WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "dialog[role='dialog']")))
+    driver.switch_to.default_content()
+    driver.switch_to.frame(dialog_box.find_element(By.CSS_SELECTOR, "iframe[title='OneDrive']"))
     ipdb.set_trace()
+    
+    print(len(driver.window_handles))
+    driver.switch_to.window(driver.window_handles[1])
+    # driver.switch_to.window('Abrir')
+
+    # Create an instance of ActionChains and perform the hover action
+    # actions = ActionChains(driver)
+    # actions.move_to_element(attach_button).perform()
+    # pbar2.update(1)
+
+    # what_to_attach_button = WebDriverWait(driver, 10).until(By.CSS_SELECTOR, "button[name='Carregar e compartilhar']")
+
+    # # Wait for another element to become stale:
+    # WebDriverWait(driver, 10).until(EC.staleness_of(what_to_attach_button))
+
+    # Wait for another element to re-appear:
+
+    
 
     # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
     # pbar2.update(1)
