@@ -55,7 +55,7 @@ def create_model_from_database() -> None:
 
     # RUN VIEW SEND EMAIL:
     # print("before")
-    SendEmailView().post()
     # print("after")
-
     # ipdb.set_trace()
+
+    # SendEmailView().post()
