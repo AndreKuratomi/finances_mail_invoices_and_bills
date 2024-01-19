@@ -53,7 +53,7 @@ def filter_table_column(path: Path, sheet: str):
                 # for_pandas = table_sheet.iter_cols(min_col=1, max_col=19)
                 rows = list()
                 headers = [cell.value for cell in table_sheet[2]]
-                headers = [headers[3], headers[4], headers[18]]
+                headers = [headers[3], headers[4], headers[6], headers[18]]
                 # ipdb.set_trace()
                 
                 # # new_sheet.append([cell.value for cell in tqdm(table_sheet[1], "")])
@@ -61,7 +61,7 @@ def filter_table_column(path: Path, sheet: str):
                 for row in tqdm(table_sheet.iter_rows(min_row=2), "Filtering rows by columns D, E and S..."):
                     # print(row)
                     # print(counter)
-                    rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 18]]) #IMPROVE
+                    rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 18]]) #IMPROVE
                         # if counter % 7 == 0:
                         #     print(cell)
                     # filtered_row = [get_cell_properties(cell) for cell in row]
@@ -76,7 +76,7 @@ def filter_table_column(path: Path, sheet: str):
                 print(rows)
                 
                 df = pd.DataFrame(rows, columns=headers)
-                print(df)
+                # print(df)
                 
 
                 # Drop first row:

@@ -61,7 +61,7 @@ def insert_table_to_db(db: Path, df: DataFrame) -> None:
 # Read Excel file and return it filtered by color into Dataframe:
 
 pandas_dataframe = filter_table_column(tables_path, "2-por cliente") # HOW TO AUTOMATIZE THIS PARAMETER???
-print(pandas_dataframe)
+# print(pandas_dataframe)
 # Insert table to SQLite database:
 insert_table_to_db(db, pandas_dataframe)
 

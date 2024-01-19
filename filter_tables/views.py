@@ -33,7 +33,7 @@ from .models import TableName
 #     # module = __import__('models', fromlist=[''])
 #     # do_we_have_tablename = hasattr(module, 'TableName')
     
-from .serializers import EmailSerializer
+# from .serializers import EmailSerializer
 
 import ipdb
 
@@ -47,11 +47,29 @@ host_email = os.getenv("EMAIL_HOST_USER")
 table_data = TableName.objects.all()
 # ipdb.set_trace()
 
-class SendEmailView(APIView):
+class EmailAttachByTable(APIView):
+    def post(self):
+        try:
+            for row in tqdm(table_data, "Each line, each search and email:"):
+                print(row)
+
+                cnpj = row['cnpj']
+                nfe = row['numero']
+                razao_social = row['nome_do_cliente']
+                valor_liquido = row['valor_liquido']
+
+                # func_for_search(cnpj: str, nfe: str, razao_social: str, valor_liquido: str)
+
+                print("Email successfully sent! Check inbox.")
+
+            return Response({"message": "Email successfully sent"}, status=status.HTTP_200_OK)
+  
+        except:
+            return Exception({"error": "Something went wrong! Contact the dev!"})
+
+# class SendEmailView(APIView):
     def post(self):
         try: 
-            # print("I`M HERE")
-
             # USERNAME AND EMAIL TO WORK WITH:
             data={'receiver_name': "Andre", 'receiver_email': "andrekuratomi@gmail.com"}
             
@@ -110,7 +128,6 @@ class SendEmailView(APIView):
                 table_html += "</tr>"
             
             table_html += "</table>"
-
             # Insert table to mail body:
             table_to_mail = render_to_string('table_template.html', {'receiver_name': data['receiver_name'], 'table_data': table_html}
                                             #  , using='ISO-8859-1'
@@ -126,6 +143,8 @@ class SendEmailView(APIView):
                 fail_silently=False,
                 html_message=table_to_mail
             )
+            
+            # ipdb.set_trace()
 
             print("Email successfully sent! Check inbox.")
 
