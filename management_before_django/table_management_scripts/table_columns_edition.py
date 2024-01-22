@@ -73,22 +73,24 @@ def filter_table_column(path: Path, sheet: str):
 
                 # for row in tqdm(new_sheet.iter_rows(min_row=2), "Inserting filtered tables into list before dataframe..."):
                 #     rows.append([cell.value for cell in row])
-                print(rows)
+                # print(rows)
                 
                 df = pd.DataFrame(rows, columns=headers)
                 # print(df)
                 
-
                 # Drop first row:
                 df.drop(0)
-                print(df)
-                # ipdb.set_trace()
 
+                # Adding column ID to make django work:
                 if 'ID' not in df.columns:
                     ID = range(1, df.shape[0]+1)
                     df.insert(0, "id", ID)
                     df.set_index('id')
 
+                # Editing NFE column to hide first character:
+                df.loc[1:, 'Numero'] = df.loc[1:, 'Numero'].apply(lambda x : x[1:])
+
+                # print(df)
                 # REMOVE CHARACTER ACCENTS FROM COLUMN TITLES:
                 # df.columns = [unidecode(col) for col in tqdm(df.columns, "Removing character accents from column titles...")]
                 # print(df)

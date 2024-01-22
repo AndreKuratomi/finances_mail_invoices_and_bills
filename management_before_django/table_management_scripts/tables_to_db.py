@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from create_model import create_model_from_database
 from table_columns_edition import filter_table_column
 
-from robot_sharepoint.robot_for_outlook import robot_for_outlook
+from robot_sharepoint.robot_for_outlook_selenium import robot_for_outlook
 from robot_sharepoint.recursive_robot import recursive_robot_for_outlook
 
 import ipdb

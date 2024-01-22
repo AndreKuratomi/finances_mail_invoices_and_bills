@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 from tqdm import tqdm
 
 from .models import TableName
+from management_before_django.robot_sharepoint.robot_for_outlook_pywin import func_for_search
 
 # # While there's no model:
 # model_dir = './models.py'
@@ -51,16 +52,15 @@ class EmailAttachByTable(APIView):
     def post(self):
         try:
             for row in tqdm(table_data, "Each line, each search and email:"):
-                print(row)
 
-                cnpj = row['cnpj']
-                nfe = row['numero']
-                razao_social = row['nome_do_cliente']
-                valor_liquido = row['valor_liquido']
+                cnpj = row.cnpj
+                nfe = row.numero
+                razao_social = row.nome_do_cliente
+                valor_liquido = row.valor_liquido
+                # ipdb.set_trace()
+                func_for_search(cnpj, nfe, razao_social, valor_liquido)
 
-                # func_for_search(cnpj: str, nfe: str, razao_social: str, valor_liquido: str)
-
-                print("Email successfully sent! Check inbox.")
+                # print("Email successfully sent! Check inbox.")
 
             return Response({"message": "Email successfully sent"}, status=status.HTTP_200_OK)
   
@@ -68,7 +68,7 @@ class EmailAttachByTable(APIView):
             return Exception({"error": "Something went wrong! Contact the dev!"})
 
 # class SendEmailView(APIView):
-    def post(self):
+    # def post(self):
         try: 
             # USERNAME AND EMAIL TO WORK WITH:
             data={'receiver_name': "Andre", 'receiver_email': "andrekuratomi@gmail.com"}
