@@ -14,6 +14,9 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+
+from selenium.webdriver.edge.options import Options
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -69,9 +72,6 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     pbar1.update(1)
 
     if len(destiny_dir_content) > 0:
-        # pbar1.update(1)
-        # ipdb.set_trace()
-        # os.remove(download_dir)
         pbar1.update(1)
         shutil.rmtree(download_dir) # very agressive...
 
@@ -88,23 +88,17 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
         pbar2.update(1)
 
     # Driver instance:
-    options = webdriver.EdgeOptions()
-    # options.add_argument('headless')
+    options = Options()
+    # options = webdriver.EdgeOptions()
+    # options.use_chromium = True
+    options.add_argument('--headless=new')
+    # options.add_argument('--no-sandbox')
     # For Windows OS:
     options.add_argument('-inprivate')
     pbar2.update(1)
 
     driver = webdriver.Edge(options=options)
     pbar2.update(1)
-
-    # VIRTUAL ATTEMPT TO HIDE ROBOT PAGE:
-    # display = Display(visible=0, size=(800, 600))
-    # display.start()
-    # # ALTERNATIVE WITH MSEDGE.SELENIUM TOOLS, BUT NEED TO DOWNLOAD EDGE AND CONFIGURE IT TO PATH:
-    # options = EdgeOptions()
-    # options.use_chromium = True
-    # options.add_argument(f"--user-data-dir={download_dir}")
-    # driver = Edge(options=options)
 
     # Navigate to Sharepoint login page and maximize its window:
     # driver.get(sharepoint_url)
@@ -137,6 +131,7 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     password_input.send_keys(Keys.RETURN)
     pbar2.update(1)
 
+    # time.sleep(10)
     # Hovering an element:
     item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
     pbar2.update(1)
@@ -189,13 +184,6 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
             path_to_table = str(file)
             pbar3.update(1)
 
-            # specific_char = "/"
-            # pbar3.update(1)
-            # index = path_to_table.rfind(specific_char)
-            # pbar3.update(1)
-            # path_content = path_to_table[index+1:]
-            # pbar3.update(1)
-            # print(path_content)
             shutil.move(path_to_table, download_dir)
             pbar3.update(1)
 
