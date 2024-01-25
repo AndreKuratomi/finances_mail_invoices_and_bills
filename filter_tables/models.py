@@ -11,19 +11,10 @@ from django.db import models
 class TableName(models.Model):
     index = models.IntegerField(blank=True, null=True)
     id = models.AutoField(primary_key=True)
-    cliente = models.TextField(db_column='CLIENTE', blank=True, null=True)  # Field name made lowercase.
-    planta = models.TextField(db_column='PLANTA', blank=True, null=True)  # Field name made lowercase.
-    origem = models.TextField(db_column='ORIGEM', blank=True, null=True)  # Field name made lowercase.
-    percurso = models.IntegerField(db_column='PERCURSO', blank=True, null=True)  # Field name made lowercase.
-    nota = models.IntegerField(db_column='NOTA', blank=True, null=True)  # Field name made lowercase.
-    item = models.IntegerField(db_column='ITEM', blank=True, null=True)  # Field name made lowercase.
-    metal = models.TextField(db_column='METAL', blank=True, null=True)  # Field name made lowercase.
-    peso = models.IntegerField(db_column='PESO', blank=True, null=True)  # Field name made lowercase.
-    emissao_da_nf = models.TextField(db_column='EMISSAO DA NF', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. This field type is a guess.
-    previsao_de_chegada = models.TextField(db_column='PREVISAO DE CHEGADA', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters. This field type is a guess.
-    status = models.TextField(db_column='STATUS', blank=True, null=True)  # Field name made lowercase.
-    placa = models.TextField(db_column='PLACA', blank=True, null=True)  # Field name made lowercase.
-    transportadora = models.TextField(db_column='TRANSPORTADORA', blank=True, null=True)  # Field name made lowercase.
+    nome_do_cliente = models.TextField(db_column='Nome do Cliente', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    cnpj = models.TextField(db_column='CNPJ', blank=True, null=True)  # Field name made lowercase.
+    numero = models.TextField(db_column='Numero', blank=True, null=True)  # Field name made lowercase.
+    valor_liquido = models.TextField(db_column='Valor Liquido', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
 
     class Meta:
         managed = False

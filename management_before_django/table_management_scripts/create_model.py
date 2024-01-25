@@ -11,7 +11,7 @@ import django
 from django.core.mail import send_mail
 django.setup()
 
-from filter_tables.views import SendEmailView
+from filter_tables.views import EmailAttachByTable
 
 from tqdm import tqdm
 
@@ -55,7 +55,7 @@ def create_model_from_database() -> None:
 
     # RUN VIEW SEND EMAIL:
     # print("before")
-    SendEmailView().post()
     # print("after")
-
     # ipdb.set_trace()
+
+    EmailAttachByTable().post()

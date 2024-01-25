@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 from tqdm import tqdm
 
 from .models import TableName
+from management_before_django.robot_sharepoint.robot_for_outlook_exchangelib import func_for_search
 
 # # While there's no model:
 # model_dir = './models.py'
@@ -33,13 +34,14 @@ from .models import TableName
 #     # module = __import__('models', fromlist=[''])
 #     # do_we_have_tablename = hasattr(module, 'TableName')
     
-from .serializers import EmailSerializer
+# from .serializers import EmailSerializer
 
 import ipdb
 
 load_dotenv()
 
-host_email = os.getenv("EMAIL_HOST_USER")
+username = os.getenv("USER_OUTLOOK")
+password = os.getenv("USER_OUTLOOK_PASSWORD")
 
 # Table to work with:
 
@@ -47,11 +49,28 @@ host_email = os.getenv("EMAIL_HOST_USER")
 table_data = TableName.objects.all()
 # ipdb.set_trace()
 
-class SendEmailView(APIView):
+class EmailAttachByTable(APIView):
     def post(self):
-        try: 
-            # print("I`M HERE")
+        try:
+            for row in tqdm(table_data, "Each line, each search and email:"):
 
+                cnpj = row.cnpj
+                nfe = row.numero
+                razao_social = row.nome_do_cliente
+                valor_liquido = row.valor_liquido
+                ipdb.set_trace()
+                func_for_search(username, password, cnpj, nfe, razao_social, valor_liquido)
+
+                # print("Email successfully sent! Check inbox.")
+
+            return Response({"message": "Email successfully sent"}, status=status.HTTP_200_OK)
+  
+        except:
+            return Exception({"error": "Something went wrong! Contact the dev!"})
+
+# class SendEmailView(APIView):
+    # def post(self):
+        try: 
             # USERNAME AND EMAIL TO WORK WITH:
             data={'receiver_name': "Andre", 'receiver_email': "andrekuratomi@gmail.com"}
             
@@ -110,7 +129,6 @@ class SendEmailView(APIView):
                 table_html += "</tr>"
             
             table_html += "</table>"
-
             # Insert table to mail body:
             table_to_mail = render_to_string('table_template.html', {'receiver_name': data['receiver_name'], 'table_data': table_html}
                                             #  , using='ISO-8859-1'
@@ -126,6 +144,8 @@ class SendEmailView(APIView):
                 fail_silently=False,
                 html_message=table_to_mail
             )
+            
+            # ipdb.set_trace()
 
             print("Email successfully sent! Check inbox.")
 

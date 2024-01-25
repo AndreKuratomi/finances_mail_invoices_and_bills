@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import SendEmailView
+from .views import EmailAttachByTable
 
 urlpatterns = [
-    path('email/', SendEmailView.as_view())
+    # path('email/', EmailAttachByTable.as_view())
+    path('data/', EmailAttachByTable.as_view())
 ]
