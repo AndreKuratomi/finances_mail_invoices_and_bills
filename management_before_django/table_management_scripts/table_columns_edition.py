@@ -1,3 +1,7 @@
+import datetime
+import ipdb
+import os
+
 from openpyxl import load_workbook, Workbook
 import pandas as pd
 
@@ -7,9 +11,7 @@ from unidecode import unidecode
 
 from tqdm import tqdm
 
-import datetime
-import ipdb
-import os
+from errors.custom_exceptions import TooManyFilesError
 
 # # PATH TO RAW TABLE:
 # tables_path = Path("./raw_table/")
@@ -28,21 +30,20 @@ def filter_table_column(path: Path, sheet: str):
     # print(path)
     tables_path_content = list(path.iterdir())  
 
-    if len(tables_path_content) == 0:
+    tables = list()
+    for elem in tables_path_content:
+        stringfied_elem = str(elem)
+        if stringfied_elem.endswith('.xls') or stringfied_elem.endswith('.xlsx') or stringfied_elem.endswith('.xlsm'):
+            tables.append(stringfied_elem)
+    if len(tables) == 0:
         raise FileNotFoundError("NO TABLE TO WORK WITH!")
-    elif len(tables_path_content) > 1:
-        raise FileNotFoundError("HEY! ONLY ONE TABLE IS ALLOWED!")
+    elif len(tables) > 1:
+        raise TooManyFilesError
     
     for file in tables_path_content:
         if file.is_file():
             path_to_table = str(file)
             if path_to_table.endswith('.xls') or path_to_table.endswith('.xlsx') or path_to_table.endswith('.xlsm'):
-
-                # # Edit the character to find the table to work with not mattering the name:
-                # specific_char = "/"
-                # index = path_to_table.find(specific_char)
-                # path_content = path.joinpath(path_to_table[index+1:])
-                # # print(path_content)
 
                 # OPENPYXL (to deal with colors):
                 workbook = load_workbook(data_only=True, filename=path_to_table)
@@ -62,18 +63,6 @@ def filter_table_column(path: Path, sheet: str):
                     # print(row)
                     # print(counter)
                     rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 18]]) #IMPROVE
-                        # if counter % 7 == 0:
-                        #     print(cell)
-                    # filtered_row = [get_cell_properties(cell) for cell in row]
-                    # if filtered_row[3].get('background_color') == 'FFFFFF00':
-                        # print(filtered_row)
-                
-                # Preparing list for dataframe:
-                # headers = [cell.value for cell in tqdm(new_sheet, "Inserting filtered tables' heardes into list before dataframe...")]
-
-                # for row in tqdm(new_sheet.iter_rows(min_row=2), "Inserting filtered tables into list before dataframe..."):
-                #     rows.append([cell.value for cell in row])
-                # print(rows)
                 
                 df = pd.DataFrame(rows, columns=headers)
                 # print(df)
@@ -90,18 +79,6 @@ def filter_table_column(path: Path, sheet: str):
                 # Editing NFE column to hide first character:
                 df.loc[1:, 'Numero'] = df.loc[1:, 'Numero'].apply(lambda x : x[1:])
 
-                # print(df)
-                # REMOVE CHARACTER ACCENTS FROM COLUMN TITLES:
-                # df.columns = [unidecode(col) for col in tqdm(df.columns, "Removing character accents from column titles...")]
-                # print(df)
-
-                # ORDER BY:
-                # df['PREVISAO DE CHEGADA'] = pd.to_datetime(df['PREVISAO DE CHEGADA'], errors='coerce')
-                # df = df.sort_values(by='PREVISAO DE CHEGADA', ascending=False)
-                # df = df.sort_values(by='STATUS', ascending=True)
-
-                # print(df['METAL'])
-                # print(df)
                 return df
 
             else:

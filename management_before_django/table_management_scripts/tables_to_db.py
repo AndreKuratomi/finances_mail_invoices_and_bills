@@ -1,18 +1,16 @@
 import os
-import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import sqlite3
 
 from pandas import DataFrame
 from pathlib import Path
-import sqlite3
 
 from dotenv import load_dotenv
 
 from create_model import create_model_from_database
 from table_columns_edition import filter_table_column
 
-from robot_sharepoint.robot_for_outlook_selenium import robot_for_outlook
-from robot_sharepoint.recursive_robot import recursive_robot_for_outlook
+# from robot_sharepoint.robot_for_outlook_selenium import robot_for_outlook
+# from robot_sharepoint.recursive_robot import recursive_robot_for_outlook
 
 import ipdb
 
@@ -30,7 +28,7 @@ load_dotenv()
 # Keys for login:
 username = os.getenv("USER_OUTLOOK")
 password = os.getenv("USER_OUTLOOK_PASSWORD")
-print(password)
+# print(password)
 
 # Input ids:
 hover_selector = os.getenv("HOVER_SELECTOR")

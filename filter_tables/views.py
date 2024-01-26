@@ -16,7 +16,7 @@ from rest_framework.views import APIView
 from tqdm import tqdm
 
 from .models import TableName
-from management_before_django.robot_sharepoint.robot_for_outlook_exchangelib import func_for_search
+# from management_before_django.robot_sharepoint.robot_for_outlook_exchangelib import func_for_search
 
 # # While there's no model:
 # model_dir = './models.py'
@@ -59,7 +59,7 @@ class EmailAttachByTable(APIView):
                 razao_social = row.nome_do_cliente
                 valor_liquido = row.valor_liquido
                 ipdb.set_trace()
-                func_for_search(username, password, cnpj, nfe, razao_social, valor_liquido)
+                # func_for_search(username, password, cnpj, nfe, razao_social, valor_liquido)
 
                 # print("Email successfully sent! Check inbox.")
 
