@@ -1,4 +1,5 @@
 import os
+import requests
 import time
 
 from django.conf import settings
@@ -15,7 +16,7 @@ from rest_framework.views import APIView
 
 from tqdm import tqdm
 
-from .models import TableName
+from filter_tables.models import TableName
 # from management_before_django.robot_sharepoint.robot_for_outlook_exchangelib import func_for_search
 
 # # While there's no model:
@@ -52,13 +53,22 @@ table_data = TableName.objects.all()
 class EmailAttachByTable(APIView):
     def post(self):
         try:
+            counter = 0
             for row in tqdm(table_data, "Each line, each search and email:"):
+                if counter == 0:
+                    counter += 1
+                    continue
+                else:
+                    cnpj = row.cnpj
+                    nfe = row.numero
+                    razao_social = row.nome_do_cliente
+                    valor_liquido = row.valor_liquido
 
-                cnpj = row.cnpj
-                nfe = row.numero
-                razao_social = row.nome_do_cliente
-                valor_liquido = row.valor_liquido
-                ipdb.set_trace()
+                    row_data = {"cnpj": cnpj, "nfe": nfe, "razao_social": razao_social, "valor_liquido": valor_liquido}
+
+                    ipdb.set_trace()
+                    requests.post("<my_powerautomate_http_endpoint>", json=row_data)
+                    counter += 1
                 # func_for_search(username, password, cnpj, nfe, razao_social, valor_liquido)
 
                 # print("Email successfully sent! Check inbox.")

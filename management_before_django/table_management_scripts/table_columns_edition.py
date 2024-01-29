@@ -3,6 +3,7 @@ import ipdb
 import os
 
 from openpyxl import load_workbook, Workbook
+
 import pandas as pd
 
 from pathlib import Path
@@ -12,6 +13,8 @@ from unidecode import unidecode
 from tqdm import tqdm
 
 from errors.custom_exceptions import TooManyFilesError
+
+import ipdb
 
 # # PATH TO RAW TABLE:
 # tables_path = Path("./raw_table/")
@@ -26,10 +29,9 @@ from errors.custom_exceptions import TooManyFilesError
 #     properties['data_type'] = cell.data_type
 #     return properties
 
-def filter_table_column(path: Path, sheet: str):
+def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
     # print(path)
     tables_path_content = list(path.iterdir())  
-
     tables = list()
     for elem in tables_path_content:
         stringfied_elem = str(elem)
@@ -65,7 +67,6 @@ def filter_table_column(path: Path, sheet: str):
                     rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 18]]) #IMPROVE
                 
                 df = pd.DataFrame(rows, columns=headers)
-                # print(df)
                 
                 # Drop first row:
                 df.drop(0)
@@ -78,6 +79,8 @@ def filter_table_column(path: Path, sheet: str):
 
                 # Editing NFE column to hide first character:
                 df.loc[1:, 'Numero'] = df.loc[1:, 'Numero'].apply(lambda x : x[1:])
+                # ipdb.set_trace()
+                # print(df)
 
                 return df
 

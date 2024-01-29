@@ -1,32 +1,32 @@
-import os
+# import os
 
-from dotenv import load_dotenv
-from exchangelib import Account, Configuration, Credentials, DELEGATE, HTMLBody, Message
-# from exchangelib import Credentials
+# from dotenv import load_dotenv
+# from exchangelib import Account, Configuration, Credentials, DELEGATE, HTMLBody, Message
+# # from exchangelib import Credentials
 
-import ipdb
+# import ipdb
 
-load_dotenv()
+# load_dotenv()
 
-# ENVS:
-# Keys for login:
-username = os.getenv("USER_OUTLOOK")
-password = os.getenv("USER_OUTLOOK_PASSWORD")
+# # ENVS:
+# # Keys for login:
+# username = os.getenv("USER_OUTLOOK")
+# password = os.getenv("USER_OUTLOOK_PASSWORD")
 
-def func_for_search(username, password, cnpj, nfe, razao_social, valor_liquido):
-    print(username)
-    credentials = Credentials(username, password)
-    print(credentials)
+# def func_for_search(username, password, cnpj, nfe, razao_social, valor_liquido):
+#     print(username)
+#     credentials = Credentials(username, password)
+#     print(credentials)
 
-    config = Configuration(server='outlook.office365.com', credentials=credentials)
-    print(config)
+#     config = Configuration(server='outlook.office365.com', credentials=credentials)
+#     print(config)
 
-    account = Account(username, credentials=credentials, autodiscover=False, config=config, access_type=DELEGATE)
-    print(account)
-    # target_subject = 'Subject of the email you are looking for'
-    target_emails = account.inbox.filter(subject=nfe)
-    print(target_emails)
-    ipdb.set_trace()
+#     account = Account(username, credentials=credentials, autodiscover=False, config=config, access_type=DELEGATE)
+#     print(account)
+#     # target_subject = 'Subject of the email you are looking for'
+#     target_emails = account.inbox.filter(subject=nfe)
+#     print(target_emails)
+#     ipdb.set_trace()
 
     # # Create a new email message
     # email = Message(account, folder="Sent Items")
@@ -58,5 +58,5 @@ def func_for_search(username, password, cnpj, nfe, razao_social, valor_liquido):
 #     print("Logged in into:", username)
 #     # pass    
 
-func_for_search(username, password, "00.000.000/0000-00", "00000", "TESTE LTDA", "R$ 20.000,00")
+# func_for_search(username, password, "00.000.000/0000-00", "00000", "TESTE LTDA", "R$ 20.000,00")
 # func_for_search("notafiscal@jcgestaoderiscos.com.br", "Tup27768", "00.000.000/0000-00", "00000", "TESTE LTDA", "R$ 20.000,00")
