@@ -9,7 +9,7 @@ from tqdm import tqdm
 import ipdb
 
 
-def recursive_robot_for_outlook(username: str, outlook_url: str, progress_bar: bool = True):
+def recursive_robot(username: str, outlook_url: str, progress_bar: bool = True):
 
     # Dictionary to store input ids:
     dict = {"user_input_id": "", "password_input_id": ""}
