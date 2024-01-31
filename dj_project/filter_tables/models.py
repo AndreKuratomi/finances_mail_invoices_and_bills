@@ -12,6 +12,7 @@ class AuthGroup(models.Model):
     name = models.CharField(unique=True, max_length=150)
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'auth_group'
 
@@ -21,6 +22,7 @@ class AuthGroupPermissions(models.Model):
     permission = models.ForeignKey('AuthPermission', models.DO_NOTHING)
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'auth_group_permissions'
         unique_together = (('group', 'permission'),)
@@ -32,6 +34,7 @@ class AuthPermission(models.Model):
     name = models.CharField(max_length=255)
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'auth_permission'
         unique_together = (('content_type', 'codename'),)
@@ -50,6 +53,7 @@ class AuthUser(models.Model):
     first_name = models.CharField(max_length=150)
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'auth_user'
 
@@ -59,6 +63,7 @@ class AuthUserGroups(models.Model):
     group = models.ForeignKey(AuthGroup, models.DO_NOTHING)
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'auth_user_groups'
         unique_together = (('user', 'group'),)
@@ -69,6 +74,7 @@ class AuthUserUserPermissions(models.Model):
     permission = models.ForeignKey(AuthPermission, models.DO_NOTHING)
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'auth_user_user_permissions'
         unique_together = (('user', 'permission'),)
@@ -84,6 +90,7 @@ class DjangoAdminLog(models.Model):
     action_time = models.DateTimeField()
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'django_admin_log'
 
@@ -93,6 +100,7 @@ class DjangoContentType(models.Model):
     model = models.CharField(max_length=100)
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'django_content_type'
         unique_together = (('app_label', 'model'),)
@@ -104,6 +112,7 @@ class DjangoMigrations(models.Model):
     applied = models.DateTimeField()
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'django_migrations'
 
@@ -114,6 +123,7 @@ class DjangoSession(models.Model):
     expire_date = models.DateTimeField()
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'django_session'
 
@@ -127,5 +137,6 @@ class TableName(models.Model):
     valor_liquido = models.TextField(db_column='Valor Liquido', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
 
     class Meta:
+        app_label = 'filter_tables'
         managed = False
         db_table = 'table_name'

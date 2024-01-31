@@ -7,13 +7,12 @@ from tqdm import tqdm
 import ipdb
 
 def create_model_from_database() -> None:
-    """Creates django model from SQLite3 database with inspectdb and """
+    """Creates django model from SQLite3 database with inspectdb and adjusts it to suit for django."""
 
     # Paths:
     script_absolute_path = Path(__file__).resolve() # absolute path from computer to here
-    django_project_path = script_absolute_path.parents[2] / 'dj_project'
+    django_project_path = script_absolute_path.parents[3] / 'dj_project'
     models_file_path = django_project_path / 'filter_tables' / 'models.py'
-
     # From 'python3 manage.py inspectdb > filter_tables/models.py' to a command:
     # Linux:
     # command = f'cd ../.. && python3 manage.py inspectdb > filter_tables/models.py'

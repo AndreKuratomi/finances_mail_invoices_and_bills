@@ -9,7 +9,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'novelis_table_filter_mail_proje
 sys.path.append("./dj_project")
 django.setup()
 
-from management_before_django.table_management_scripts import tables_to_db
+from management_before_django.table_managements.scripts import tables_to_db
 from dj_project.filter_tables.views import EmailAttachByTable
 
 

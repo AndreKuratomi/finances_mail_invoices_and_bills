@@ -10,6 +10,8 @@ import ipdb
 
 
 def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
+    # print(path)
+    # ipdb.set_trace()
     """Receives the tables' path, filters it as necessary and inserts it to Pandas dataframe"""
     tables_path_content = list(path.iterdir())  
     tables = list()
@@ -36,13 +38,13 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
                 # First row for titles:
                 headers = [cell.value for cell in table_sheet[2]]
                 headers = [headers[3], headers[4], headers[6], headers[18]]
-                
+
                 # Other rows for content:
                 for row in tqdm(table_sheet.iter_rows(min_row=2), "Filtering rows by columns D, E and S..."):
                     rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 18]]) #IMPROVE
-                
+
                 df = pd.DataFrame(rows, columns=headers)
-                
+
                 # Drop first row (only for this case!):
                 df.drop(0)
 

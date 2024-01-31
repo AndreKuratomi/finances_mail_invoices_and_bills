@@ -17,6 +17,10 @@ from rest_framework.views import APIView
 from tqdm import tqdm
 
 from filter_tables.models import TableName
+
+from robot_sharepoint.modules.robot_for_login_and_download_from_sharepoint import robot_for_sharepoint
+from robot_sharepoint.modules.recursive_robot import recursive_robot
+
 # from management_before_django.robot_sharepoint.robot_for_outlook_exchangelib import func_for_search
 
 # # While there's no model:
@@ -41,8 +45,21 @@ import ipdb
 
 load_dotenv()
 
-username = os.getenv("USER_OUTLOOK")
-password = os.getenv("USER_OUTLOOK_PASSWORD")
+# ENVS:
+# Keys for login:
+username = os.getenv("USERN")
+password = os.getenv("PASSWORD")
+
+# Input ids:
+hover_selector = os.getenv("HOVER_SELECTOR")
+download_selector = os.getenv("DOWNLOAD_SELECTOR")
+
+# Sharepoint URL:
+sharepoint_url = os.getenv("SHAREPOINT_URL")
+
+# Download directory:
+download_directory = os.getenv("DOWNLOAD_DIRECTORY")
+
 
 # Table to work with:
 
@@ -55,6 +72,7 @@ class EmailAttachByTable(APIView):
         try:
             counter = 0
             for row in tqdm(table_data, "Each line, each search and email:"):
+                print(row)
                 if counter == 0:
                     counter += 1
                     continue
@@ -66,20 +84,33 @@ class EmailAttachByTable(APIView):
 
                     row_data = {"cnpj": cnpj, "nfe": nfe, "razao_social": razao_social, "valor_liquido": valor_liquido}
 
+                    # TAKING INPUT IDS WITH SELENIUM ROBOT:
+                    input_ids = recursive_robot(username, sharepoint_url)
+                    print(input_ids)
+                    
+                    # # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
+                    robot_for_sharepoint(username, password, input_ids["user_input_id"], input_ids["password_input_id"], sharepoint_url, download_directory, "02390435000115", "17779")
+                    # robot_for_sharepoint(username, password, input_ids["user_input_id"], input_ids["password_input_id"], sharepoint_url, download_directory, row_data["cnpj"], row_data["nfe"])
                     ipdb.set_trace()
-                    requests.post("<my_powerautomate_http_endpoint>", json=row_data)
-                    counter += 1
-                # func_for_search(username, password, cnpj, nfe, razao_social, valor_liquido)
 
-                # print("Email successfully sent! Check inbox.")
+                    # response = requests.post("<my_powerautomate_http_endpoint>", json=row_data)
+
+                    # if response.status_code == 200:
+                    #     print("Flow working!")
+                    # else:
+                    #     print(f"Error! Status code {response.status_code}")
+                    # counter += 1
+
+
+                    # print("Email successfully sent! Check inbox.")
 
             return Response({"message": "Email successfully sent"}, status=status.HTTP_200_OK)
   
         except:
             return Exception({"error": "Something went wrong! Contact the dev!"})
 
-# class SendEmailView(APIView):
-    # def post(self):
+class SendEmailView(APIView):
+    def post(self):
         try: 
             # USERNAME AND EMAIL TO WORK WITH:
             data={'receiver_name': "Andre", 'receiver_email': "andrekuratomi@gmail.com"}

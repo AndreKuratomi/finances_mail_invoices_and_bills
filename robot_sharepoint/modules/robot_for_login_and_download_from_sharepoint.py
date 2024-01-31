@@ -24,10 +24,10 @@ from tqdm import tqdm
 
 import ipdb
 
+
 def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: str,
-                          hover_selec: str, download_selec: str, 
-                          share_url: str, download_dir: str, progress_bar: bool = True):
-    
+                          site_url: str, download_dir: str, cnpj: str, nfe: str, progress_bar: bool = True):
+    print("CNPJ:", cnpj)
     # CHECK IF VIRTUAL DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
     # Tqdm1-3 (Check whether directories are empty):
     if progress_bar:
@@ -62,11 +62,11 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
         os.mkdir(default_download_dir)
         pbar1.update(1)
 
-
     # CHECK IF DESTINATION DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
     # ipdb.set_trace()
     dir_to_destiny_path = Path(download_dir)
     pbar1.update(1)
+    # ipdb.set_trace()
 
     destiny_dir_content = list(dir_to_destiny_path.iterdir())
     pbar1.update(1)
@@ -91,7 +91,7 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     options = Options()
     # options = webdriver.EdgeOptions()
     # options.use_chromium = True
-    options.add_argument('--headless=new')
+    # options.add_argument('--headless=new')
     # options.add_argument('--no-sandbox')
     # For Windows OS:
     options.add_argument('-inprivate')
@@ -102,16 +102,14 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
 
     # Navigate to Sharepoint login page and maximize its window:
     # driver.get(sharepoint_url)
-    driver.get(share_url)
+    driver.get(site_url)
     pbar2.update(1)
     # options.add_argument("--disable-infobars")
     driver.maximize_window()
     pbar2.update(1)
 
-
     # LOGIN:
     # Find username input field by its ID and enter email address:
-    # username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, username_input_id)))
     username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, user_id)))
     pbar2.update(1)
 
@@ -122,7 +120,6 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     pbar2.update(1)
 
     # Wait for the password input to be visible and then enter password and submit the form:
-    # password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, password_input_id)))
     password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, pass_id)))
     pbar2.update(1)
 
@@ -132,17 +129,107 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     pbar2.update(1)
 
     # time.sleep(10)
-    # Hovering an element:
-    item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
+    # Clicking folders by period:
+    root_folder = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - MEDIÇÕES']")))
     pbar2.update(1)
-    item.click()
+    root_folder.click()
     pbar2.update(1)
 
-    item2 = item.find_element(By.CSS_SELECTOR, "button[data-automationid='FieldRender-DotDotDot']")
-    item2.click()
-    download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+    year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']")))
     pbar2.update(1)
-    download.click()
+    year.click()
+    pbar2.update(1)
+
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - JANEIRO']")))
+    pbar2.update(1)
+    month.click()
+    pbar2.update(1)
+
+    # Looking for client by CNPJ:
+    client_folder = None
+    time.sleep(1)
+
+    try:
+        client_folder = driver.find_element(By.XPATH, f"//*[starts-with(@title, '{cnpj}')]")
+        print(client_folder)
+
+    except:
+        print("No client found for {}!".format(cnpj))
+
+    if client_folder:
+        client_folder.click()
+        pbar2.update(1)
+
+        time.sleep(1)
+        nfe_folder = None
+        try:
+            nfe_folder = driver.find_element(By.XPATH, f"//*[starts-with(@title, '{nfe}')]")
+        except:
+            print("No nfe found for {}!".format(nfe))
+        
+        if nfe_folder:
+            nfe_folder.click()
+            pbar2.update(1)
+
+            time.sleep(1)
+            # Select all items to download:
+            ipdb.set_trace()
+            select_all_files = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'header47-check')))
+            # select_all_files = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[id='header47-check']")))
+            select_all_files.click()
+            pbar2.update(1)
+
+            download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+            download_button.click()
+            pbar2.update(1)
+
+            time.sleep(1)
+            pbar2.update(1)
+            time.sleep(1)
+            
+            while len(list(Path(default_download_dir).iterdir())) == 0:
+                time.sleep(1)
+                if progress_bar:
+                    pbar2.update(1)
+            pbar2.close()
+            driver.quit()
+
+            # CHECKING IF FILE WAS CORRECTLY DOWNLOADED:
+            default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+            print(default_download_dir)
+            dir_to_path = Path(default_download_dir)
+            dir_content = list(dir_to_path.iterdir())
+            
+            # Tqdm3-3 (Move downloaded file):
+            if progress_bar:
+                pbar3 = tqdm(desc="Moving downloaded files", total=9)
+                pbar3.update(1)
+
+            for file in dir_content:
+                pbar3.update(1)
+                if file.is_file():
+                    pbar3.update(1)
+                    path_to_table = str(file)
+                    pbar3.update(1)
+
+                    shutil.move(path_to_table, download_dir)
+                    pbar3.update(1)
+
+                    if progress_bar:
+                        pbar3.update(1)
+
+                else:
+                    raise Exception("Something went wrong... check the file itself")
+                
+
+            if progress_bar:
+                pbar3.close()
+
+        else:
+            print("No nfe found for {nfe}!")
+
+    else:
+        print("No client found for {cnpj}!")
 
     # ipdb.set_trace()
 
@@ -153,49 +240,6 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     # pbar2.update(1)
     # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
     # download.click()
-
-    time.sleep(1)
-    pbar2.update(1)
-    time.sleep(1)
-    
-    while len(list(Path(default_download_dir).iterdir())) == 0:
-        time.sleep(1)
-        if progress_bar:
-            pbar2.update(1)
-    pbar2.close()
-    driver.quit()
-    # ipdb.set_trace()
-
-    # CHECKING IF FILE WAS CORRECTLY DOWNLOADED:
-    default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-    print(default_download_dir)
-    dir_to_path = Path(default_download_dir)
-    dir_content = list(dir_to_path.iterdir())
-    
-    # Tqdm3-3 (Move downloaded file):
-    if progress_bar:
-        pbar3 = tqdm(desc="Moving downloaded files", total=9)
-        pbar3.update(1)
-
-    for file in dir_content:
-        pbar3.update(1)
-        if file.is_file():
-            pbar3.update(1)
-            path_to_table = str(file)
-            pbar3.update(1)
-
-            shutil.move(path_to_table, download_dir)
-            pbar3.update(1)
-
-            if progress_bar:
-                pbar3.update(1)
-
-        else:
-            raise Exception("Something went wrong... check the file itself")
-        
-
-    if progress_bar:
-        pbar3.close()
 
     # driver.close()
     # display.stop()
