@@ -2,7 +2,6 @@ import os
 
 import requests
 import shutil
-import stat
 import time
 
 from pathlib import Path
@@ -24,68 +23,22 @@ from tqdm import tqdm
 
 import ipdb
 
+from robot_sharepoint.modules import unzip_files
+from robot_sharepoint.modules.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
+
 
 def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: str,
                           site_url: str, download_dir: str, cnpj: str, nfe: str, progress_bar: bool = True):
     print("CNPJ:", cnpj)
-    # CHECK IF VIRTUAL DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
-    # Tqdm1-3 (Check whether directories are empty):
-    if progress_bar:
-        pbar1 = tqdm(desc="Check whether directories are empty", total=13)
-        pbar1.update(1)
 
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-    pbar1.update(1)
 
-    dir_to_origin_path = Path(default_download_dir)
-    pbar1.update(1)
-
-    origin_dir_content = list(dir_to_origin_path.iterdir())
-    pbar1.update(1)
-
-    print(origin_dir_content)
-    print(default_download_dir)
-
-    if len(origin_dir_content) > 0:
-        # ipdb.set_trace()
-        pbar1.update(1)
-        # os.remove(default_download_dir)
-
-        # Windows:
-        # Grant default_download_dir read, write and execute permissions:
-        os.chmod(default_download_dir, stat.S_IRWXU)
-        pbar1.update(1)
-
-        shutil.rmtree(default_download_dir) # very agressive...
-        pbar1.update(1)
-
-        os.mkdir(default_download_dir)
-        pbar1.update(1)
-
-    # CHECK IF DESTINATION DOWNLOAD DIR HAS CONTENT AND IF SO EMPTY IT:
-    # ipdb.set_trace()
-    dir_to_destiny_path = Path(download_dir)
-    pbar1.update(1)
-    # ipdb.set_trace()
-
-    destiny_dir_content = list(dir_to_destiny_path.iterdir())
-    pbar1.update(1)
-
-    if len(destiny_dir_content) > 0:
-        pbar1.update(1)
-        shutil.rmtree(download_dir) # very agressive...
-
-        pbar1.update(1)
-        os.mkdir(dir_to_destiny_path)
-        pbar1.update(1)
-
-    pbar1.close()
+    empty_download_directories(download_dir, default_download_dir)
 
     # CONNECT TO BROWSER:
-    # Tqdm2-3 (Connect to browser and download the file):
     if progress_bar:
-        pbar2 = tqdm(desc="Connecting to browser and taking table", total=15)
-        pbar2.update(1)
+        pbar = tqdm(desc="Connecting to browser and taking content", total=15)
+        pbar.update(1)
 
     # Driver instance:
     options = Options()
@@ -93,57 +46,54 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     # options.use_chromium = True
     # options.add_argument('--headless=new')
     # options.add_argument('--no-sandbox')
+
     # For Windows OS:
     options.add_argument('-inprivate')
-    pbar2.update(1)
+    pbar.update(1)
 
     driver = webdriver.Edge(options=options)
-    pbar2.update(1)
+    pbar.update(1)
 
     # Navigate to Sharepoint login page and maximize its window:
-    # driver.get(sharepoint_url)
     driver.get(site_url)
-    pbar2.update(1)
+    pbar.update(1)
     # options.add_argument("--disable-infobars")
+
     driver.maximize_window()
-    pbar2.update(1)
+    pbar.update(1)
 
     # LOGIN:
-    # Find username input field by its ID and enter email address:
     username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, user_id)))
-    pbar2.update(1)
+    pbar.update(1)
 
-    # Enter username and submit the form:
     username_input.send_keys(username)
-    pbar2.update(1)
+    pbar.update(1)
     username_input.send_keys(Keys.RETURN)
-    pbar2.update(1)
+    pbar.update(1)
 
-    # Wait for the password input to be visible and then enter password and submit the form:
+
     password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, pass_id)))
-    pbar2.update(1)
+    pbar.update(1)
 
-    # Enter password and submit the form:
     password_input.send_keys(password)
     password_input.send_keys(Keys.RETURN)
-    pbar2.update(1)
+    pbar.update(1)
 
-    # time.sleep(10)
-    # Clicking folders by period:
+    # CLICKING FOLDERS:
     root_folder = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - MEDIÇÕES']")))
-    pbar2.update(1)
+    pbar.update(1)
     root_folder.click()
-    pbar2.update(1)
+    pbar.update(1)
 
     year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']")))
-    pbar2.update(1)
+    pbar.update(1)
     year.click()
-    pbar2.update(1)
+    pbar.update(1)
 
     month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - JANEIRO']")))
-    pbar2.update(1)
+    pbar.update(1)
     month.click()
-    pbar2.update(1)
+    pbar.update(1)
 
     # Looking for client by CNPJ:
     client_folder = None
@@ -158,9 +108,11 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
 
     if client_folder:
         client_folder.click()
-        pbar2.update(1)
+        pbar.update(1)
 
         time.sleep(1)
+
+        # Looking for folder by NFE:
         nfe_folder = None
         try:
             nfe_folder = driver.find_element(By.XPATH, f"//*[starts-with(@title, '{nfe}')]")
@@ -169,61 +121,68 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
         
         if nfe_folder:
             nfe_folder.click()
-            pbar2.update(1)
+            pbar.update(1)
 
             time.sleep(1)
             # Select all items to download:
-            ipdb.set_trace()
-            select_all_files = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, 'header47-check')))
-            # select_all_files = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[id='header47-check']")))
-            select_all_files.click()
-            pbar2.update(1)
+            
+            header_row = driver.find_element(By.XPATH, f"//*[starts-with(@aria-label, 'Cabeçalhos de coluna')]")
 
+            # # Create an instance of ActionChains and perform the hover action
+            actions = ActionChains(driver)
+            actions.move_to_element(header_row).perform()
+            pbar.update(1)
+            # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+            # download.click()
+
+            # ISSUE: Produces a zip file.
+            # select_all_files = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[aria-label='Alternar seleção para todos os itens']")))
+            select_all_files = driver.find_elements(By.XPATH, "//div[@role='presentation']")
+            pbar.update(1)
+            for row in tqdm(select_all_files, "Selecting files..."):
+                row.click()
+                time.sleep(1)
+            pbar.update(1)
+            ipdb.set_trace()
+            
             download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
             download_button.click()
-            pbar2.update(1)
+            pbar.update(1)
 
             time.sleep(1)
-            pbar2.update(1)
+            pbar.update(1)
             time.sleep(1)
             
-            while len(list(Path(default_download_dir).iterdir())) == 0:
+            default_download_dir_list = list(Path(default_download_dir).iterdir())
+
+            while len(default_download_dir_list) == 0:
+                # ipdb.set_trace()
                 time.sleep(1)
                 if progress_bar:
-                    pbar2.update(1)
-            pbar2.close()
+                    pbar.update(1)
+            pbar.close()
+            
+            time.sleep(1)
+
+            # for file in tqdm(default_download_dir_list, "Checking if the download is really complete..."):
+            #     print(file)
+            #     while any(file.suffix == '.crdownload'):
+            #         time.sleep(1)
+
+            # while any(file.suffix == '.crdownload' for file in Path(default_download_dir).iterdir()):
+            #     time.sleep(1)
+                # if file.suffix == '.crdownload':
+# while any(file.suffix == '.crdownload' for file in Path(download_dir).iterdir()):
+#         time.sleep(1)
+#         if progress_bar:
+#             pbar.update(1
+
             driver.quit()
 
-            # CHECKING IF FILE WAS CORRECTLY DOWNLOADED:
-            default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-            print(default_download_dir)
-            dir_to_path = Path(default_download_dir)
-            dir_content = list(dir_to_path.iterdir())
-            
-            # Tqdm3-3 (Move downloaded file):
-            if progress_bar:
-                pbar3 = tqdm(desc="Moving downloaded files", total=9)
-                pbar3.update(1)
+            moving_files_from_virtual_dir(download_dir, default_download_dir)
 
-            for file in dir_content:
-                pbar3.update(1)
-                if file.is_file():
-                    pbar3.update(1)
-                    path_to_table = str(file)
-                    pbar3.update(1)
-
-                    shutil.move(path_to_table, download_dir)
-                    pbar3.update(1)
-
-                    if progress_bar:
-                        pbar3.update(1)
-
-                else:
-                    raise Exception("Something went wrong... check the file itself")
-                
-
-            if progress_bar:
-                pbar3.close()
+            # Unzip files:
+            unzip_files.unzipfile(download_dir)
 
         else:
             print("No nfe found for {nfe}!")
