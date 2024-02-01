@@ -29,7 +29,8 @@ from robot_sharepoint.modules.download_directories_management import empty_downl
 
 def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: str,
                           site_url: str, download_dir: str, cnpj: str, nfe: str, progress_bar: bool = True):
-    print("CNPJ:", cnpj)
+    # print("CNPJ:", cnpj)
+    print("sharepoint_robot:", __name__)
 
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
 
@@ -101,7 +102,7 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
 
     try:
         client_folder = driver.find_element(By.XPATH, f"//*[starts-with(@title, '{cnpj}')]")
-        print(client_folder)
+        # print(client_folder)
 
     except:
         print("No client found for {}!".format(cnpj))
@@ -124,30 +125,34 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
             pbar.update(1)
 
             time.sleep(1)
+
             # Select all items to download:
-            
-            header_row = driver.find_element(By.XPATH, f"//*[starts-with(@aria-label, 'Cabeçalhos de coluna')]")
 
-            # # Create an instance of ActionChains and perform the hover action
-            actions = ActionChains(driver)
-            actions.move_to_element(header_row).perform()
-            pbar.update(1)
-            # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
-            # download.click()
+            files_to_download_amount = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[class='ms-List']")))
+            files_to_download_list = files_to_download_amount.find_elements(By.CSS_SELECTOR, "div[class='ms-List-cell']")
 
-            # ISSUE: Produces a zip file.
-            # select_all_files = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[aria-label='Alternar seleção para todos os itens']")))
-            select_all_files = driver.find_elements(By.XPATH, "//div[@role='presentation']")
             pbar.update(1)
-            for row in tqdm(select_all_files, "Selecting files..."):
-                row.click()
+            for file in tqdm(files_to_download_list, "Selecting files to download..."):
+
+                # Create an instance of ActionChains and perform the hover action
+                actions = ActionChains(driver)
+                actions.move_to_element(file).perform()
+
+                selectable_icon = file.find_element(By.CSS_SELECTOR, "div[role='gridcell']")
+                selectable_icon.click()
+                # time.sleep(1)
+                download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+                download_button.click()
+
+                # Unclick the element!
+                selectable_icon.click()
+                # ipdb.set_trace()
+
                 time.sleep(1)
-            pbar.update(1)
-            ipdb.set_trace()
             
-            download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
-            download_button.click()
-            pbar.update(1)
+            # download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+            # download_button.click()
+            # pbar.update(1)
 
             time.sleep(1)
             pbar.update(1)
@@ -156,7 +161,6 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
             default_download_dir_list = list(Path(default_download_dir).iterdir())
 
             while len(default_download_dir_list) == 0:
-                # ipdb.set_trace()
                 time.sleep(1)
                 if progress_bar:
                     pbar.update(1)
@@ -181,24 +185,11 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
 
             moving_files_from_virtual_dir(download_dir, default_download_dir)
 
-            # Unzip files:
-            unzip_files.unzipfile(download_dir)
+            # # Unzip files:
+            # unzip_files.unzipfile(download_dir)
 
         else:
             print("No nfe found for {nfe}!")
 
     else:
         print("No client found for {cnpj}!")
-
-    # ipdb.set_trace()
-
-    # Linux:
-    # # Create an instance of ActionChains and perform the hover action
-    # actions = ActionChains(driver)
-    # actions.move_to_element(item).perform()
-    # pbar2.update(1)
-    # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
-    # download.click()
-
-    # driver.close()
-    # display.stop()
