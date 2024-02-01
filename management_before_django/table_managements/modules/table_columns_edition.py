@@ -10,8 +10,10 @@ import ipdb
 
 
 def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
-    # print(path)
+
     """Receives the tables' path, filters it as necessary and inserts it to Pandas dataframe"""
+
+    # Checking path content:
     tables_path_content = list(path.iterdir())  
     tables = list()
     for elem in tables_path_content:
@@ -23,6 +25,7 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
     elif len(tables) > 1:
         raise TooManyFilesError
     
+    # Working with it:
     for file in tables_path_content:
         if file.is_file():
             path_to_table = str(file)
@@ -56,14 +59,11 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
                 # Editing NFE column to hide first character:
                 df['Numero'] = df['Numero'].apply(lambda x : x[1:])
 
-                # ipdb.set_trace()
                 # Editing date column to show only date in brazilian format:
                 df['Dt Vencto'] = pd.to_datetime(df['Dt Vencto'], errors='coerce')
                 df['Dt Vencto'] = df['Dt Vencto'].dt.tz_localize('UTC').dt.tz_convert('America/Sao_Paulo')
                 df['Dt Vencto'] = df['Dt Vencto'].dt.strftime('%d/%m/%Y')
-                # df.loc['Dt Vencto'] = df.loc['Dt Vencto'].apply(lambda x : x[9:]).tz_convert('America/Sao_Paulo')
 
-                print(df)
                 return df
 
             else:
