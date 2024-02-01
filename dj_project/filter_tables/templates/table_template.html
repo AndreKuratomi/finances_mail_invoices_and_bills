@@ -17,12 +17,31 @@
         <!-- <link rel="stylesheet" href="./styles.css"/> -->
     </head>
     <body>
-        <p>Ola, {{receiver_name}}</p>
-        <p>Segue a planilha pedida abaixo!</p>
+        <p>Prezados,</p>
         <br>
-        {{table_data | safe}}
+        <p>Segue faturamento {{tipo_de_servico}} {{competencia/ano}} ({{nome_do_cliente}})</p>
         <br>
-        <p>Atenciosamente,</p>
-        <h3>Novelis</h3>
+
+        <p>Relatório e NF: --{{nfe}}</p>
+        <br>
+        <!-- Negrito e vermelho! -->
+        <p>Vencimento:	{{vencimento}}</p>
+        <br>
+        <!-- Negrito e vermelho! -->
+        <p>Valor líquido a pagar: R$ {{valor_liquido}}</p>
+
+        <!-- Pagamento boletos -->
+        <p>O pagamento deve ser efetuado através do boleto bancário anexo a nota fiscal.</p>
+
+        <!-- Pagamento depósito -->
+        <!-- negrito e grifado amarelo! -->
+        <p>Os dados bancários para pagamento são:</p>
+        <br>
+        <p>BANCO BRADESCO (237)</p>
+        <p>AGÊNCIA: 1382</p>
+        <p>C/C: 108901-3</p>
+        <p>CNPJ: 06.210.366/00001-71</p>
+        <p>J&C GESTÃO DE RISCOS EIRELI</p>
+
     </body>
 </html>
