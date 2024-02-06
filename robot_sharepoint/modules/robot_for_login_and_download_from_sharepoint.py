@@ -29,6 +29,7 @@ from robot_sharepoint.modules.download_directories_management import empty_downl
 
 def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: str,
                           site_url: str, download_dir: str, cnpj: str, nfe: str, progress_bar: bool = True):
+    
     # print("CNPJ:", cnpj)
     print("sharepoint_robot:", __name__)
 

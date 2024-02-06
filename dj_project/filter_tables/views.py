@@ -62,13 +62,13 @@ download_directory = os.getenv("DOWNLOAD_DIRECTORY")
 
 host_email = os.getenv("EMAIL_HOST_USER")
 
-
 # Table to work with:
-
-
 table_data = TableName.objects.all()
+
 # ipdb.set_trace()
 print("Views:", __name__)
+
+
 class EmailAttachByTable(APIView):
     def post(self):
         try:
@@ -104,7 +104,6 @@ class EmailAttachByTable(APIView):
                     # else:
                     #     print(f"Error! Status code {response.status_code}")
                     # counter += 1
-
 
                     # print("Email successfully sent! Check inbox.")
 
