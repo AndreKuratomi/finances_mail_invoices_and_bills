@@ -60,19 +60,21 @@ sharepoint_url = os.getenv("SHAREPOINT_URL")
 # Download directory:
 download_directory = os.getenv("DOWNLOAD_DIRECTORY")
 
+host_email = os.getenv("EMAIL_HOST_USER")
 
 # Table to work with:
-
-
 table_data = TableName.objects.all()
+
 # ipdb.set_trace()
+print("Views:", __name__)
+
 
 class EmailAttachByTable(APIView):
     def post(self):
         try:
             counter = 0
-            for row in tqdm(table_data, "Each line, each search and email:"):
-                print(row)
+            for row in tqdm(table_data, "Each line, each search and email"):
+                # print(row)
                 if counter == 0:
                     counter += 1
                     continue
@@ -81,18 +83,20 @@ class EmailAttachByTable(APIView):
                     nfe = row.numero
                     razao_social = row.nome_do_cliente
                     valor_liquido = row.valor_liquido
+                    vencimento = row.dt_vencto
 
-                    row_data = {"cnpj": cnpj, "nfe": nfe, "razao_social": razao_social, "valor_liquido": valor_liquido}
+                    row_data = {"cnpj": cnpj, "nfe": nfe, "razao_social": razao_social, "valor_liquido": valor_liquido, "vencimento": vencimento}
 
                     # TAKING INPUT IDS WITH SELENIUM ROBOT:
                     input_ids = recursive_robot(username, sharepoint_url)
                     print(input_ids)
                     
-                    # # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
+                    # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
                     robot_for_sharepoint(username, password, input_ids["user_input_id"], input_ids["password_input_id"], sharepoint_url, download_directory, "02390435000115", "17779")
                     # robot_for_sharepoint(username, password, input_ids["user_input_id"], input_ids["password_input_id"], sharepoint_url, download_directory, row_data["cnpj"], row_data["nfe"])
-                    ipdb.set_trace()
 
+                    print("here i am!")
+                    SendEmailView(APIView)
                     # response = requests.post("<my_powerautomate_http_endpoint>", json=row_data)
 
                     # if response.status_code == 200:
@@ -100,7 +104,6 @@ class EmailAttachByTable(APIView):
                     # else:
                     #     print(f"Error! Status code {response.status_code}")
                     # counter += 1
-
 
                     # print("Email successfully sent! Check inbox.")
 
@@ -113,80 +116,40 @@ class SendEmailView(APIView):
     def post(self):
         try: 
             # USERNAME AND EMAIL TO WORK WITH:
-            data={'receiver_name': "Andre", 'receiver_email': "andrekuratomi@gmail.com"}
+            data={'competencia/ano': "", 'nfe': "", 'nome_do_cliente': "", 'receiver_email': "andrekuratomi@gmail.com", 'tipo_de_servico': ""}
             
             # serializer = EmailSerializer(data)
             # # print(serializer)
             # if not serializer.is_valid():
             #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # Creating table from model:
-            table_html = "<table>"
-            table_html += "<tr>"
-            
-            # <TH>s:
-            for field1 in tqdm(TableName._meta.fields, "Filtering table from dataframe..."):
-                # print(field1.verbose_name)
-
-                if field1.verbose_name == 'index':
-                    # print(field1)
-                    continue
-                elif field1.verbose_name == 'id':
-                    # print(field1.verbose_name)
-                    continue
-                else:
-                    # field_value = getattr
-                    table_html += "<th>{}</th>".format(str(field1.verbose_name).upper())
-            table_html += "</tr>"
-            
-            # <TD>s:
-            for instance in tqdm(table_data, "Creating table for email body..."):
-                table_html += "<tr>"
-                counter = 0
-                for field2 in instance._meta.fields:
-                    # Excluding column 'index' content:
-                    if counter == 0 or counter % 16 == 0:
-                        counter += 1
-                        continue
-                    # Excluding column 'ID' content:
-                    elif counter == 1 or counter % 17 == 0:
-                        counter += 1
-                        continue
-                    # Ordering datetime from 'year-month-day' to 'day-month-year':
-                    elif counter == 10 or counter == 11 or counter % 26 == 0 or counter % 27 == 0:
-                        field_value = getattr(instance, field2.name)
-                        if field_value == None:
-                            # print(field_value)
-                            field_value = '-'
-                            table_html += "<td style='text-align: center;'>{}</td>".format(field_value)
-                            counter += 1
-                        else:
-                            field_value = getattr(instance, field2.name).strftime('%d-%m-%Y %H:%M:%S')
-                            table_html += "<td style='text-align: center;'>{}</td>".format(field_value)
-                            counter += 1
-                    else:
-                        table_html += "<td style='text-align: center;'>{}</td>".format(getattr(instance, field2.name))
-                        counter += 1
-                table_html += "</tr>"
-            
-            table_html += "</table>"
             # Insert table to mail body:
-            table_to_mail = render_to_string('table_template.html', {'receiver_name': data['receiver_name'], 'table_data': table_html}
+            mail_content = render_to_string('table_template.html', {'competencia/ano': data['competencia/ano'], 'nfe': data['nfe'], 'nome_do_cliente': data['nome_do_cliente'], 'receiver_email': data['receiver_email'], 'tipo_de_servico': data['tipo_de_servico']}
                                             #  , using='ISO-8859-1'
                                             )
-            # print(table_to_mail)
+            # print(mail_content)
             time.sleep(2)  # wait for file to be created
 
-            send_mail(
-                "Envio tabela  {a1} - Novelis".format(a1=data['receiver_name']),
+            email = EmailMessage(
+                "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}".format(a1=data['tipo_de_servico'], a2=data['competencia/ano'], a3=data['nome_do_cliente'], a4=data['nfe']),
+                # "Envio tabela  {a1} - Novelis".format(a1=data['receiver_name']),
                 "",
                 "{}".format(host_email), 
                 [data['receiver_email']], 
                 fail_silently=False,
-                html_message=table_to_mail
+                html_message=mail_content
             )
             
-            # ipdb.set_trace()
+            # Attach files to email:
+            path = Path("../../robot_sharepoint/attachments/")
+            tables_path_content = list(path.iterdir())
+
+            for file in tables_path_content:
+                print(file)
+                str(file)
+                email.attach_file(file)
+
+            email.send()
 
             print("Email successfully sent! Check inbox.")
 
