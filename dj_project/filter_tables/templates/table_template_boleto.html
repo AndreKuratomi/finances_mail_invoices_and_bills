@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            table, td, th {
+                border-collapse: collapse;
+                border: 1px solid black;
+                padding: 8px;
+            }
+            
+            th {
+                background-color: blue;
+                color: white;
+            }
+        </style>
+        <!-- <link rel="stylesheet" href="./styles.css"/> -->
+    </head>
+    <body>
+        <p>Prezados,</p>
+        <br>
+        <p>Segue faturamento {{tipo_de_servico}} {{competencia/ano}} ({{nome_do_cliente}})</p>
+        <br>
+
+        <p>Relatório e NF: --{{nfe}}</p>
+        <br>
+        <!-- Negrito e vermelho! -->
+        <p>Vencimento:	{{vencimento}}</p>
+        <br>
+        <!-- Negrito e vermelho! -->
+        <p>Valor líquido a pagar: R$ {{valor_liquido}}</p>
+
+        <!-- Pagamento boletos -->
+        <p>O pagamento deve ser efetuado através do boleto bancário anexo a nota fiscal.</p>
+
+    </body>
+</html>
