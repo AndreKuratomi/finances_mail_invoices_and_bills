@@ -102,10 +102,23 @@ class EmailAttachByTable(APIView):
                     # if not serializer.is_valid():
                     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
                     
-                    # Attach files to email:
+                    # Extract info from PDF:
                     path = Path("./robot_sharepoint/attachments/")
                     print(path)
                     tables_path_content = list(path.iterdir())
+
+                    for file in tables_path_content:
+                        print(file)
+                        stringfied = str(file)
+                        if stringfied.startswith("NFE"):
+                            stringfied = "NFE 17779 FIXO - ECOPORTO.pdf" 
+                            specific_char_1 = "-"
+                            specific_char_2 = "."
+                            index_hifen = stringfied.rfind(specific_char_1)
+                            index_dot = stringfied.rfind(specific_char_2)
+
+                            tipo_de_servico = stringfied[10:index_hifen-1]
+                            nome_do_cliente = stringfied[index_hifen+2:index_dot]
 
                     table_template = ""
                     if tables_path_content.count(3):
@@ -120,14 +133,15 @@ class EmailAttachByTable(APIView):
                         table_template, {
                             # 'competencia_por_ano': row_data['competencia_por_ano'], 
                             'nfe': row_data['nfe'], 
-                            # 'nome_do_cliente': row_data['nome_do_cliente'], 
+                            'nome_do_cliente': nome_do_cliente, 
                             'receiver_email': row_data['receiver_email'], 
-                            # 'tipo_de_servico': row_data['tipo_de_servico']
+                            'tipo_de_servico': tipo_de_servico
                         }
                         #  , using='ISO-8859-1'
                     )
                     # print(mail_content)
                     time.sleep(2)  # wait for file to be created
+
                     ipdb.set_trace()
                     email = EmailMessage(
                         "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
@@ -145,6 +159,7 @@ class EmailAttachByTable(APIView):
                         html_message=mail_content
                     )
 
+                    # Attach files to email:
                     for file in tables_path_content:
                         print(file)
                         str(file)
