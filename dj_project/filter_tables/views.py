@@ -1,4 +1,5 @@
 import os
+import pdfplumber
 import requests
 import time
 
@@ -9,6 +10,7 @@ from django.template.loader import render_to_string
 from dotenv import load_dotenv
 
 from pathlib import Path
+from pypdf import PdfReader
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -91,50 +93,91 @@ class EmailAttachByTable(APIView):
                         "razao_social": razao_social, 
                         "valor_liquido": valor_liquido, 
                         "vencimento": vencimento, 
-                        "receiver_email": "andrekuratomi@gmail.com"
+                        "contact": "andrekuratomi@gmail.com"
                     }
 
-                    # USERNAME AND EMAIL TO WORK WITH:
-                    # data={'competencia_por_ano': "", 'nfe': "", 'nome_do_cliente': "", , 'tipo_de_servico': ""}
+                    # # TAKING INPUT IDS WITH SELENIUM ROBOT:
+                    # input_ids = recursive_robot(username, sharepoint_url)
+                    # print(input_ids)
                     
-                    # serializer = EmailSerializer(data)
-                    # # print(serializer)
-                    # if not serializer.is_valid():
-                    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    # # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
+                    # robot_for_sharepoint(
+                    #     username,
+                    #     password,
+                    #     input_ids["user_input_id"],
+                    #     input_ids["password_input_id"],
+                    #     sharepoint_url,
+                    #     download_directory,
+                    #     # cnpj,
+                    #     # nfe,
+                    #     "02390435000115",
+                    #     "17779"
+                    # )
                     
-                    # Extract info from PDF:
+                    # Extract info from attachments:
                     path = Path("./robot_sharepoint/attachments/")
-                    print(path)
+                    # print(path)
                     tables_path_content = list(path.iterdir())
 
+                    competencia_por_ano = ""
+                    nome_do_cliente = ""
+                    tipo_de_servico = ""
+                    table_template = "table_template_deposito.html"
+
                     for file in tables_path_content:
-                        print(file)
-                        stringfied = str(file)
-                        if stringfied.startswith("NFE"):
-                            stringfied = "NFE 17779 FIXO - ECOPORTO.pdf" 
+                        # print(file)
+                        string_file = str(file)
+                        string_file_filtered = string_file[29:]
+                        # print(string_file)
+                        if string_file_filtered.startswith("NFE"):
                             specific_char_1 = "-"
                             specific_char_2 = "."
-                            index_hifen = stringfied.rfind(specific_char_1)
-                            index_dot = stringfied.rfind(specific_char_2)
+                            index_hifen = string_file_filtered.rfind(specific_char_1)
+                            index_dot = string_file_filtered.rfind(specific_char_2)
 
-                            tipo_de_servico = stringfied[10:index_hifen-1]
-                            nome_do_cliente = stringfied[index_hifen+2:index_dot]
+                            nome_do_cliente = string_file_filtered[index_hifen+2:index_dot]
+                            tipo_de_servico = string_file_filtered[10:index_hifen-1]
+                            
+                            # def convert_to_pure_pdf(input_path, output_path):
+                            #     with pdfplumber.open(input_path) as pdf:
+                            #         pages = pdf.pages
+                            #         # Create a new PDFPlumber object for writing
+                            #         writer = pdfplumber.PDFWriter(output_path)
 
-                    table_template = ""
-                    if tables_path_content.count(3):
-                        table_template = "table_template_boleto.html"
-                    else:
-                        table_template = "table_template_deposito.html"
+                            #         for page in pages:
+                            #             # Add each page to the writer object
+                            #             writer.add_page(page)
+                                    
+                            #         # Save the output PDF file
+                            #         writer.write()
+                            # convert_to_pure_pdf(file, file)
+                            
+                            # Extract info from PDF:
+                            pdf_content = PdfReader(file)
+                            page = pdf_content.pages[0]
+                            text = page.extract_text()
+                            ipdb.set_trace()
+                            # .pages[0]
+                            print(text)
 
-                    print(table_template)
+                        elif string_file.startswith("BOLETO"):
+                            table_template = "table_template_boleto.html"
+
+                    print("tipo_de_servico:", tipo_de_servico)
+                    print("nome_do_cliente:", nome_do_cliente)
+
+                    
+                    # código para extrair a competência por ano do pdf
+
+                    print("table_template:", table_template)
 
                     # Insert table to mail body:
                     mail_content = render_to_string(
                         table_template, {
-                            # 'competencia_por_ano': row_data['competencia_por_ano'], 
+                            'competencia_por_ano': competencia_por_ano, 
                             'nfe': row_data['nfe'], 
                             'nome_do_cliente': nome_do_cliente, 
-                            'receiver_email': row_data['receiver_email'], 
+                            'contact': row_data['contact'], 
                             'tipo_de_servico': tipo_de_servico
                         }
                         #  , using='ISO-8859-1'
@@ -142,19 +185,19 @@ class EmailAttachByTable(APIView):
                     # print(mail_content)
                     time.sleep(2)  # wait for file to be created
 
-                    ipdb.set_trace()
+                    # ipdb.set_trace()
                     email = EmailMessage(
                         "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
                         .format(
-                            # a1=row_data['tipo_de_servico'], 
-                            # a2=row_data['competencia_por_ano'], 
-                            # a3=row_data['nome_do_cliente'], 
+                            a1=row_data['tipo_de_servico'], 
+                            a2=row_data['competencia_por_ano'], 
+                            a3=row_data['nome_do_cliente'], 
                             a4=row_data['nfe']
                         ),
                         # "Envio tabela  {a1} - Novelis".format(a1=row_data['receiver_name']),
                         "",
                         "{}".format(host_email), 
-                        [row_data['receiver_email']], 
+                        [row_data['contact']], 
                         fail_silently=False,
                         html_message=mail_content
                     )
