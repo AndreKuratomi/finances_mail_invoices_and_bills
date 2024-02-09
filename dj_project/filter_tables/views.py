@@ -1,4 +1,5 @@
 import os
+import fitz
 import pdfplumber
 import requests
 import time
@@ -83,144 +84,202 @@ class EmailAttachByTable(APIView):
                 else:
                     cnpj = row.cnpj
                     nfe = row.numero
-                    razao_social = row.nome_do_cliente
+                    nome_do_cliente = row.nome_do_cliente
                     valor_liquido = row.valor_liquido
                     vencimento = row.dt_vencto
 
                     row_data = {
                         "cnpj": cnpj, 
                         "nfe": nfe, 
-                        "razao_social": razao_social, 
+                        "nome_do_cliente": nome_do_cliente, 
                         "valor_liquido": valor_liquido, 
                         "vencimento": vencimento, 
+                        # "contact": contato,
+                        # "competencia_por_ano": "competencia_por_ano",
                         "contact": "andrekuratomi@gmail.com"
                     }
+                    # print(row_data["contact"])
 
-                    # # TAKING INPUT IDS WITH SELENIUM ROBOT:
-                    # input_ids = recursive_robot(username, sharepoint_url)
-                    # print(input_ids)
+                    # TAKING INPUT IDS WITH SELENIUM ROBOT:
+                    input_ids = recursive_robot(username, sharepoint_url)
+                    print(input_ids)
                     
-                    # # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
-                    # robot_for_sharepoint(
-                    #     username,
-                    #     password,
-                    #     input_ids["user_input_id"],
-                    #     input_ids["password_input_id"],
-                    #     sharepoint_url,
-                    #     download_directory,
-                    #     # cnpj,
-                    #     # nfe,
-                    #     "02390435000115",
-                    #     "17779"
-                    # )
-                    
+                    # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
+                    robot_for_sharepoint(
+                        username,
+                        password,
+                        input_ids["user_input_id"],
+                        input_ids["password_input_id"],
+                        sharepoint_url,
+                        download_directory,
+                        cnpj,
+                        nfe,
+                        # "02390435000115",
+                        # "17779"
+                    )
+
+                    full_path = "/Users/andre.kuratomi/Desktop/projetos/finances_tables_to_db_and_mail/robot_sharepoint/attachments/"
                     # Extract info from attachments:
-                    path = Path("./robot_sharepoint/attachments/")
+                    path = Path(full_path)
                     # print(path)
                     tables_path_content = list(path.iterdir())
 
-                    competencia_por_ano = ""
+                    competencia_por_ano = "02/01/2024"
+                    # competencia_por_ano = ""
                     nome_do_cliente = ""
                     tipo_de_servico = ""
                     table_template = "table_template_deposito.html"
 
-                    for file in tables_path_content:
-                        # print(file)
-                        string_file = str(file)
-                        string_file_filtered = string_file[29:]
-                        # print(string_file)
-                        if string_file_filtered.startswith("NFE"):
-                            specific_char_1 = "-"
-                            specific_char_2 = "."
-                            index_hifen = string_file_filtered.rfind(specific_char_1)
-                            index_dot = string_file_filtered.rfind(specific_char_2)
-
-                            nome_do_cliente = string_file_filtered[index_hifen+2:index_dot]
-                            tipo_de_servico = string_file_filtered[10:index_hifen-1]
-                            
-                            # def convert_to_pure_pdf(input_path, output_path):
-                            #     with pdfplumber.open(input_path) as pdf:
-                            #         pages = pdf.pages
-                            #         # Create a new PDFPlumber object for writing
-                            #         writer = pdfplumber.PDFWriter(output_path)
-
-                            #         for page in pages:
-                            #             # Add each page to the writer object
-                            #             writer.add_page(page)
-                                    
-                            #         # Save the output PDF file
-                            #         writer.write()
-                            # convert_to_pure_pdf(file, file)
-                            
-                            # Extract info from PDF:
-                            pdf_content = PdfReader(file)
-                            page = pdf_content.pages[0]
-                            text = page.extract_text()
-                            ipdb.set_trace()
-                            # .pages[0]
-                            print(text)
-
-                        elif string_file.startswith("BOLETO"):
-                            table_template = "table_template_boleto.html"
-
-                    print("tipo_de_servico:", tipo_de_servico)
-                    print("nome_do_cliente:", nome_do_cliente)
-
                     
-                    # código para extrair a competência por ano do pdf
+                    # NOT FOUND CNPJ AND/OR NFE:
+                    if len(tables_path_content) == 0:
+                        table_template = "table_template_nao_encontrado.html"
 
-                    print("table_template:", table_template)
 
-                    # Insert table to mail body:
-                    mail_content = render_to_string(
-                        table_template, {
-                            'competencia_por_ano': competencia_por_ano, 
-                            'nfe': row_data['nfe'], 
-                            'nome_do_cliente': nome_do_cliente, 
-                            'contact': row_data['contact'], 
-                            'tipo_de_servico': tipo_de_servico
-                        }
-                        #  , using='ISO-8859-1'
-                    )
-                    # print(mail_content)
-                    time.sleep(2)  # wait for file to be created
+                        # Insert table to mail body:
+                        mail_content = render_to_string(
+                            table_template, {
+                                'cnpj': row_data['cnpj'], 
+                                'contact': row_data['contact'], 
+                                'nfe': row_data['nfe'], 
+                                'nome_do_cliente': row_data['nome_do_cliente'], 
+                            }
+                        )
 
-                    # ipdb.set_trace()
-                    email = EmailMessage(
-                        "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
-                        .format(
-                            a1=row_data['tipo_de_servico'], 
-                            a2=row_data['competencia_por_ano'], 
-                            a3=row_data['nome_do_cliente'], 
-                            a4=row_data['nfe']
-                        ),
-                        # "Envio tabela  {a1} - Novelis".format(a1=row_data['receiver_name']),
-                        "",
-                        "{}".format(host_email), 
-                        [row_data['contact']], 
-                        fail_silently=False,
-                        html_message=mail_content
-                    )
+                        time.sleep(2)  # wait for file to be created
 
-                    # Attach files to email:
-                    for file in tables_path_content:
-                        print(file)
-                        str(file)
-                        email.attach_file(file)
+                        # ipdb.set_trace()
+                        email = EmailMessage(
+                            "AVISO: Nota Fiscal Eletrônica não encontrada para {a1}  {a2}  NF -  -  - {a3}"
+                            .format(
+                                a1=nome_do_cliente, 
+                                a2=row_data['cnpj'], 
+                                a3=row_data['nfe']
+                            ),
+                            mail_content,
+                            # "",
+                            "{}".format(host_email), 
+                            [row_data['contact']],
+                        )
+                        
+                        # Reading HTML tags:
+                        email.content_subtype = 'html'
 
-                    email.send()
-                    print("Email successfully sent! Check inbox.")
+                        email.send()
+                        print("Email successfully sent! Check inbox.")
 
-                    # return Response({"message": "Email successfully sent"}, status=status.HTTP_200_OK)
+                        print(f"NOT FOUND ERROR: No data found for CNPJ {cnpj} or NFE {nfe}! Email sent.")
+
+                    else:
+                        # ipdb.set_trace()
+                        for file in tables_path_content:
+                            print(file)
+                            if file.is_file():
+                                string_file = str(file)
+                                # string_file_filtered = string_file[29:]
+                                prefix = full_path
+                                filtered = string_file[len(prefix):]
+                                print(filtered)
+                                # print(string_file)
+                                if filtered.startswith("NFE"):
+
+                                    specific_char_1 = "-"
+                                    specific_char_2 = "."
+                                    index_hifen = filtered.rfind(specific_char_1)
+                                    index_dot = filtered.rfind(specific_char_2)
+
+                                    nome_do_cliente = filtered[index_hifen+2:index_dot]
+                                    tipo_de_servico = filtered[10:index_hifen-1]
+                                    
+                                    # def convert_to_pure_pdf(input_path, output_path):
+                                    #     with pdfplumber.open(input_path) as pdf:
+                                    #         pages = pdf.pages
+                                    #         # Create a new PDFPlumber object for writing
+                                    #         writer = pdfplumber.PDFWriter(output_path)
+
+                                    #         for page in pages:
+                                    #             # Add each page to the writer object
+                                    #             writer.add_page(page)
+                                            
+                                    #         # Save the output PDF file
+                                    #         writer.write()
+                                    # convert_to_pure_pdf(file, file)
+                                    
+                                    # Extract info from PDF:
+                                    # with fitz.open(file) as doc:
+                                    #     text = ""
+                                    #     for page in doc:
+                                    #         text += page.
+
+                                    # print("text:", text)
+                                    # page = pdf_content.pages[0]
+                                    # text = page.extract_text()
+                                    # .pages[0]
+                                    # print(texto)
+
+                                elif filtered.startswith("BOLETO"):
+                                    table_template = "table_template_boleto.html"
+                            
+                            else:
+                                print("Error! Verify the file.")
+
+                        print("competencia_por_ano:", competencia_por_ano)
+                        print("nome_do_cliente:", nome_do_cliente)
+                        print("table_template:", table_template)
+                        print("tipo_de_servico:", tipo_de_servico)
+
+                        # Insert table to mail body:
+                        mail_content = render_to_string(
+                            table_template, {
+                                'competencia_por_ano': competencia_por_ano, 
+                                'contact': row_data['contact'], 
+                                'nfe': row_data['nfe'], 
+                                'nome_do_cliente': row_data['nome_do_cliente'],
+                                'tipo_de_servico': tipo_de_servico,
+                                'valor_liquido': row_data['valor_liquido'],
+                                'vencimento': row_data['vencimento']
+                            }
+                            #  , using='ISO-8859-1'
+                        )
+                        # print(mail_content)
+                        time.sleep(2)  # wait for file to be created
+
+                        # ipdb.set_trace()
+                        email = EmailMessage(
+                            "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
+                            .format(
+                                a1=tipo_de_servico, 
+                                a2=competencia_por_ano, 
+                                a3=row_data['nome_do_cliente'], 
+                                a4=row_data['nfe']
+                            ),
+                            # "Envio tabela  {a1} - Novelis".format(a1=row_data['receiver_name']),
+                            mail_content,
+                            # "",
+                            "{}".format(host_email), 
+                            [row_data['contact']],
+                            # attachments=tables_path_content
+                            # [row_data['contact']], 
+                            # fail_silently=False,
+                        )
+                        
+                        # Reading HTML tags:
+                        email.content_subtype = 'html'
+
+                        # Attach files to email:
+                        for file in tables_path_content:
+                            print(file)
+                            str(file)
+                            email.attach_file(file)
+
+                        email.send()
+                        print("Email successfully sent! Check inbox.")
+
+                        # return Response({"message": "Email successfully sent"}, status=status.HTTP_200_OK)
+
 
         except Exception as e:
-            print(f"error:Something went wrong! {e} Contact the dev!")
+            print(f"error:Something went wrong: {e} ! Contact the dev!")
             # return Exception({"error": "Something went wrong! Contact the dev!"})
 
-
-# class SendEmailView(APIView):
-#     def post(self, row_data):
-#         print("I")
-#         ipdb.set_trace()
-#         print("AM")
         
