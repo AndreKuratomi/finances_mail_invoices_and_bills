@@ -63,7 +63,7 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
                 df['Dt Vencto'] = pd.to_datetime(df['Dt Vencto'], errors='coerce')
                 df['Dt Vencto'] = df['Dt Vencto'].dt.tz_localize('UTC').dt.tz_convert('America/Sao_Paulo')
                 df['Dt Vencto'] = df['Dt Vencto'].dt.strftime('%d/%m/%Y')
-
+                print(df)
                 return df
 
             else:

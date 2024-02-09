@@ -1,4 +1,5 @@
 import os
+import fitz
 import pdfplumber
 import requests
 import time
@@ -93,8 +94,11 @@ class EmailAttachByTable(APIView):
                         "razao_social": razao_social, 
                         "valor_liquido": valor_liquido, 
                         "vencimento": vencimento, 
+                        # "contact": contato,
+                        # "competencia_por_ano": "competencia_por_ano",
                         "contact": "andrekuratomi@gmail.com"
                     }
+                    # print(row_data["contact"])
 
                     # # TAKING INPUT IDS WITH SELENIUM ROBOT:
                     # input_ids = recursive_robot(username, sharepoint_url)
@@ -113,72 +117,85 @@ class EmailAttachByTable(APIView):
                     #     "02390435000115",
                     #     "17779"
                     # )
-                    
+                    full_path = "/Users/andre.kuratomi/Desktop/projetos/finances_tables_to_db_and_mail/robot_sharepoint/attachments/"
                     # Extract info from attachments:
-                    path = Path("./robot_sharepoint/attachments/")
+                    path = Path(full_path)
                     # print(path)
                     tables_path_content = list(path.iterdir())
 
-                    competencia_por_ano = ""
+                    competencia_por_ano = "02/01/2024"
+                    # competencia_por_ano = ""
                     nome_do_cliente = ""
                     tipo_de_servico = ""
                     table_template = "table_template_deposito.html"
 
+                    # ipdb.set_trace()
                     for file in tables_path_content:
-                        # print(file)
-                        string_file = str(file)
-                        string_file_filtered = string_file[29:]
-                        # print(string_file)
-                        if string_file_filtered.startswith("NFE"):
-                            specific_char_1 = "-"
-                            specific_char_2 = "."
-                            index_hifen = string_file_filtered.rfind(specific_char_1)
-                            index_dot = string_file_filtered.rfind(specific_char_2)
+                        print(file)
+                        if file.is_file():
+                            string_file = str(file)
+                            # string_file_filtered = string_file[29:]
+                            prefix = full_path
+                            filtered = string_file[len(prefix):]
+                            print(filtered)
+                            # print(string_file)
+                            if filtered.startswith("NFE"):
 
-                            nome_do_cliente = string_file_filtered[index_hifen+2:index_dot]
-                            tipo_de_servico = string_file_filtered[10:index_hifen-1]
-                            
-                            # def convert_to_pure_pdf(input_path, output_path):
-                            #     with pdfplumber.open(input_path) as pdf:
-                            #         pages = pdf.pages
-                            #         # Create a new PDFPlumber object for writing
-                            #         writer = pdfplumber.PDFWriter(output_path)
+                                specific_char_1 = "-"
+                                specific_char_2 = "."
+                                index_hifen = filtered.rfind(specific_char_1)
+                                index_dot = filtered.rfind(specific_char_2)
 
-                            #         for page in pages:
-                            #             # Add each page to the writer object
-                            #             writer.add_page(page)
-                                    
-                            #         # Save the output PDF file
-                            #         writer.write()
-                            # convert_to_pure_pdf(file, file)
-                            
-                            # Extract info from PDF:
-                            pdf_content = PdfReader(file)
-                            page = pdf_content.pages[0]
-                            text = page.extract_text()
-                            ipdb.set_trace()
-                            # .pages[0]
-                            print(text)
+                                nome_do_cliente = filtered[index_hifen+2:index_dot]
+                                tipo_de_servico = filtered[10:index_hifen-1]
+                                
+                                # def convert_to_pure_pdf(input_path, output_path):
+                                #     with pdfplumber.open(input_path) as pdf:
+                                #         pages = pdf.pages
+                                #         # Create a new PDFPlumber object for writing
+                                #         writer = pdfplumber.PDFWriter(output_path)
 
-                        elif string_file.startswith("BOLETO"):
-                            table_template = "table_template_boleto.html"
+                                #         for page in pages:
+                                #             # Add each page to the writer object
+                                #             writer.add_page(page)
+                                        
+                                #         # Save the output PDF file
+                                #         writer.write()
+                                # convert_to_pure_pdf(file, file)
+                                
+                                # Extract info from PDF:
+                                # with fitz.open(file) as doc:
+                                #     text = ""
+                                #     for page in doc:
+                                #         text += page.
 
-                    print("tipo_de_servico:", tipo_de_servico)
+                                # print("text:", text)
+                                # page = pdf_content.pages[0]
+                                # text = page.extract_text()
+                                # .pages[0]
+                                # print(texto)
+
+                            elif filtered.startswith("BOLETO"):
+                                table_template = "table_template_boleto.html"
+                        
+                        else:
+                            print("Error! Verify the file.")
+
+                    print("competencia_por_ano:", competencia_por_ano)
                     print("nome_do_cliente:", nome_do_cliente)
-
-                    
-                    # código para extrair a competência por ano do pdf
-
                     print("table_template:", table_template)
+                    print("tipo_de_servico:", tipo_de_servico)
 
                     # Insert table to mail body:
                     mail_content = render_to_string(
                         table_template, {
                             'competencia_por_ano': competencia_por_ano, 
+                            'contact': row_data['contact'], 
                             'nfe': row_data['nfe'], 
                             'nome_do_cliente': nome_do_cliente, 
-                            'contact': row_data['contact'], 
-                            'tipo_de_servico': tipo_de_servico
+                            'tipo_de_servico': tipo_de_servico,
+                            'valor_liquido': row_data['valor_liquido'],
+                            'vencimento': row_data['vencimento']
                         }
                         #  , using='ISO-8859-1'
                     )
@@ -189,18 +206,24 @@ class EmailAttachByTable(APIView):
                     email = EmailMessage(
                         "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
                         .format(
-                            a1=row_data['tipo_de_servico'], 
-                            a2=row_data['competencia_por_ano'], 
-                            a3=row_data['nome_do_cliente'], 
+                            a1=tipo_de_servico, 
+                            a2=competencia_por_ano, 
+                            a3=nome_do_cliente, 
                             a4=row_data['nfe']
                         ),
                         # "Envio tabela  {a1} - Novelis".format(a1=row_data['receiver_name']),
-                        "",
+                        mail_content,
+                        # "",
                         "{}".format(host_email), 
-                        [row_data['contact']], 
-                        fail_silently=False,
-                        html_message=mail_content
+                        [row_data['contact']],
+                        # attachments=tables_path_content
+                        # [row_data['contact']], 
+                        # fail_silently=False,
+                        
                     )
+                    
+                    # Reading HTML tags:
+                    email.content_subtype = 'html'
 
                     # Attach files to email:
                     for file in tables_path_content:
@@ -212,6 +235,7 @@ class EmailAttachByTable(APIView):
                     print("Email successfully sent! Check inbox.")
 
                     # return Response({"message": "Email successfully sent"}, status=status.HTTP_200_OK)
+
 
         except Exception as e:
             print(f"error:Something went wrong! {e} Contact the dev!")
