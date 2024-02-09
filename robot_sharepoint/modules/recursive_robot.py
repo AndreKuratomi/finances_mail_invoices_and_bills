@@ -1,6 +1,9 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.edge.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -9,7 +12,7 @@ from tqdm import tqdm
 import ipdb
 
 
-def recursive_robot(username: str, outlook_url: str, progress_bar: bool = True):
+def recursive_robot(username: str, site_url: str, progress_bar: bool = True):
 
     # Dictionary to store input ids:
     dict = {"user_input_id": "", "password_input_id": ""}
@@ -21,54 +24,28 @@ def recursive_robot(username: str, outlook_url: str, progress_bar: bool = True):
         pbar.update(1)
 
     # Driver instance:
-    options = webdriver.EdgeOptions()
-    options.add_argument('headless')
+    options = Options() # Prevent Third-part cookies!
+    options.add_argument('--headless=new')
     # For Windows OS:
     options.add_argument('-inprivate')
 
     pbar.update(1)
 
-    # options.add_argument('headless')
     driver = webdriver.Edge(options=options)
     pbar.update(1)
 
-    # driver = webdriver.Edge(options=options)
-
     # Navigate to Sharepoint login page and maximize its window:
-    driver.get(outlook_url)
+    driver.get(site_url)
     driver.maximize_window()
     pbar.update(1)
 
-
-    # # CHECK IF IT IS LOGGED AND IF SO UNLOGS:
-    # if "https://jcgestaoderiscos.sharepoint.com/sites/testes.desenvolvimento/SitePages/Home.aspx" in driver.current_url:
-    #     print("oi")
-
-    #     pre_logout_link = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[id='O365_MainLink_Me']")))
-    #     pre_logout_link.click()
-    #     pbar.update(1)
-
-    #     logout_link = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "a[id='mectrl_body_signOut']")))
-    #     logout_link.click()
-    #     pbar.update(1)
-
-    #     driver.quit()
-    # ipdb.set_trace()
-
-
-    # # Driver instance:
-    # options = webdriver.EdgeOptions()
-    # # options.add_argument('headless')
-    # pbar.update(1)
-
-    # # options.add_argument('headless')
+    # Driver instance:
     driver = webdriver.Edge(options=options)
     # pbar.update(1)
-
-    # # driver = webdriver.Edge(options=options)
+    
 
     # Navigate to Sharepoint login page and maximize its window:
-    driver.get(outlook_url)
+    driver.get(site_url)
     driver.maximize_window()
     pbar.update(1)
 
