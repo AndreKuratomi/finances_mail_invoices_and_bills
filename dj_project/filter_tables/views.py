@@ -84,14 +84,14 @@ class EmailAttachByTable(APIView):
                 else:
                     cnpj = row.cnpj
                     nfe = row.numero
-                    razao_social = row.nome_do_cliente
+                    nome_do_cliente = row.nome_do_cliente
                     valor_liquido = row.valor_liquido
                     vencimento = row.dt_vencto
 
                     row_data = {
                         "cnpj": cnpj, 
                         "nfe": nfe, 
-                        "razao_social": razao_social, 
+                        "nome_do_cliente": nome_do_cliente, 
                         "valor_liquido": valor_liquido, 
                         "vencimento": vencimento, 
                         # "contact": contato,
@@ -130,8 +130,45 @@ class EmailAttachByTable(APIView):
                     tipo_de_servico = ""
                     table_template = "table_template_deposito.html"
 
+                    
+                    # NOT FOUND CNPJ AND/OR NFE:
                     if len(tables_path_content) == 0:
-                        print(f"NOT FOUND ERROR: No data found for CNPJ {cnpj} or NFE {nfe}!")
+                        table_template = "table_template_nao_encontrado.html"
+
+
+                        # Insert table to mail body:
+                        mail_content = render_to_string(
+                            table_template, {
+                                'cnpj': row_data['cnpj'], 
+                                'contact': row_data['contact'], 
+                                'nfe': row_data['nfe'], 
+                                'nome_do_cliente': row_data['nome_do_cliente'], 
+                            }
+                        )
+
+                        time.sleep(2)  # wait for file to be created
+
+                        # ipdb.set_trace()
+                        email = EmailMessage(
+                            "AVISO: Nota Fiscal Eletrônica não encontrada para {a1}  {a2}  NF -  -  - {a3}"
+                            .format(
+                                a1=nome_do_cliente, 
+                                a2=row_data['cnpj'], 
+                                a3=row_data['nfe']
+                            ),
+                            mail_content,
+                            # "",
+                            "{}".format(host_email), 
+                            [row_data['contact']],
+                        )
+                        
+                        # Reading HTML tags:
+                        email.content_subtype = 'html'
+
+                        email.send()
+                        print("Email successfully sent! Check inbox.")
+
+                        print(f"NOT FOUND ERROR: No data found for CNPJ {cnpj} or NFE {nfe}! Email sent.")
 
                     else:
                         # ipdb.set_trace()
@@ -197,7 +234,7 @@ class EmailAttachByTable(APIView):
                                 'competencia_por_ano': competencia_por_ano, 
                                 'contact': row_data['contact'], 
                                 'nfe': row_data['nfe'], 
-                                'nome_do_cliente': nome_do_cliente, 
+                                'nome_do_cliente': row_data['nome_do_cliente'],
                                 'tipo_de_servico': tipo_de_servico,
                                 'valor_liquido': row_data['valor_liquido'],
                                 'vencimento': row_data['vencimento']
@@ -213,7 +250,7 @@ class EmailAttachByTable(APIView):
                             .format(
                                 a1=tipo_de_servico, 
                                 a2=competencia_por_ano, 
-                                a3=nome_do_cliente, 
+                                a3=row_data['nome_do_cliente'], 
                                 a4=row_data['nfe']
                             ),
                             # "Envio tabela  {a1} - Novelis".format(a1=row_data['receiver_name']),
@@ -224,7 +261,6 @@ class EmailAttachByTable(APIView):
                             # attachments=tables_path_content
                             # [row_data['contact']], 
                             # fail_silently=False,
-                            
                         )
                         
                         # Reading HTML tags:
