@@ -73,9 +73,11 @@ print("Views:", __name__)
 
 
 class EmailAttachByTable(APIView):
-    def post(self):
+    def post(self, root_dir: str):
+        print(f"root_dir: {root_dir}")
         try:
             counter = 0
+            not_found_list = "Not found elements: \n"
             for row in tqdm(table_data, "Each line, each search and email"):
                 # print(row)
                 if counter == 0:
@@ -117,11 +119,12 @@ class EmailAttachByTable(APIView):
                         # "02390435000115",
                         # "17779"
                     )
-
-                    full_path = "/Users/andre.kuratomi/Desktop/projetos/finances_tables_to_db_and_mail/robot_sharepoint/attachments/"
+                    # print(f"File: {__file__}")
+                    # ipdb.set_trace()
+                    attachments_path = "/robot_sharepoint/attachments/"
+                    full_attachments_path = root_dir + attachments_path
                     # Extract info from attachments:
-                    path = Path(full_path)
-                    # print(path)
+                    path = Path(full_attachments_path)
                     tables_path_content = list(path.iterdir())
 
                     competencia_por_ano = "02/01/2024"
@@ -130,45 +133,53 @@ class EmailAttachByTable(APIView):
                     tipo_de_servico = ""
                     table_template = "table_template_deposito.html"
 
+                    # bolar lista de cnpjs e/ou nfes não encontradas. criar string da lista vazia 
+                    # para cada cnpj e/ou nfe elaborar uma string e acrescentar a essa lista
+                    # no final da listagem. transformar a string da lista em um arquivo txt pelo comando 'string_lista >> algo.txt'
                     
                     # NOT FOUND CNPJ AND/OR NFE:
+                    not_found_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
                     if len(tables_path_content) == 0:
-                        table_template = "table_template_nao_encontrado.html"
-
-
-                        # Insert table to mail body:
-                        mail_content = render_to_string(
-                            table_template, {
-                                'cnpj': row_data['cnpj'], 
-                                'contact': row_data['contact'], 
-                                'nfe': row_data['nfe'], 
-                                'nome_do_cliente': row_data['nome_do_cliente'], 
-                            }
-                        )
-
-                        time.sleep(2)  # wait for file to be created
-
-                        # ipdb.set_trace()
-                        email = EmailMessage(
-                            "AVISO: Nota Fiscal Eletrônica não encontrada para {a1}  {a2}  NF -  -  - {a3}"
-                            .format(
-                                a1=nome_do_cliente, 
-                                a2=row_data['cnpj'], 
-                                a3=row_data['nfe']
-                            ),
-                            mail_content,
-                            # "",
-                            "{}".format(host_email), 
-                            [row_data['contact']],
-                        )
+                        # table_template = "table_template_nao_encontrado.html"
                         
-                        # Reading HTML tags:
-                        email.content_subtype = 'html'
+                        not_found_list += not_found_elem
+                        print(not_found_list)
+                        # ipdb.set_trace()
 
-                        email.send()
-                        print("Email successfully sent! Check inbox.")
+                        # os.system(final_not_found_list)
+                        # Insert table to mail body:
+                        # mail_content = render_to_string(
+                        #     table_template, {
+                        #         'cnpj': row_data['cnpj'], 
+                        #         'contact': row_data['contact'], 
+                        #         'nfe': row_data['nfe'], 
+                        #         'nome_do_cliente': row_data['nome_do_cliente'], 
+                        #     }
+                        # )
 
-                        print(f"NOT FOUND ERROR: No data found for CNPJ {cnpj} or NFE {nfe}! Email sent.")
+                        # time.sleep(2)  # wait for file to be created
+
+                        # # ipdb.set_trace()
+                        # email = EmailMessage(
+                        #     "AVISO: Nota Fiscal Eletrônica não encontrada para {a1}  {a2}  NF -  -  - {a3}"
+                        #     .format(
+                        #         a1=nome_do_cliente, 
+                        #         a2=row_data['cnpj'], 
+                        #         a3=row_data['nfe']
+                        #     ),
+                        #     mail_content,
+                        #     # "",
+                        #     "{}".format(host_email), 
+                        #     [row_data['contact']],
+                        # )
+                        
+                        # # Reading HTML tags:
+                        # email.content_subtype = 'html'
+
+                        # email.send()
+                        # print("Email successfully sent! Check inbox.")
+
+                        # print(f"NOT FOUND ERROR: No data found for CNPJ {cnpj} or NFE {nfe}! Email sent.")
 
                     else:
                         # ipdb.set_trace()
@@ -177,7 +188,7 @@ class EmailAttachByTable(APIView):
                             if file.is_file():
                                 string_file = str(file)
                                 # string_file_filtered = string_file[29:]
-                                prefix = full_path
+                                prefix = full_attachments_path
                                 filtered = string_file[len(prefix):]
                                 print(filtered)
                                 # print(string_file)
@@ -277,9 +288,10 @@ class EmailAttachByTable(APIView):
 
                         # return Response({"message": "Email successfully sent"}, status=status.HTTP_200_OK)
 
+            final_not_found_list = "not_found_list.txt"
+            with open(final_not_found_list, "w") as file:
+                file.write(not_found_list)
 
         except Exception as e:
             print(f"error:Something went wrong: {e} ! Contact the dev!")
             # return Exception({"error": "Something went wrong! Contact the dev!"})
-
-        
