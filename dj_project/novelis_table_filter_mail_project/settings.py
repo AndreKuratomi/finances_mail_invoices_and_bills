@@ -131,7 +131,7 @@ DEFAUT_CHARSET = 'ISO-8859-1'
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_FILES_DIRS = [os.path.join(BASE_DIR, "filter_tables", "templates")]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "filter_tables", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
