@@ -17,6 +17,7 @@ root_directory = os.path.dirname(os.path.abspath(__file__))
 root_directory = str(root_directory)
 print(f"root_directory: {root_directory}")
 # ipdb.set_trace()
-tables_to_db.tables_to_db()
+
+# tables_to_db.tables_to_db()
 
 EmailAttachByTable().post(root_directory)
