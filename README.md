@@ -121,22 +121,20 @@ reg.exe add HKLM\SYSTEM\CurrentControlSet\Control\FileSystem /v LongPathsEnabled
 code .
 ```
 
-Adicionar os seguintes diretórios:
-
-./management_before_django/table_management_scripts
-```
-mkdir db
-mkdir raw_table
-```
-
 # Comandos
 
-Para todos os procedimentos necessarios basta rodar apenas o comando abaixot:
+Para todos os procedimentos necessários para a aplicação trabalhar basta rodar apenas o comando abaixo:
 
-./management_before_django/table_management_scripts/
+./
 
+Windows:
 ```
-python3 tables_to_db.py
+py run_everything_here.py
+```
+
+Linux:
+```
+python3 run_everything_here.py
 ```
 
 <br>
