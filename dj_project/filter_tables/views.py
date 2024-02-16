@@ -108,16 +108,16 @@ class EmailAttachByTable(APIView):
                     }
                     # print(row_data["contact"])
 
-                    # TAKING INPUT IDS WITH SELENIUM ROBOT:
-                    input_ids = recursive_robot(username, sharepoint_url)
-                    print(input_ids)
+                    # # TAKING INPUT IDS WITH SELENIUM ROBOT:
+                    # input_ids = recursive_robot(username, sharepoint_url)
+                    # print(input_ids)
                     
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
                     robot_for_sharepoint(
                         username,
                         password,
-                        input_ids["user_input_id"],
-                        input_ids["password_input_id"],
+                        # input_ids["user_input_id"],
+                        # input_ids["password_input_id"],
                         sharepoint_url,
                         download_directory,
                         cnpj,

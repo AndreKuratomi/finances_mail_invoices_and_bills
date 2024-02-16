@@ -27,7 +27,7 @@ from robot_sharepoint.modules import unzip_files
 from robot_sharepoint.modules.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
 
 
-def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: str,
+def robot_for_sharepoint(username: str, password: str,
                           site_url: str, download_dir: str, cnpj: str, nfe: str, progress_bar: bool = True):
     
     # print("CNPJ:", cnpj)
@@ -65,7 +65,7 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     pbar.update(1)
 
     # LOGIN:
-    username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, user_id)))
+    username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
     pbar.update(1)
 
     username_input.send_keys(username)
@@ -74,7 +74,7 @@ def robot_for_sharepoint(username: str, password: str, user_id: str, pass_id: st
     pbar.update(1)
 
 
-    password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.ID, pass_id)))
+    password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "input[type='password']")))
     pbar.update(1)
 
     password_input.send_keys(password)
