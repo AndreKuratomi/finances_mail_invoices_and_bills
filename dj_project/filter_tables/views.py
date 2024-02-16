@@ -77,7 +77,13 @@ class EmailAttachByTable(APIView):
         print(f"root_dir: {root_dir}")
         try:
             counter = 0
+            
+            final_not_found_list = "not_found_list.txt"
             not_found_list = "Not found elements: \n"
+
+            with open(final_not_found_list, "w") as file:
+                file.write(not_found_list)
+
             for row in tqdm(table_data, "Each line, each search and email"):
                 # print(row)
                 if counter == 0:
@@ -116,13 +122,17 @@ class EmailAttachByTable(APIView):
                         download_directory,
                         cnpj,
                         nfe,
+                        # "11068167000453", # boleto
+                        # "17774" # boleto
                         # "02390435000115",
                         # "17779"
+                        # "61102778000872", # not_found
+                        # "17757" # not_found
                     )
                     # print(f"File: {__file__}")
-                    # ipdb.set_trace()
                     attachments_path = "/robot_sharepoint/attachments/"
                     full_attachments_path = root_dir + attachments_path
+
                     # Extract info from attachments:
                     path = Path(full_attachments_path)
                     tables_path_content = list(path.iterdir())
@@ -138,48 +148,15 @@ class EmailAttachByTable(APIView):
                     # no final da listagem. transformar a string da lista em um arquivo txt pelo comando 'string_lista >> algo.txt'
                     
                     # NOT FOUND CNPJ AND/OR NFE:
-                    not_found_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
                     if len(tables_path_content) == 0:
+                        not_found_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
                         # table_template = "table_template_nao_encontrado.html"
                         
-                        not_found_list += not_found_elem
-                        print(not_found_list)
-                        # ipdb.set_trace()
-
-                        # os.system(final_not_found_list)
-                        # Insert table to mail body:
-                        # mail_content = render_to_string(
-                        #     table_template, {
-                        #         'cnpj': row_data['cnpj'], 
-                        #         'contact': row_data['contact'], 
-                        #         'nfe': row_data['nfe'], 
-                        #         'nome_do_cliente': row_data['nome_do_cliente'], 
-                        #     }
-                        # )
-
-                        # time.sleep(2)  # wait for file to be created
-
-                        # # ipdb.set_trace()
-                        # email = EmailMessage(
-                        #     "AVISO: Nota Fiscal Eletrônica não encontrada para {a1}  {a2}  NF -  -  - {a3}"
-                        #     .format(
-                        #         a1=nome_do_cliente, 
-                        #         a2=row_data['cnpj'], 
-                        #         a3=row_data['nfe']
-                        #     ),
-                        #     mail_content,
-                        #     # "",
-                        #     "{}".format(host_email), 
-                        #     [row_data['contact']],
-                        # )
+                        # not_found_list += not_found_elem
+                        # print(not_found_list)
                         
-                        # # Reading HTML tags:
-                        # email.content_subtype = 'html'
-
-                        # email.send()
-                        # print("Email successfully sent! Check inbox.")
-
-                        # print(f"NOT FOUND ERROR: No data found for CNPJ {cnpj} or NFE {nfe}! Email sent.")
+                        with open(final_not_found_list, "a") as file:
+                            file.write(not_found_elem)
 
                     else:
                         # ipdb.set_trace()
@@ -190,43 +167,25 @@ class EmailAttachByTable(APIView):
                                 # string_file_filtered = string_file[29:]
                                 prefix = full_attachments_path
                                 filtered = string_file[len(prefix):]
-                                print(filtered)
+                                print("filtered:", filtered)
                                 # print(string_file)
                                 if filtered.startswith("NFE"):
 
                                     specific_char_1 = "-"
                                     specific_char_2 = "."
+                                    specific_char_3 = " "
                                     index_hifen = filtered.rfind(specific_char_1)
                                     index_dot = filtered.rfind(specific_char_2)
 
                                     nome_do_cliente = filtered[index_hifen+2:index_dot]
-                                    tipo_de_servico = filtered[10:index_hifen-1]
-                                    
-                                    # def convert_to_pure_pdf(input_path, output_path):
-                                    #     with pdfplumber.open(input_path) as pdf:
-                                    #         pages = pdf.pages
-                                    #         # Create a new PDFPlumber object for writing
-                                    #         writer = pdfplumber.PDFWriter(output_path)
-
-                                    #         for page in pages:
-                                    #             # Add each page to the writer object
-                                    #             writer.add_page(page)
-                                            
-                                    #         # Save the output PDF file
-                                    #         writer.write()
-                                    # convert_to_pure_pdf(file, file)
-                                    
-                                    # Extract info from PDF:
-                                    # with fitz.open(file) as doc:
-                                    #     text = ""
-                                    #     for page in doc:
-                                    #         text += page.
-
-                                    # print("text:", text)
-                                    # page = pdf_content.pages[0]
-                                    # text = page.extract_text()
-                                    # .pages[0]
-                                    # print(texto)
+                                    tipo_de_servico = ""
+                                    for charac in filtered[10:]:
+                                        if charac == specific_char_2 or charac == specific_char_3:
+                                            break
+                                        else:
+                                            tipo_de_servico += charac
+                                    # tipo_de_servico = filtered[10:index_hifen-1]
+                                    # ipdb.set_trace()
 
                                 elif filtered.startswith("BOLETO"):
                                     table_template = "table_template_boleto.html"
@@ -236,9 +195,9 @@ class EmailAttachByTable(APIView):
 
                         print("competencia_por_ano:", competencia_por_ano)
                         print("nome_do_cliente:", nome_do_cliente)
+                        print("nome_do_cliente_data:", row_data['nome_do_cliente '])
                         print("table_template:", table_template)
                         print("tipo_de_servico:", tipo_de_servico)
-
                         # Insert table to mail body:
                         mail_content = render_to_string(
                             table_template, {
@@ -246,6 +205,8 @@ class EmailAttachByTable(APIView):
                                 'contact': row_data['contact'], 
                                 'nfe': row_data['nfe'], 
                                 'nome_do_cliente': row_data['nome_do_cliente'],
+                                # 'nfe': '17774', 
+                                # 'nome_do_cliente': nome_do_cliente,
                                 'tipo_de_servico': tipo_de_servico,
                                 'valor_liquido': row_data['valor_liquido'],
                                 'vencimento': row_data['vencimento']
@@ -261,6 +222,8 @@ class EmailAttachByTable(APIView):
                             .format(
                                 a1=tipo_de_servico, 
                                 a2=competencia_por_ano, 
+                                # a3=nome_do_cliente, 
+                                # a4='17774'
                                 a3=row_data['nome_do_cliente'], 
                                 a4=row_data['nfe']
                             ),
@@ -285,12 +248,6 @@ class EmailAttachByTable(APIView):
 
                         email.send()
                         print("Email successfully sent! Check inbox.")
-
-                        # return Response({"message": "Email successfully sent"}, status=status.HTTP_200_OK)
-
-            final_not_found_list = "not_found_list.txt"
-            with open(final_not_found_list, "w") as file:
-                file.write(not_found_list)
 
         except Exception as e:
             print(f"error:Something went wrong: {e} ! Contact the dev!")
