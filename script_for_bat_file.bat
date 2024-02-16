@@ -7,7 +7,7 @@ REM Entering directories...
 :: echo CurrentDirectory: %CD%
 :: echo whatIsThis: %UserProfile%
 
-cd "C:\Users\andre.kuratomi\projetos\finances_tables_to_db_and_mail\"
+cd "C:\Users\andre.kuratomi\Desktop\projetos\finances_tables_to_db_and_mail\"
 
 
 REM Activating virtual environment...

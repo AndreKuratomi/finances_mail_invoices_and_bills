@@ -139,7 +139,6 @@ class EmailAttachByTable(APIView):
 
                     competencia_por_ano = "02/01/2024"
                     # competencia_por_ano = ""
-                    nome_do_cliente = ""
                     tipo_de_servico = ""
                     table_template = "table_template_deposito.html"
 
@@ -174,10 +173,10 @@ class EmailAttachByTable(APIView):
                                     specific_char_1 = "-"
                                     specific_char_2 = "."
                                     specific_char_3 = " "
-                                    index_hifen = filtered.rfind(specific_char_1)
-                                    index_dot = filtered.rfind(specific_char_2)
+                                    # index_hifen = filtered.rfind(specific_char_1)
+                                    # index_dot = filtered.rfind(specific_char_2)
+                                    # nome_do_cliente = filtered[index_hifen+2:index_dot]
 
-                                    nome_do_cliente = filtered[index_hifen+2:index_dot]
                                     tipo_de_servico = ""
                                     for charac in filtered[10:]:
                                         if charac == specific_char_2 or charac == specific_char_3:
@@ -194,8 +193,8 @@ class EmailAttachByTable(APIView):
                                 print("Error! Verify the file.")
 
                         print("competencia_por_ano:", competencia_por_ano)
-                        print("nome_do_cliente:", nome_do_cliente)
-                        print("nome_do_cliente_data:", row_data['nome_do_cliente '])
+                        # ipdb.set_trace()
+                        print("nome_do_cliente_data:", row_data['nome_do_cliente'])
                         print("table_template:", table_template)
                         print("tipo_de_servico:", tipo_de_servico)
                         # Insert table to mail body:
@@ -204,9 +203,8 @@ class EmailAttachByTable(APIView):
                                 'competencia_por_ano': competencia_por_ano, 
                                 'contact': row_data['contact'], 
                                 'nfe': row_data['nfe'], 
-                                'nome_do_cliente': row_data['nome_do_cliente'],
                                 # 'nfe': '17774', 
-                                # 'nome_do_cliente': nome_do_cliente,
+                                'nome_do_cliente':  row_data['nome_do_cliente'],
                                 'tipo_de_servico': tipo_de_servico,
                                 'valor_liquido': row_data['valor_liquido'],
                                 'vencimento': row_data['vencimento']
@@ -221,10 +219,9 @@ class EmailAttachByTable(APIView):
                             "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
                             .format(
                                 a1=tipo_de_servico, 
-                                a2=competencia_por_ano, 
-                                # a3=nome_do_cliente, 
-                                # a4='17774'
+                                a2=competencia_por_ano,
                                 a3=row_data['nome_do_cliente'], 
+                                # a4='17774'
                                 a4=row_data['nfe']
                             ),
                             # "Envio tabela  {a1} - Novelis".format(a1=row_data['receiver_name']),
