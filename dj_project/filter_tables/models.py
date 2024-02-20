@@ -136,6 +136,7 @@ class TableName(models.Model):
     numero = models.TextField(db_column='Numero', blank=True, null=True)  # Field name made lowercase.
     dt_vencto = models.TextField(db_column='Dt Vencto', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
     valor_liquido = models.TextField(db_column='Valor Liquido', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    status = models.TextField(db_column='STATUS', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
         app_label = 'filter_tables'

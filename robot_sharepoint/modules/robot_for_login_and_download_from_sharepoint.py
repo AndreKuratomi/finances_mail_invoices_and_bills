@@ -44,10 +44,7 @@ def robot_for_sharepoint(username: str, password: str,
 
     # Driver instance:
     options = Options()
-    # options = webdriver.EdgeOptions()
-    # options.use_chromium = True
     options.add_argument('--headless=new')
-    # options.add_argument('--no-sandbox')
 
     # For Windows OS:
     options.add_argument('-inprivate')
