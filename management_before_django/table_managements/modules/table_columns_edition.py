@@ -16,10 +16,12 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
     # Checking path content:
     tables_path_content = list(path.iterdir())  
     tables = list()
+
     for elem in tables_path_content:
         stringfied_elem = str(elem)
         if stringfied_elem.endswith('.xls') or stringfied_elem.endswith('.xlsx') or stringfied_elem.endswith('.xlsm'):
             tables.append(stringfied_elem)
+
     if len(tables) == 0:
         raise FileNotFoundError("NO TABLE TO WORK WITH!")
     elif len(tables) > 1:
@@ -50,9 +52,10 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
                     
                     path_back = str(file.resolve())
                     print(path_back)
-                    ipdb.set_trace()
+                    # ipdb.set_trace()
 
                     workbook.save(path_back)
+                    workbook.close()
 
                 # OPENPYXL TO ADD STATUS COLUMN:
                 workbook = load_workbook(data_only=True, filename=path_to_table)
@@ -88,10 +91,10 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
                 df['Dt Vencto'] = df['Dt Vencto'].dt.tz_localize('UTC').dt.tz_convert('America/Sao_Paulo')
                 df['Dt Vencto'] = df['Dt Vencto'].dt.strftime('%d/%m/%Y')
                 print(df)
-                ipdb.set_trace()
+                # ipdb.set_trace()
                 return df
 
             else:
                 raise Exception('Only .xls, .xlsx, or .xlsm files are supported.')
         else:
-            raise Exception("Something went wrong... ")
+            raise Exception("Something went wrong with this file... ")
