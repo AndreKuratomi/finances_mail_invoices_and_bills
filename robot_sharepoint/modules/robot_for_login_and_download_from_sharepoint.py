@@ -27,8 +27,8 @@ from robot_sharepoint.modules import unzip_files
 from robot_sharepoint.modules.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
 
 
-def robot_for_sharepoint(username: str, password: str,
-                          site_url: str, download_dir: str, cnpj: str, nfe: str, progress_bar: bool = True):
+def robot_for_sharepoint(username: str, password: str, site_url: str, 
+                        download_dir: str, cnpj: str, nfe: str, progress_bar: bool = True) -> None:
     
     # print("CNPJ:", cnpj)
     print("sharepoint_robot:", __name__)

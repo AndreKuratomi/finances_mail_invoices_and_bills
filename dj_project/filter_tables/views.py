@@ -248,6 +248,8 @@ class EmailAttachByTable(APIView):
 
                     else:
                         continue
+            
+            print("Application finished its process succesfully!")
 
         except Exception as e:
             print(f"error:Something went wrong: {e} ! Contact the dev!")
