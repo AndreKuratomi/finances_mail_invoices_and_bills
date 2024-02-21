@@ -1,5 +1,14 @@
 venv/
-.not_used/
-*.pyc
-.env
 env/
+management_before_django/db/db_sqlite3.db
+
+.not_used/
+.env
+
+drafts
+not_found_list.txt
+script_for_bat_file.txt
+
+finr940 - janeiro_24.xlsx
+
+*.pyc
