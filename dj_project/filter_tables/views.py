@@ -83,9 +83,15 @@ class EmailAttachByTable(APIView):
             
             final_not_found_list = "not_found_list.txt"
             not_found_list = "Not found elements: \n"
+            
+            final_sent_list = "sent_list.txt"
+            sent_list = "Sent elements: \n"
 
             with open(final_not_found_list, "w") as file:
                 file.write(not_found_list)
+            
+            with open(final_sent_list, "w") as file:
+                file.write(sent_list)
 
             for row in tqdm(table_data, "Each line, each search and email"):
                 # print(row)
@@ -242,6 +248,10 @@ class EmailAttachByTable(APIView):
 
                             email.send()
                             print("Email successfully sent! Check inbox.")
+                            
+                            sent_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
+                            with open(final_sent_list, "a") as file:
+                                file.write(sent_elem)
 
                             # STATUS UPDATE:
                             status_update(tables_path, row_data)
