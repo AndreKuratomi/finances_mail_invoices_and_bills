@@ -1,14 +1,9 @@
-import os
-import fitz
-import pdfplumber
-import requests
 import time
 
 from django.conf import settings
 from django.core.mail import EmailMessage, mail_admins, send_mail
 from django.template.loader import render_to_string
 
-from dotenv import load_dotenv
 
 from pathlib import Path
 from pypdf import PdfReader
@@ -21,11 +16,11 @@ from tqdm import tqdm
 
 from filter_tables.models import TableName
 
+from management_before_django.table_managements.modules.status_update import status_update
 from robot_sharepoint.modules.robot_for_login_and_download_from_sharepoint import robot_for_sharepoint
 
-from management_before_django.table_managements.modules.status_update import status_update
-
-# from management_before_django.robot_sharepoint.robot_for_outlook_exchangelib import func_for_search
+from utils.envs import username, password, sharepoint_url, download_directory, host_email
+from utils.paths import reports_path, tables_path
 
 # # While there's no model:
 # model_dir = './models.py'
@@ -42,35 +37,14 @@ from management_before_django.table_managements.modules.status_update import sta
 #         count += 1
 #     # module = __import__('models', fromlist=[''])
 #     # do_we_have_tablename = hasattr(module, 'TableName')
+
+# Table to work with:
+table_data = TableName.objects.all()
     
 # from .serializers import EmailSerializer
 
 import ipdb
 
-load_dotenv()
-
-# ENVS:
-# Keys for login:
-username = os.getenv("USERN")
-password = os.getenv("PASSWORD")
-
-# Input ids:
-hover_selector = os.getenv("HOVER_SELECTOR")
-download_selector = os.getenv("DOWNLOAD_SELECTOR")
-
-# Sharepoint URL:
-sharepoint_url = os.getenv("SHAREPOINT_URL")
-
-# Download directory:
-download_directory = os.getenv("DOWNLOAD_DIRECTORY")
-
-host_email = os.getenv("EMAIL_HOST_USER")
-
-# Table to work with:
-table_data = TableName.objects.all()
-
-# PATH TO DB:
-tables_path = Path("./management_before_django/raw_table/")
 
 print("Views:", __name__)
 
@@ -80,17 +54,19 @@ class EmailAttachByTable(APIView):
         print(f"root_dir: {root_dir}")
         try:
             counter = 0
-            
+            # ipdb.set_trace()
+            # Report lists:
             final_not_found_list = "not_found_list.txt"
             not_found_list = "Not found elements: \n"
             
             final_sent_list = "sent_list.txt"
             sent_list = "Sent elements: \n"
 
-            with open(final_not_found_list, "w") as file:
+            with reports_path.joinpath(final_not_found_list).open("w") as file:
                 file.write(not_found_list)
             
-            with open(final_sent_list, "w") as file:
+            # ipdb.set_trace()
+            with reports_path.joinpath(final_sent_list).open("w") as file:
                 file.write(sent_list)
 
             for row in tqdm(table_data, "Each line, each search and email"):
@@ -156,7 +132,8 @@ class EmailAttachByTable(APIView):
                             # not_found_list += not_found_elem
                             # print(not_found_list)
                             
-                            with open(final_not_found_list, "a") as file:
+                            # Fill element not found list:
+                            with reports_path.joinpath(final_not_found_list).open("a") as file:
                                 file.write(not_found_elem)
 
                         else:
@@ -249,8 +226,9 @@ class EmailAttachByTable(APIView):
                             email.send()
                             print("Email successfully sent! Check inbox.")
                             
+                            # Fill element sent list:
                             sent_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
-                            with open(final_sent_list, "a") as file:
+                            with reports_path.joinpath(final_sent_list).open("a") as file:
                                 file.write(sent_elem)
 
                             # STATUS UPDATE:

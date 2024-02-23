@@ -1,13 +1,7 @@
 import os
-
-import requests
-import shutil
 import time
 
 from pathlib import Path
-
-from pyvirtualdisplay import Display
-# from msedge.selenium_tools import Edge, EdgeOptions
 
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
@@ -142,10 +136,6 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
                         # ipdb.set_trace()
 
                         time.sleep(1)
-                    
-                    # download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
-                    # download_button.click()
-                    # pbar.update(1)
 
                     time.sleep(1)
                     pbar.update(1)
@@ -161,25 +151,9 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
                     
                     time.sleep(1)
 
-                    # for file in tqdm(default_download_dir_list, "Checking if the download is really complete..."):
-                    #     print(file)
-                    #     while any(file.suffix == '.crdownload'):
-                    #         time.sleep(1)
-
-                    # while any(file.suffix == '.crdownload' for file in Path(default_download_dir).iterdir()):
-                    #     time.sleep(1)
-                        # if file.suffix == '.crdownload':
-                    # while any(file.suffix == '.crdownload' for file in Path(download_dir).iterdir()):
-                    #         time.sleep(1)
-                    #         if progress_bar:
-                    #             pbar.update(1
-
                     driver.quit()
 
                     moving_files_from_virtual_dir(download_dir, default_download_dir)
-
-                    # # Unzip files:
-                    # unzip_files.unzipfile(download_dir)
 
             except:
                 print("No nfe found for {}!".format(nfe))
