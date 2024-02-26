@@ -26,13 +26,21 @@ root_directory = str(root_directory)
 print(f"root_directory: {root_directory}")
 # ipdb.set_trace()
 
-# tables_to_db.tables_to_db()
+tables_to_db.tables_to_db()
 
 do_we_have_table_to_work_with = check_if_dir_is_empty_or_not(raw_table_directory)
 
 if not do_we_have_table_to_work_with:
     print("Coming soon...")
     # robot_for_raw_table(download_directory, username_test, password_test, sharepoint_for_upload_url)
+    
+    # # Raw reports creation:
+    # with reports_path.joinpath(final_not_found_list).open("w") as file:
+    # file.write(not_found_list)
+    
+    # # ipdb.set_trace()
+    # with reports_path.joinpath(final_sent_list).open("w") as file:
+    #     file.write(sent_list)
 else:
     try:
         EmailAttachByTable().post(root_directory)
