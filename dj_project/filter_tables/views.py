@@ -1,15 +1,10 @@
 import time
 
-from django.conf import settings
-from django.core.mail import EmailMessage, mail_admins, send_mail
+from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
-
 from pathlib import Path
-from pypdf import PdfReader
 
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from tqdm import tqdm
@@ -18,9 +13,13 @@ from filter_tables.models import TableName
 
 from management_before_django.table_managements.modules.status_update import status_update
 from robot_sharepoint.modules.robot_for_login_and_download_from_sharepoint import robot_for_sharepoint
+from robot_sharepoint.modules.join_reports import join_reports
 
 from utils.envs import username, password, sharepoint_url, download_directory, host_email
-from utils.paths import reports_path, tables_path
+from utils.paths import reports_path, raw_tables_path
+from utils.report_files import not_found_list, sent_list, not_found_title
+
+import ipdb
 
 # # While there's no model:
 # model_dir = './models.py'
@@ -40,11 +39,6 @@ from utils.paths import reports_path, tables_path
 
 # Table to work with:
 table_data = TableName.objects.all()
-    
-# from .serializers import EmailSerializer
-
-import ipdb
-
 
 print("Views:", __name__)
 
@@ -54,25 +48,14 @@ class EmailAttachByTable(APIView):
         print(f"root_dir: {root_dir}")
         try:
             counter = 0
-            # ipdb.set_trace()
-            # Report lists:
-            final_not_found_list = "not_found_list.txt"
-            not_found_list = "Not found elements: \n"
-            
-            final_sent_list = "sent_list.txt"
-            sent_list = "Sent elements: \n"
 
-            with reports_path.joinpath(final_not_found_list).open("w") as file:
-                file.write(not_found_list)
-            
-            # ipdb.set_trace()
-            with reports_path.joinpath(final_sent_list).open("w") as file:
-                file.write(sent_list)
+            # Not found list report creation:
+            with reports_path.joinpath(not_found_list).open("w") as file:
+                file.write(not_found_title)
 
             for row in tqdm(table_data, "Each line, each search and email"):
-                # print(row)
-                if counter == 0:
-                    counter += 1
+                if counter == 0: # Skip table titles!
+                    counter += 1 
                     continue
                 else:
                     cnpj = row.cnpj
@@ -94,7 +77,6 @@ class EmailAttachByTable(APIView):
                             # "competencia_por_ano": "competencia_por_ano",
                             "contact": "andrekuratomi@gmail.com"
                         }
-                        # print(row_data["contact"])
                         
                         # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
                         robot_for_sharepoint(
@@ -120,50 +102,36 @@ class EmailAttachByTable(APIView):
                         tables_path_content = list(path.iterdir())
 
                         competencia_por_ano = "02/01/2024"
-                        # competencia_por_ano = ""
                         tipo_de_servico = ""
                         table_template = "table_template_deposito.html"
                         
                         # NOT FOUND CNPJ AND/OR NFE:
                         if len(tables_path_content) == 0:
-                            not_found_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
-                            # table_template = "table_template_nao_encontrado.html"
-                            
-                            # not_found_list += not_found_elem
-                            # print(not_found_list)
                             
                             # Fill element not found list:
-                            with reports_path.joinpath(final_not_found_list).open("a") as file:
+                            not_found_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
+                            with reports_path.joinpath(not_found_list).open("a") as file:
                                 file.write(not_found_elem)
 
                         else:
-                            # ipdb.set_trace()
                             for file in tables_path_content:
                                 print(file)
                                 if file.is_file():
                                     string_file = str(file)
-                                    # string_file_filtered = string_file[29:]
                                     prefix = full_attachments_path
                                     filtered = string_file[len(prefix):]
-                                    print("filtered:", filtered)
-                                    # print(string_file)
+
                                     if filtered.startswith("NFE"):
 
-                                        specific_char_1 = "-"
-                                        specific_char_2 = "."
-                                        specific_char_3 = " "
-                                        # index_hifen = filtered.rfind(specific_char_1)
-                                        # index_dot = filtered.rfind(specific_char_2)
-                                        # nome_do_cliente = filtered[index_hifen+2:index_dot]
+                                        specific_char_1 = "."
+                                        specific_char_2 = " "
 
                                         tipo_de_servico = ""
                                         for charac in filtered[10:]:
-                                            if charac == specific_char_2 or charac == specific_char_3:
+                                            if charac == specific_char_1 or charac == specific_char_2:
                                                 break
                                             else:
                                                 tipo_de_servico += charac
-                                        # tipo_de_servico = filtered[10:index_hifen-1]
-                                        # ipdb.set_trace()
 
                                     elif filtered.startswith("BOLETO"):
                                         table_template = "table_template_boleto.html"
@@ -172,7 +140,6 @@ class EmailAttachByTable(APIView):
                                     print("Error! Verify the file.")
 
                             print("competencia_por_ano:", competencia_por_ano)
-                            # ipdb.set_trace()
                             print("nome_do_cliente_data:", row_data['nome_do_cliente'])
                             print("table_template:", table_template)
                             print("tipo_de_servico:", tipo_de_servico)
@@ -183,18 +150,15 @@ class EmailAttachByTable(APIView):
                                     'competencia_por_ano': competencia_por_ano, 
                                     'contact': row_data['contact'], 
                                     'nfe': row_data['nfe'], 
-                                    # 'nfe': '17774', 
                                     'nome_do_cliente':  row_data['nome_do_cliente'],
                                     'tipo_de_servico': tipo_de_servico,
                                     'valor_liquido': row_data['valor_liquido'],
                                     'vencimento': row_data['vencimento']
                                 }
-                                #  , using='ISO-8859-1'
                             )
-                            # print(mail_content)
+
                             time.sleep(2)  # wait for file to be created
 
-                            # ipdb.set_trace()
                             email = EmailMessage(
                                 "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
                                 .format(
@@ -204,14 +168,9 @@ class EmailAttachByTable(APIView):
                                     # a4='17774'
                                     a4=row_data['nfe']
                                 ),
-                                # "Envio tabela  {a1} - Novelis".format(a1=row_data['receiver_name']),
                                 mail_content,
-                                # "",
                                 "{}".format(host_email), 
                                 [row_data['contact']],
-                                # attachments=tables_path_content
-                                # [row_data['contact']], 
-                                # fail_silently=False,
                             )
                             
                             # Reading HTML tags:
@@ -228,17 +187,16 @@ class EmailAttachByTable(APIView):
                             
                             # Fill element sent list:
                             sent_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
-                            with reports_path.joinpath(final_sent_list).open("a") as file:
+                            with reports_path.joinpath(sent_list).open("a") as file:
                                 file.write(sent_elem)
 
                             # STATUS UPDATE:
-                            status_update(tables_path, row_data)
+                            status_update(raw_tables_path, row_data)
 
                     else:
                         continue
-            
+
             print("Application finished its process succesfully!")
 
         except Exception as e:
             print(f"error:Something went wrong: {e} ! Contact the dev!")
-            # return Exception({"error": "Something went wrong! Contact the dev!"})

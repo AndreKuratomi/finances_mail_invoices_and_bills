@@ -1,10 +1,11 @@
 import os
 import time
-from pathlib import Path
 
+from pathlib import Path
 from tqdm import tqdm
 
 import ipdb
+
 
 def create_model_from_database() -> None:
     """Creates django model from SQLite3 database with inspectdb and adjusts it to suit for django."""
