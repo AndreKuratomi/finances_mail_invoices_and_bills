@@ -10,7 +10,6 @@ import ipdb
 
 
 def status_update(path: Path, row_data: dict) -> None:
-
     """Receives the tables' path and row_data as dict, searches for the original row by NFE value and if found updates status to 'Enviado'."""
 
     # Checking path content:

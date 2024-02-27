@@ -10,7 +10,6 @@ import ipdb
 
 
 def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
-
     """Receives the tables' path, filters it as necessary and inserts it to Pandas dataframe"""
 
     # Checking path content:
@@ -91,7 +90,7 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
                 df['Dt Vencto'] = df['Dt Vencto'].dt.tz_localize('UTC').dt.tz_convert('America/Sao_Paulo')
                 df['Dt Vencto'] = df['Dt Vencto'].dt.strftime('%d/%m/%Y')
                 print(df)
-                # ipdb.set_trace()
+
                 return df
 
             else:
