@@ -120,20 +120,21 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
 
                     pbar.update(1)
                     for file in tqdm(files_to_download_list, "Selecting files to download..."):
-
                         # Create an instance of ActionChains and perform the hover action
                         actions = ActionChains(driver)
                         actions.move_to_element(file).perform()
 
                         selectable_icon = file.find_element(By.CSS_SELECTOR, "div[role='gridcell']")
                         selectable_icon.click()
-                        # time.sleep(1)
-                        download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+
+                        pre_download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "i[data-icon-name='More']")))
+                        pre_download_button.click()
+
+                        download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[name='Baixar']")))
                         download_button.click()
 
                         # Unclick the element!
                         selectable_icon.click()
-                        # ipdb.set_trace()
 
                         time.sleep(1)
 
