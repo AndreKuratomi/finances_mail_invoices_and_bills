@@ -1,13 +1,16 @@
 venv/
 env/
 management_before_django/db/db_sqlite3.db
+robot_sharepoint/attachments/*
 
 .not_used/
 .env
 
 drafts
+elements_reports_list.txt
 not_found_list.txt
 script_for_bat_file.txt
+sent_list.txt
 
 finr940 - janeiro_24.xlsx
 
