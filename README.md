@@ -1,10 +1,16 @@
 ## python_django_tables_filter_mail
 
+- [Traduções](#traduções)
 - [Sobre](#sobre)
 - [Instalação](#instalação)
 - [Comandos](#Comandos)
 - [Documentação](#documentação)
 
+<br>
+
+# Traduções:
+- [Português Brasileiro / Portuguese (Brazilian)](/README_Languages/README.pt-br.md)
+- [Inglês / English](/README_Languages/README.en.md)
 <br>
 
 # Sobre
@@ -144,3 +150,4 @@ python3 run_everything_here.py
 Para ter acesso ao descrições detalhes das rotas e seus retornos, conferir documentação completa no link a seguir:
 
 (link)
+
