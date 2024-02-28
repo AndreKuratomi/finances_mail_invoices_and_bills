@@ -4,7 +4,6 @@
 - [Description](#Description)
 - [Instalation](#instalation)
 - [Comandos](#Comandos)
-- [Documentação](#documentação)
 
 <br>
 
