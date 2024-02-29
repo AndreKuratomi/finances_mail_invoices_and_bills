@@ -15,23 +15,23 @@ django.setup()
 from dj_project.filter_tables.views import EmailAttachByTable
 
 from management_before_django.table_managements.scripts import tables_to_db
-from management_before_django.table_managements.modules.path_length import do_we_have_spreadsheets
 
 from robot_sharepoint.modules.robots.robot_to_upload_files import upload_files_to_sharepoint
 from robot_sharepoint.modules.robots.robot_for_login_and_download_raw_table import robot_for_raw_table
 from robot_sharepoint.modules.join_reports import join_reports
 
-from utils.variables.envs import download_directory, username, password, sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
+from utils.functions.path_length import do_we_have_spreadsheets
+from utils.functions.delete_elements import do_we_have_things_to_delete
+from utils.variables.envs import download_directory, username, password, raw_table_directory, sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
 from utils.variables.paths import raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, elements_reports_list, sent_title
-from utils.functions.delete_elements import do_we_have_things_to_delete
 
 root_directory = os.path.dirname(os.path.abspath(__file__))
 root_directory = str(root_directory)
 
-do_we_have_table_to_work_with = do_we_have_spreadsheets(raw_tables_path)
-
 do_we_have_things_to_delete(reports_path, "relatorio_diario.txt")
+
+do_we_have_table_to_work_with = do_we_have_spreadsheets(raw_tables_path)
 
 # if not do_we_have_table_to_work_with:
 #     robot_for_raw_table(username, password, sharepoint_for_database_and_upload_url, raw_tables_path)
