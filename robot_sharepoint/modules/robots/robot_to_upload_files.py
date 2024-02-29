@@ -3,7 +3,7 @@ import time
 from pathlib import Path
 
 from selenium import webdriver
-from selenium.common.exceptions import StaleElementReferenceException
+# from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
@@ -39,22 +39,36 @@ def upload_files_to_sharepoint(username: str, password: str, reports_path: Path,
     password_input.send_keys(password)
     password_input.send_keys(Keys.RETURN)
 
-    # UPLOADING FILE:
-    item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "i[data-icon-name='More']")))
-    time.sleep(1)
-    item.click()
+    # CLICKING FOLDERS:
+    reports = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='15 - RELATÓRIOS DE ENVIO']")))
+    pbar.update(1)
+    reports.click()
+    pbar.update(1)
 
-    upload = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "li[title='Carregar arquivos do seu computador para este local']")))
+    year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']")))
+    pbar.update(1)
+    year.click()
+    pbar.update(1)
+
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='JANEIRO']"))) # criar lógica para obter mês do calendário - 1
+    pbar.update(1)
+    month.click()
+    pbar.update(1)
+
+    # UPLOADING FILE:
+    upload = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='Carregar arquivos do seu computador para este local']")))
+    upload.click()
 
     # Create an instance of ActionChains and perform the hover action
-    actions = ActionChains(driver)
-    actions.move_to_element(upload).perform()
+    # actions = ActionChains(driver)
+    # actions.move_to_element(upload).perform()
     item2 = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[name='Arquivos']")))
     item2.click()
     time.sleep(2)
 
     # Dialog page!:
     file_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type='file']")))
+    # ipdb.set_trace()
     
     # Extract info from attachments:
     tables_path_content = list(Path(reports_path).iterdir())    
@@ -63,7 +77,7 @@ def upload_files_to_sharepoint(username: str, password: str, reports_path: Path,
         stringfy = str(file.resolve())
         print('file:', file)
         print('stringfy:', stringfy)
-        if stringfy.endswith("reports_list.txt"):
+        if stringfy.endswith("relatorio_diario.txt"):
             try:
                 time.sleep(1)
                 file_input.send_keys(stringfy)

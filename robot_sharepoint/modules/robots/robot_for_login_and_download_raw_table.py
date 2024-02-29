@@ -29,6 +29,7 @@ def robot_for_raw_table(username: str, password: str, site_url: str,
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
 
     empty_download_directories(download_dir, default_download_dir)
+    # ipdb.set_trace()
 
     # CONNECT TO BROWSER:
     if progress_bar:
@@ -37,7 +38,7 @@ def robot_for_raw_table(username: str, password: str, site_url: str,
 
     # Driver instance:
     options = Options()
-    options.add_argument('--headless=new')
+    # options.add_argument('--headless=new')
 
     # For Windows OS:
     options.add_argument('-inprivate')
@@ -71,29 +72,48 @@ def robot_for_raw_table(username: str, password: str, site_url: str,
     password_input.send_keys(Keys.RETURN)
     pbar.update(1)
 
-    # time.sleep(10)
-    # Hovering an element:
-    item = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-selection-index='1']")))
+    # CLICKING FOLDERS:
+    reports = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='14 - BASE DE DADOS']")))
     pbar.update(1)
-    item.click()
+    reports.click()
     pbar.update(1)
 
-    item2 = item.find_element(By.CSS_SELECTOR, "button[data-automationid='FieldRender-DotDotDot']")
-    item2.click()
-    download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
+    year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']")))
     pbar.update(1)
-    download.click()
+    year.click()
+    pbar.update(1)
 
-    # ipdb.set_trace()
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='JANEIRO']"))) # criar lógica para obter mês do calendário - 1
+    pbar.update(1)
+    month.click()
+    pbar.update(1)
 
-    # Linux:
-    # # Create an instance of ActionChains and perform the hover action
-    # actions = ActionChains(driver)
-    # actions.move_to_element(item).perform()
-    # pbar2.update(1)
-    # download = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[data-automationid='downloadCommand']")))
-    # download.click()
 
+    files_to_download_amount = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[class='ms-List']")))
+    files_to_download_list = files_to_download_amount.find_elements(By.CSS_SELECTOR, "div[class='ms-List-cell']")
+    pbar.update(1)
+
+    for file in tqdm(files_to_download_list, "Selecting files to download..."):
+        # Create an instance of ActionChains and perform the hover action
+        actions = ActionChains(driver)
+        actions.move_to_element(file).perform()
+
+        selectable_icon = file.find_element(By.CSS_SELECTOR, "div[role='gridcell']")
+        selectable_icon.click()
+
+        pre_download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "i[data-icon-name='More']")))
+        pre_download_button.click()
+
+        download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[name='Baixar']")))
+        download_button.click()
+        # ipdb.set_trace()
+
+        # Unclick the element!
+        selectable_icon.click()
+
+        time.sleep(1)
+
+    pbar.update(1)
     time.sleep(1)
     pbar.update(1)
     time.sleep(1)

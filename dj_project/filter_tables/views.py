@@ -12,13 +12,13 @@ from tqdm import tqdm
 from filter_tables.models import TableName
 
 from management_before_django.table_managements.modules.status_update import status_update
-from robot_sharepoint.modules.robot_for_login_and_download_from_sharepoint import robot_for_sharepoint
+from robot_sharepoint.modules.robots.robot_for_login_and_download_from_sharepoint import robot_for_sharepoint
 from robot_sharepoint.modules.join_reports import join_reports
 
-from utils.envs import username, password, sharepoint_url, download_directory, host_email
-from utils.paths import reports_path, raw_tables_path
-from utils.report_files import not_found_list, sent_list, not_found_title
-
+from utils.variables.envs import username, password, sharepoint_medicoes_url, download_directory, host_email
+from utils.variables.paths import reports_path, edited_tables_path
+from utils.variables.report_files import not_found_list, sent_list, not_found_title
+print("sharepoint_medicoes_url:", sharepoint_medicoes_url)
 import ipdb
 
 # # While there's no model:
@@ -82,7 +82,7 @@ class EmailAttachByTable(APIView):
                         robot_for_sharepoint(
                             username,
                             password,
-                            sharepoint_url,
+                            sharepoint_medicoes_url,
                             download_directory,
                             cnpj,
                             nfe,
@@ -191,7 +191,7 @@ class EmailAttachByTable(APIView):
                                 file.write(sent_elem)
 
                             # STATUS UPDATE:
-                            status_update(raw_tables_path, row_data)
+                            status_update(edited_tables_path, row_data)
 
                     else:
                         continue
