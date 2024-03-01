@@ -5,6 +5,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 from errors.custom_exceptions import TooManyFilesError
+from utils.variables.paths import edited_tables_path
 
 import ipdb
 
@@ -40,12 +41,12 @@ def status_update(path: Path, row_data: dict) -> None:
                 column_index_for_nfe = None
                 column_index_for_status = None
 
-                for cell in worksheet[2]:
-                    print(cell.value)
+                for cell in worksheet[1]:
+                    # print("cell.value:", cell.value)
                     if cell.value == 'Numero':
                         # ipdb.set_trace()
                         column_index_for_nfe = cell.column
-                        print(cell.column)
+                        # print("cell.column:", cell.column)
                         # print(column_index)
                     elif cell.value == "STATUS":
                         column_index_for_status = cell.column
@@ -54,23 +55,23 @@ def status_update(path: Path, row_data: dict) -> None:
                     raise ValueError("Column 'Numero' not found in the worksheet")
 
                 try:
-                    for row_to_update in range(3, worksheet.max_row + 1): 
+                    for row_to_update in range(2, worksheet.max_row + 1): 
                         like_ancient_nfe = '0' + row_data['nfe']
                         if worksheet.cell(row=row_to_update, column=column_index_for_nfe).value == str(like_ancient_nfe):
-                            print(row_data['nfe'])
+                            print("row_data['nfe']:", row_data['nfe'])
                             worksheet.cell(row=row_to_update, column=column_index_for_status).value = "Enviado"
-                            print(worksheet.cell(row=row_to_update, column=column_index_for_status).value)
+                            # ipdb.set_trace()
+                            print("worksheet.cell(row=row_to_update, column=column_index_for_status).value:", worksheet.cell(row=row_to_update, column=column_index_for_status).value)
                             break
-                        path_back = str(file.resolve())
-                        print(path_back)
+                        path_back = str(edited_tables_path.resolve() / file.name)
+                        print("path_back:", path_back)
 
                     workbook.save(path_back)
                     workbook.close()
-                    # ipdb.set_trace()
                     
                 except Exception as e:
-                    print(e)
                     raise FileNotFoundError("No row with this NFE found!")
+                    print(e)
 
         else:
             raise Exception("Something went wrong with this file... ")

@@ -6,6 +6,8 @@ from tqdm import tqdm
 
 from errors.custom_exceptions import TooManyFilesError
 
+from utils.variables.paths import edited_tables_path
+
 import ipdb
 
 
@@ -29,6 +31,9 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
     # Working with it:
     for file in tables_path_content:
         if file.is_file():
+
+            path_to_edited = str(edited_tables_path.resolve() / file.name)
+
             path_to_table = str(file)
             if path_to_table.endswith('.xls') or path_to_table.endswith('.xlsx') or path_to_table.endswith('.xlsm'):
 
@@ -36,34 +41,43 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
                 workbook = load_workbook(data_only=True, filename=path_to_table)
                 attempt = workbook.active
 
-                col_names = [col.value for col in attempt[2]]
+                col_names = [col.value for col in attempt[1]]
+                # ipdb.set_trace()
                 # do_we_have_status = [elem.value for elem in col_names if elem.value = "STATUS"]
 
                 if "STATUS" not in col_names:
                     new_column = attempt.max_column + 1
 
                     attempt.insert_cols(new_column)
-                    attempt.cell(row=2, column=new_column).value = "STATUS"
+                    attempt.cell(row=1, column=new_column).value = "STATUS"
 
-                    for cell in range(3, attempt.max_row + 1):
+                    for cell in range(2, attempt.max_row + 1):
                         # print(cell)
                         attempt.cell(row=cell, column=new_column).value = "Não enviado"
                     
-                    path_back = str(file.resolve())
-                    print(path_back)
-                    # ipdb.set_trace()
+                    # COMPARE HERE:
+                    # if
+                        
+                    print("path_to_edited:", path_to_edited)
 
-                    workbook.save(path_back)
+                    workbook.save(path_to_edited)
+                    # path_to_edited = str(edited_tables_path.resolve())
+                    # print(path_to_edited)
+
+                    # workbook.save(path_to_edited)
                     workbook.close()
 
+
                 # OPENPYXL TO ADD STATUS COLUMN:
-                workbook = load_workbook(data_only=True, filename=path_to_table)
+                # ipdb.set_trace()
+                workbook = load_workbook(data_only=True, filename=path_to_edited)
                 table_sheet = workbook[sheet]
+                # ipdb.set_trace()
 
                 rows = list()
 
                 # First row for titles:
-                headers = [cell.value for cell in table_sheet[2]]
+                headers = [cell.value for cell in table_sheet[1]]
                 headers = [headers[3], headers[4], headers[6],  headers[10], headers[18], headers[23]]
 
                 # Other rows for content:
