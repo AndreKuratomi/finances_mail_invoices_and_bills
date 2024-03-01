@@ -13,7 +13,7 @@ from filter_tables.models import TableName
 
 from management_before_django.table_managements.modules.status_update import status_update
 from robot_sharepoint.modules.robots.robot_for_login_and_download_from_sharepoint import robot_for_sharepoint
-from robot_sharepoint.modules.join_reports import join_reports
+from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.variables.envs import username, password, sharepoint_medicoes_url, download_directory, host_email
 from utils.variables.paths import reports_path, edited_tables_path

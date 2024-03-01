@@ -13,7 +13,7 @@ from selenium.webdriver.edge.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from robot_sharepoint.modules.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
+from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
 
 from tqdm import tqdm
 
