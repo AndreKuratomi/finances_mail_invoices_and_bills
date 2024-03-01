@@ -38,7 +38,7 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
 
     # Driver instance:
     options = Options()
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
 
     # For Windows OS:
     options.add_argument('-inprivate')
@@ -155,9 +155,15 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
                     driver.quit()
 
                     moving_files_from_virtual_dir(download_dir, default_download_dir)
+                
+                else:
+                    print("No nfe found for {}!".format(nfe))
 
-            except:
-                print("No nfe found for {}!".format(nfe))
+            except Exception as e:
+                print(f"Error while robot in nef folder: {e}")
 
-    except:
-        print("No client found for {}!".format(cnpj))
+        else:        
+            print("No client found for {}!".format(cnpj))
+
+    except Exception as e:
+        print(f"Error while robot in CNPJ folder: {e}")

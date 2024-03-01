@@ -38,7 +38,7 @@ def robot_for_raw_table(username: str, password: str, site_url: str,
 
     # Driver instance:
     options = Options()
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
 
     # For Windows OS:
     options.add_argument('-inprivate')
@@ -125,7 +125,7 @@ def robot_for_raw_table(username: str, password: str, site_url: str,
     pbar.close()
     driver.quit()
     # ipdb.set_trace()
-
+    print("download_dir:", download_dir)
     moving_files_from_virtual_dir(download_dir, default_download_dir)
 
     # driver.close()
