@@ -106,7 +106,7 @@ class EmailAttachByTable(APIView):
                         table_template = "table_template_deposito.html"
                         
                         # NOT FOUND CNPJ AND/OR NFE:
-                        if len(tables_path_content) == 0:
+                        if len(tables_path_content) <= 1:
                             
                             # Fill element not found list:
                             not_found_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
@@ -115,26 +115,28 @@ class EmailAttachByTable(APIView):
 
                         else:
                             for file in tables_path_content:
-                                print(file)
+                                print("Attachments:",file)
                                 if file.is_file():
                                     string_file = str(file)
-                                    prefix = full_attachments_path
-                                    filtered = string_file[len(prefix):]
+                                    
+                                    if string_file.endswith('.pdf') or string_file.endswith('.xlsx'):
+                                        prefix = full_attachments_path
+                                        filtered = string_file[len(prefix):]
 
-                                    if filtered.startswith("NFE"):
+                                        if filtered.startswith("NFE"):
 
-                                        specific_char_1 = "."
-                                        specific_char_2 = " "
+                                            specific_char_1 = "."
+                                            specific_char_2 = " "
 
-                                        tipo_de_servico = ""
-                                        for charac in filtered[10:]:
-                                            if charac == specific_char_1 or charac == specific_char_2:
-                                                break
-                                            else:
-                                                tipo_de_servico += charac
+                                            tipo_de_servico = ""
+                                            for charac in filtered[10:]:
+                                                if charac == specific_char_1 or charac == specific_char_2:
+                                                    break
+                                                else:
+                                                    tipo_de_servico += charac
 
-                                    elif filtered.startswith("BOLETO"):
-                                        table_template = "table_template_boleto.html"
+                                        elif filtered.startswith("BOLETO"):
+                                            table_template = "table_template_boleto.html"
                                 
                                 else:
                                     print("Error! Verify the file.")
@@ -179,8 +181,9 @@ class EmailAttachByTable(APIView):
                             # Attach files to email:
                             for file in tables_path_content:
                                 print(file)
-                                str(file)
-                                email.attach_file(file)
+                                stringfy = str(file)
+                                if stringfy.endswith('.pdf') or stringfy.endswith('.xlsx'):
+                                    email.attach_file(file)
 
                             email.send()
                             print("Email successfully sent! Check inbox.")

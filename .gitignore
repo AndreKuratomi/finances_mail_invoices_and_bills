@@ -1,7 +1,8 @@
 venv/
 env/
 management_before_django/db/db_sqlite3.db
-robot_sharepoint/attachments/*
+robot_sharepoint/attachments/*.pdf
+robot_sharepoint/attachments/*.xlsx
 
 .not_used/
 .env
