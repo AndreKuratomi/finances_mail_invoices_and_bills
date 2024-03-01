@@ -5,6 +5,8 @@ import shutil
 from pathlib import Path
 from tqdm import tqdm
 
+from utils.functions.delete_elements import do_we_have_things_to_delete
+
 import ipdb
 
 
@@ -47,8 +49,8 @@ def empty_download_directories(download_dir: str, default_download_dir: str, pro
         pbar2.update(1)
     dir_to_destiny_path = Path(download_dir)
     pbar2.update(1)
-
     destiny_dir_content = list(dir_to_destiny_path.iterdir())
+    print("destiny_dir_content:", destiny_dir_content)
 
     pbar2.update(1)
     if len(destiny_dir_content) > 0:
@@ -76,14 +78,3 @@ def moving_files_from_virtual_dir(download_dir: str, default_download_dir: str) 
             shutil.move(path_to_table, download_dir)
         else:
             raise Exception("Something went wrong... check the file itself")
-        
-
-def check_if_dir_is_empty_or_not(direc: str) -> bool:
-    dir_to_path = Path(direc)
-    dir_content = list(dir_to_path.iterdir())
-
-    if len(dir_content) > 0:
-        do_we_have_any_spreadsheet = [elem for elem in dir_content if str(elem).endswith('.xlsx')]
-        if len(do_we_have_any_spreadsheet):
-            return True
-        return False
