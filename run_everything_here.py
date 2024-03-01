@@ -29,23 +29,25 @@ from utils.variables.report_files import not_found_list, sent_list, elements_rep
 root_directory = os.path.dirname(os.path.abspath(__file__))
 root_directory = str(root_directory)
 
+# Clean up old final reports:
 do_we_have_things_to_delete(reports_path, "relatorio_diario.txt")
 
 do_we_have_table_to_work_with = do_we_have_spreadsheets(raw_tables_path)
 
-# if not do_we_have_table_to_work_with:
-#     robot_for_raw_table(username, password, sharepoint_for_database_and_upload_url, raw_tables_path)
+if not do_we_have_table_to_work_with:
+    robot_for_raw_table(username, password, sharepoint_for_database_and_upload_url, raw_tables_path)
 
-#     # Raw reports creation:
-#     with reports_path.joinpath(sent_list).open("w") as file:
-#         file.write(sent_title)
+    # Raw reports creation for new database spreadsheet:
+    with reports_path.joinpath(sent_list).open("w") as file:
+        file.write(sent_title)
 
-# try:
-#     tables_to_db.tables_to_db()
-#     EmailAttachByTable().post(root_directory)
-# except Exception as e: 
-#     print(f"PROCESSO INTERROMPIDO! Error: {e} CONTATAR DEV RESPONSÁVEL \n Mas pode continuar.")
-# finally: 
-join_reports(not_found_list, sent_list, elements_reports_list, reports_path)
-upload_files_to_sharepoint(username, password, reports_path, sharepoint_for_database_and_upload_url)
-    
+try:
+    tables_to_db.tables_to_db()
+    EmailAttachByTable().post(root_directory)
+except Exception as e: 
+    print(f"PROCESSO INTERROMPIDO! Error: {e} CONTATAR DEV RESPONSÁVEL \n Mas pode continuar.")
+finally: 
+    print("ELABORANDO RELATÓRIO FINAL E ENVIANDO.")
+    join_reports(not_found_list, sent_list, elements_reports_list, reports_path)
+    upload_files_to_sharepoint(username, password, reports_path, sharepoint_for_database_and_upload_url)
+    print("PROCESSO ENCERRADO. CHECAR RELATÓRIOS.")

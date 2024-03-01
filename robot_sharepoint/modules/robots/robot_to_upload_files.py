@@ -23,7 +23,7 @@ def upload_files_to_sharepoint(username: str, password: str, reports_path: Path,
 
     # Driver instance:
     options = Options()
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
     options.add_argument('-inprivate')
 
     driver = webdriver.Edge(options=options)
@@ -55,24 +55,27 @@ def upload_files_to_sharepoint(username: str, password: str, reports_path: Path,
     month.click()
     pbar.update(1)
 
+    time.sleep(1)
+
     # UPLOADING FILE:
     upload = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='Carregar arquivos do seu computador para este local']")))
     upload.click()
+ 
+    time.sleep(1)
 
-    # Create an instance of ActionChains and perform the hover action
-    # actions = ActionChains(driver)
-    # actions.move_to_element(upload).perform()
-    item2 = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[name='Arquivos']")))
-    item2.click()
+    # ipdb.set_trace()
+    # upload_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[data-automationid='uploadFileCommand']")))
+    # upload_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[name='Arquivos']")))
+    upload_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "button[aria-label='Arquivos']")))
+    upload_button.click()
     time.sleep(2)
 
     # Dialog page!:
     file_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CSS_SELECTOR, "input[type='file']")))
-    # ipdb.set_trace()
     
-    # Extract info from attachments:
-    tables_path_content = list(Path(reports_path).iterdir())    
-    # Attach files to email:
+    # Extract final report from reports and upload it:
+    tables_path_content = list(Path(reports_path).iterdir())
+
     for file in tables_path_content:
         stringfy = str(file.resolve())
         print('file:', file)

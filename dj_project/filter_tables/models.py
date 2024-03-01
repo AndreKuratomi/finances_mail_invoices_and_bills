@@ -135,7 +135,7 @@ class TableName(models.Model):
     cnpj = models.TextField(db_column='CNPJ', blank=True, null=True)  # Field name made lowercase.
     numero = models.TextField(db_column='Numero', blank=True, null=True)  # Field name made lowercase.
     dt_vencto = models.TextField(db_column='Dt Vencto', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
-    valor_liquido = models.TextField(db_column='Valor Liquido', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
+    valor_liquido = models.FloatField(db_column='Valor Liquido', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
     status = models.TextField(db_column='STATUS', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
