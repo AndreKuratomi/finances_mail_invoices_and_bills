@@ -21,7 +21,7 @@ from robot_sharepoint.modules.robots.robot_for_login_and_download_raw_table impo
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.path_length import do_we_have_spreadsheets
-from utils.functions.delete_elements import do_we_have_txt_to_delete
+from utils.functions.delete_elements import do_we_have_things_to_delete
 from utils.variables.envs import download_directory, username, password, raw_table_directory, sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
 from utils.variables.paths import raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, elements_reports_list, sent_title
@@ -30,7 +30,7 @@ root_directory = os.path.dirname(os.path.abspath(__file__))
 root_directory = str(root_directory)
 
 # Clean up old final reports:
-do_we_have_txt_to_delete(reports_path, "relatorio_diario.txt")
+do_we_have_things_to_delete(reports_path, "relatorio_diario.txt")
 
 do_we_have_table_to_work_with = do_we_have_spreadsheets(raw_tables_path)
 

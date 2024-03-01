@@ -6,7 +6,12 @@ from tqdm import tqdm
 
 from errors.custom_exceptions import TooManyFilesError
 
-from utils.variables.paths import edited_tables_path
+from management_before_django.table_managements.modules.compare_spreadsheets import compare_spreadsheets
+
+from utils.functions.delete_elements import do_we_have_things_to_delete
+from utils.functions.path_length import do_we_have_spreadsheets
+from utils.variables.paths import edited_tables_path, raw_tables_path
+from utils.variables.envs import sheet
 
 import ipdb
 
@@ -32,6 +37,7 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
     for file in tables_path_content:
         if file.is_file():
 
+            path_to_raw = str(raw_tables_path.resolve() / file.name)
             path_to_edited = str(edited_tables_path.resolve() / file.name)
 
             path_to_table = str(file)
@@ -55,18 +61,24 @@ def filter_table_column(path: Path, sheet: str) -> pd.DataFrame:
                         # print(cell)
                         attempt.cell(row=cell, column=new_column).value = "Não enviado"
                     
+                    table_in_edited_table_path = do_we_have_spreadsheets(edited_tables_path)
+                    
+                    # print("path_to_edited:", path_to_edited)
+                    # print("path_to_raw:", path_to_raw)
                     # COMPARE HERE:
-                    # if
-                        
-                    print("path_to_edited:", path_to_edited)
+                    if table_in_edited_table_path:
+                        workbook.save(path_to_raw)
+                        workbook.close()
+                        # ipdb.set_trace()
 
-                    workbook.save(path_to_edited)
-                    # path_to_edited = str(edited_tables_path.resolve())
-                    # print(path_to_edited)
+                        compare_spreadsheets(path_to_raw, path_to_raw, sheet)
+                    
+                    else:
+                        workbook.save(path_to_edited)
+                        workbook.close()
 
-                    # workbook.save(path_to_edited)
-                    workbook.close()
-
+                # Delete no more necessary raw table 
+                do_we_have_things_to_delete(raw_tables_path, '.xlsx')
 
                 # OPENPYXL TO ADD STATUS COLUMN:
                 # ipdb.set_trace()

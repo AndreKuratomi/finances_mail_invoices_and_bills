@@ -5,8 +5,6 @@ import shutil
 from pathlib import Path
 from tqdm import tqdm
 
-from utils.functions.delete_elements import do_we_have_txt_to_delete
-
 import ipdb
 
 

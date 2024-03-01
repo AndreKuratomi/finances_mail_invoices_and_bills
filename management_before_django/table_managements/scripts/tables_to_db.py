@@ -18,9 +18,8 @@ def tables_to_db() -> None:
     # Read Excel file and return it filtered by color into Dataframe:
     pandas_dataframe = filter_table_column(raw_tables_path, sheet) # HOW TO AUTOMATIZE THIS 2nd PARAMETER???
 
-    table_in_edited_table_path = do_we_have_spreadsheets(edited_tables_path)
     
-    # if table_in_edited_table_path:
+    # 
     #     # updated_dataframe = compare_spreadsheets(pandas_dataframe, edited_tables_path, sheet)
     #     print("Em obras...")    
     #     # # Insert table to SQLite database:
