@@ -16,17 +16,8 @@ def tables_to_db() -> None:
     """Gathers all table functions from raw table edition till django model creation."""
 
     # Read Excel file and return it filtered by color into Dataframe:
-    pandas_dataframe = filter_table_column(raw_tables_path, sheet) # HOW TO AUTOMATIZE THIS 2nd PARAMETER???
-
-    
-    # 
-    #     # updated_dataframe = compare_spreadsheets(pandas_dataframe, edited_tables_path, sheet)
-    #     print("Em obras...")    
-    #     # # Insert table to SQLite database:
-    #     # insert_table_to_db(db, updated_dataframe)
-    # else:
-    #     # Idem:
-    #     insert_table_to_db(db, pandas_dataframe)
+    pandas_dataframe = filter_table_column(raw_tables_path, edited_tables_path, sheet) # HOW TO AUTOMATIZE THIS 2nd PARAMETER???
+    # ipdb.set_trace()
     insert_table_to_db(db, pandas_dataframe)
 
     # Create Django model:
