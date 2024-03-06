@@ -17,8 +17,8 @@ from tqdm import tqdm
 
 import ipdb
 
-from robot_sharepoint.modules import unzip_files
-from robot_sharepoint.modules.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
+from robot_sharepoint.modules.robot_utils import unzip_files
+from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
 
 
 def robot_for_sharepoint(username: str, password: str, site_url: str, 
@@ -73,16 +73,16 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
     pbar.update(1)
 
     # CLICKING FOLDERS:
-    root_folder = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - MEDIÇÕES']")))
-    pbar.update(1)
-    root_folder.click()
-    pbar.update(1)
+    # root_folder = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - MEDIÇÕES']")))
+    # pbar.update(1)
+    # root_folder.click()
+    # pbar.update(1)
 
-    year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']"))) # criar lógica para obter ano do calendário
-    pbar.update(1)
-    year.click()
-    pbar.update(1)
-
+    # year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']"))) # criar lógica para obter ano do calendário
+    # pbar.update(1)
+    # year.click()
+    # pbar.update(1)
+    # ipdb.set_trace()
     month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - JANEIRO']"))) # criar lógica para obter mês do calendário - 1
     pbar.update(1)
     month.click()
@@ -155,9 +155,15 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
                     driver.quit()
 
                     moving_files_from_virtual_dir(download_dir, default_download_dir)
+                
+                else:
+                    print("No nfe found for {}!".format(nfe))
 
-            except:
-                print("No nfe found for {}!".format(nfe))
+            except Exception as e:
+                print(f"Error while robot in nef folder: {e}")
 
-    except:
-        print("No client found for {}!".format(cnpj))
+        else:        
+            print("No client found for {}!".format(cnpj))
+
+    except Exception as e:
+        print(f"Error while robot in CNPJ folder: {e}")
