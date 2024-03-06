@@ -3,8 +3,7 @@
 - [Translates](#translates)
 - [Description](#Description)
 - [Instalation](#instalation)
-- [Comandos](#Comandos)
-- [Documentação](#documentação)
+- [Commands](#Commands)
 
 <br>
 

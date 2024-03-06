@@ -17,7 +17,7 @@
 
 # Sobre
 
-<p>A API <b>python_django_tables_filter_mail</b> se propõe a manipular planilhas, filtra-las e envia-las por email.
+<p>A aplicação <b>python_django_tables_filter_mail</b> se propõe a manipular planilhas, filtrá-las e enviá-las por email.
 
 Esta aplicação utiliza o framework <b>Django</b> e o banco de dados <b>SQLite3</b>.</p>
 <br>
