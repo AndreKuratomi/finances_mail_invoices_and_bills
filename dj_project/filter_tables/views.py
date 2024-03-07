@@ -15,10 +15,11 @@ from management_before_django.table_managements.modules.status_update import sta
 from robot_sharepoint.modules.robots.robot_for_login_and_download_from_sharepoint import robot_for_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
+from utils.functions.delete_elements import do_we_have_things_to_delete
 from utils.variables.envs import username, password, sharepoint_medicoes_url, download_directory, host_email
-from utils.variables.paths import reports_path, edited_tables_path
-from utils.variables.report_files import not_found_list, sent_list, not_found_title
-print("sharepoint_medicoes_url:", sharepoint_medicoes_url)
+from utils.variables.paths import edited_tables_path, raw_tables_path, reports_path
+from utils.variables.report_files import not_found_list, sent_list, not_found_title, sent_title
+
 import ipdb
 
 # # While there's no model:
@@ -89,7 +90,7 @@ class EmailAttachByTable(APIView):
                         # "61102778000872", # not_found
                         # "17757" # not_found
                     )
-                    # print(f"File: {__file__}")
+
                     attachments_path = "/robot_sharepoint/attachments/"
                     full_attachments_path = root_dir + attachments_path
 
@@ -195,7 +196,15 @@ class EmailAttachByTable(APIView):
                 else:
                     continue
 
+            # Delete no more necessary raw table 
+            do_we_have_things_to_delete(raw_tables_path, '.xlsx')
+
             print("Application finished its process succesfully!")
+
+            # ONLY FIRST DAY OF THE MONTH!
+            # Raw reports creation for new database spreadsheet:
+            with reports_path.joinpath(sent_list).open("w") as file:
+                file.write(sent_title)
 
         except Exception as e:
             print(f"error:Something went wrong: {e} ! Contact the dev!")
