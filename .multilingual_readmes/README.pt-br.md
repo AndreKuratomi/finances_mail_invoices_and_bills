@@ -133,6 +133,35 @@ code .
 ```
 <br>
 
+<h3>4. Create <b>.env</b> file:</h3>
+
+./
+```
+touch .env
+```
+
+Dentro dele precisamos definir nossas variáveis de ambiente tendo como referência o arquivo <b>.env.example</b>:
+
+```
+# DJANGO:
+SECRET_KEY=secret_key
+
+# EMAIL VARIABLES:
+EMAIL_HOST_USER=host_email
+EMAIL_HOST_PASSWORD=host_password
+
+# SHAREPOINT VARIABLES:
+SHAREPOINT_FOR_UPLOAD_URL=sharepoint_for_upload_url
+SHAREPOINT_FATURAMENTO_URL=faturamento
+SHAREPOINT_MEDICOES_URL=medicoes
+
+DOWNLOAD_DIRECTORY=download_directory
+RAW_TABLE_DIRECTORY=raw_table_url
+```
+
+Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O arquivo já consta no .gitignore para não ser subido no repositório.
+
+<br>
 # Comandos
 
 Para todos os procedimentos necessários para a aplicação trabalhar basta rodar apenas o comando abaixo:
