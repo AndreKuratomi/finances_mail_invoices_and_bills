@@ -1,7 +1,7 @@
 import os
 import ipdb
 
-from emergency_envs import sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
+# from emergency_envs import sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
 from dotenv import load_dotenv
 
 load_dotenv()
