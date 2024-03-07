@@ -17,7 +17,7 @@ def tables_to_db() -> None:
 
     # Read Excel file and return it filtered by color into Dataframe:
     pandas_dataframe = filter_table_column(raw_tables_path, edited_tables_path, sheet) # HOW TO AUTOMATIZE THIS 2nd PARAMETER???
-    # ipdb.set_trace()
+
     insert_table_to_db(db, pandas_dataframe)
 
     # Create Django model:

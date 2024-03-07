@@ -162,6 +162,7 @@ RAW_TABLE_DIRECTORY=raw_table_url
 Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O arquivo já consta no .gitignore para não ser subido no repositório.
 
 <br>
+
 # Comandos
 
 Para todos os procedimentos necessários para a aplicação trabalhar basta rodar apenas o comando abaixo:
