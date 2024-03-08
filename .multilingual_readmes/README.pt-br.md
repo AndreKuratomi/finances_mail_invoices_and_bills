@@ -1,34 +1,122 @@
-## finances_table_to_db_and_mail
+# finances_table_to_db_and_mail
 
 - [Traduções](#traduções)
 - [Sobre](#sobre)
+- [Descrição](#descrição)
 - [Instalação](#instalação)
 - [Comandos](#comandos)
+- [Referências](#referências)
 
 <br>
 
-# Traduções:
+## Traduções:
 
 - [Português brasileiro / Brazilian portuguese](/.multilingual_readmes/README.pt-br.md)
 - [Inglês / English](https://github.com/AndreKuratomi/finances_tables_to_db_and_mail)
 
 <br>
 
+## Sobre
 
-# Sobre
+A aplicação <b>finances_table_to_db_and_mail</b> se propõe a buscar e baixar no sharepoint por arquivos de faturamento para serem anexados e enviados por email a partir de uma planilha fornecida. Junto com isso é enviado para o sharepoint relatório descrevendo casos bem-sucedidos e mal-sucedidos de envio no processo.
 
-<p>A aplicação <b>python_django_tables_filter_mail</b> se propõe a manipular planilhas, filtrá-las e enviá-las por email.
-
-Esta aplicação utiliza o framework <b>Django</b> e o banco de dados <b>SQLite3</b>.</p>
+Esta aplicação utiliza o framework <b>Django</b>, as bibliotecas <b>[OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)</b>, <b>[Pandas](https://pandas.pydata.org/docs/)</b> e <b>[Selenium](https://pypi.org/project/selenium/)</b> e o banco de dados <b>[SQLite3](https://docs.python.org/3/library/sqlite3.html)</b>.
 <br>
 
-# Instalação
+## Descrição
+
+finances_table_to_db_and_mail é uma automatização do processo de análise de planilha, busca no sharepoint por arquivos por período, CNPJ e número da NFE. 
+
+<h4>Processo resumido</h4>
+
+A aplicação inteira é acionada no diretório raiz no script './run_everything_here.py' ou pelo arquivo .bat 'script_for_bat_file.bat'
+
+Ela inicialmente insere na planilha fornecida em 'raw_table/' uma coluna 'STATUS' usando <b>OpenPyXl</b> e a salva em 'edited_table/', depois transforma a planilha editada em um dataframe usando <b>Pandas</b> e com isso filtra por determinadas colunas e insere uma nova coluna 'ID'. 
+
+Manipulado o dataframe ele é inserido em um banco de dados <b>SQLite3</b> em 'db/' e transformado em uma model do <b>Django</b> usando o comando <strong>inspectdb</strong>. Isto possibilita o uso do framework  <b>Django</b> para utilizar o container <b>EmailMessage</b> para anexar e enviar os emails para clientes. 
+
+<h4>Planilha</h4>
+
+A aplicação iniciamente busca por uma planilha presente no diretório './finances_table_to_db_and_mail/management_before_django/raw_table'. Se encontrada a aplicação segue com o processo acima e busca de anexos. Senão, a aplicação usa <b>selenium</b> para buscar pela planilha no sharepoint.
+
+<h4>Anexos</h4>
+
+Para obter os anexos, a aplicação utiliza a biblioteca <b>Selenium</b> para buscar no <b>sharepoint</b> pelos anexos por CNPJ e NFE. 
+Se encontrados, os anexos são baixados um por um no diretório './finances_table_to_db_and_mail/robot_sharepoint/attachments/'. Os anexos são lidos em './finances_table_to_db_and_mail/dj_project/filter_tables/views.py' e conforme o conjunto dos anexos é escolhido o template para compor o corpo do email em './finances_table_to_db_and_mail/dj_project/filter_tables/templates/'.
+
+Quando não encontrados, a aplicação segue buscando pelos próximos anexos.
+
+<h4>Relatórios</h4>
+
+Os anexos encontrados e não encontrados são registrados em arquivos de texto criados em './finances_table_to_db_and_mail/robot_sharepoint/reports/'. Quando o processo é finalizado ou interrompido é automaticamente criado um terceiro arquivo de texto que junta os dois anteriores. Este terceiro arquivo é enviado para o sharepoint para servir de registro para cada operação finalizada ou não.
+
+<h4>Estudos de caso</h4>
+
+Segue uma listagem resumida de como a aplicação se comporta por situação:
+
+ERROS:
+
+    1. Processo interrompido (cai a luz, máquina sem internet, usuário fecha terminal sem querer):
+        Procedimento:
+            Fim do processo.
+        Ao retomar:
+            Base de dados se mantém como estava;
+            Tabela baixada deve se manter;
+            Tabela editada deve se manter
+            Relatório enviados se mantém;
+            Relatório não enviados apagado;
+            Relatório final recriado.
+
+    2. Processo interrompido (erro interno ou interrupção voluntária do processo no terminal (ex: fim de expediente)):
+        Procedimento:
+            Relatório final (enviados e não encontrados) enviado sharepoint;
+            Fim do processo.
+        Ao retomar:
+            Base de dados se mantém como estava;
+            Tabela baixada deve se manter como estava;
+            Tabela editada deve se manter como estava;
+            Relatório enviados se mantém;
+            Relatório não enviados apagado;
+            Relatório final recriado.
+
+IDEAL:
+
+    3. Processo finalizado durante período faturamentos (novos faturamentos virão):
+        Procedimento:
+            Relatório final (enviados e não encontrados) enviado sharepoint;
+            Apagar tabela baixada;
+            Manter tabela editada;
+            Fim do processo.
+        Ao retomar:
+            Base de dados se mantém;
+            Tabela baixada deve se manter como estava;
+            Tabela editada deve se manter como estava;
+            Relatório enviados se mantém;
+            Relatório não enviados apagado;
+            Relatório final recriado.
+
+    4. Processo finalizado (período faturamentos encerrado - todos os faturamentos enviados OU VIRADA DO MÊS*):
+        Procedimento:
+            Apagar tabelas;
+            Apagar relatórios;
+            Fim do processo.
+        Ao retomar:
+            Baixar base de dados;
+            Tabela baixada deve ser criada;
+            Tabela editada deve ser criada;
+            Relatório enviados deve ser criada;
+            Relatório não enviados deve ser criada;
+            Relatório final recriado.
+
+<!-- <h4>Fluxograma</h4>  ? -->
+
+## Instalação
 
 <h3>0. Primeiramente, é necessário já ter instalado na própria máquina:</h3>
 
 - O versionador de codigo <b>[Git](https://git-scm.com/downloads)</b>.
 
-- A linguagem de programacao <b>[Python](https://www.python.org/downloads/)</b>.
+- A linguagem de programação <b>[Python](https://www.python.org/downloads/)</b>.
 
 - Um <b>editor de código</b>, conhecido também como <b>IDE</b>. Por exemplo, o <b>[Visual Studio Code (VSCode)](https://code.visualstudio.com/)</b>.
 
@@ -181,3 +269,15 @@ python3 run_everything_here.py
 
 <br>
 
+# Referências
+
+- [Django](https://www.djangoproject.com/)
+- [DjangoMail](https://docs.djangoproject.com/en/4.1/topics/email/)
+- [Dotenv](https://www.npmjs.com/package/dotenv)
+- [Git](https://git-scm.com/downloads)
+- [OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)
+- [Pandas](https://pandas.pydata.org/docs/)
+- [Python](https://www.python.org/downloads/)
+- [Selenium](https://pypi.org/project/selenium/)
+- [SQLite3](https://docs.python.org/3/library/sqlite3.html)
+- [Visual Studio Code (VSCode)](https://code.visualstudio.com/)
