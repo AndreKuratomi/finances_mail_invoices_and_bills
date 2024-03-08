@@ -9,7 +9,7 @@
 
 <br>
 
-## Traduções:
+## Traduções
 
 - [Português brasileiro / Brazilian portuguese](/.multilingual_readmes/README.pt-br.md)
 - [Inglês / English](https://github.com/AndreKuratomi/finances_tables_to_db_and_mail)
@@ -18,39 +18,40 @@
 
 ## Sobre
 
-A aplicação <b>finances_table_to_db_and_mail</b> se propõe a buscar e baixar no sharepoint por arquivos de faturamento para serem anexados e enviados por email a partir de uma planilha fornecida. Junto com isso é enviado para o sharepoint relatório descrevendo casos bem-sucedidos e mal-sucedidos de envio no processo.
+A aplicação <strong>finances_table_to_db_and_mail</strong> se propõe a buscar e baixar no sharepoint por arquivos de faturamento para serem anexados e enviados por email a partir de uma planilha fornecida. Junto com isso é enviado para o sharepoint relatório descrevendo casos bem-sucedidos e mal-sucedidos de envio no processo.
 
-Esta aplicação utiliza o framework <b>Django</b>, as bibliotecas <b>[OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)</b>, <b>[Pandas](https://pandas.pydata.org/docs/)</b> e <b>[Selenium](https://pypi.org/project/selenium/)</b> e o banco de dados <b>[SQLite3](https://docs.python.org/3/library/sqlite3.html)</b>.
+Esta aplicação utiliza o framework <strong>[Django](https://www.djangoproject.com/)</strong>, as bibliotecas <strong>[OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)</strong>, <strong>[Pandas](https://pandas.pydata.org/docs/)</strong> e <strong>[Selenium](https://pypi.org/project/selenium/)</strong> e o banco de dados <strong>[SQLite3](https://docs.python.org/3/library/sqlite3.html)</strong>.
+
 <br>
 
 ## Descrição
 
-finances_table_to_db_and_mail é uma automatização do processo de análise de planilha, busca no sharepoint por arquivos por período, CNPJ e número da NFE. 
+<b>finances_table_to_db_and_mail</b> é uma automatização do processo de análise de planilha, busca no sharepoint por arquivos por período, CNPJ e número da NFE. 
 
-<h4>Processo resumido</h4>
+<h3>Processo resumido</h3>
 
 A aplicação inteira é acionada no diretório raiz no script './run_everything_here.py' ou pelo arquivo .bat 'script_for_bat_file.bat'
 
 Ela inicialmente insere na planilha fornecida em 'raw_table/' uma coluna 'STATUS' usando <b>OpenPyXl</b> e a salva em 'edited_table/', depois transforma a planilha editada em um dataframe usando <b>Pandas</b> e com isso filtra por determinadas colunas e insere uma nova coluna 'ID'. 
 
-Manipulado o dataframe ele é inserido em um banco de dados <b>SQLite3</b> em 'db/' e transformado em uma model do <b>Django</b> usando o comando <strong>inspectdb</strong>. Isto possibilita o uso do framework  <b>Django</b> para utilizar o container <b>EmailMessage</b> para anexar e enviar os emails para clientes. 
+Manipulado o dataframe ele é inserido em um banco de dados <b>SQLite3</b> em 'db/' e transformado em uma model do <b>Django</b> usando o comando <strong>inspectdb</strong>. Isto possibilita o uso do framework  <b>Django</b> para utilizar o container <b>EmailMessage</b> para anexar e enviar os emails para clientes. Para cada email enviado a planilha é editada na coluna 'STATUS'.
 
-<h4>Planilha</h4>
+<h3>Planilha</h3>
 
 A aplicação iniciamente busca por uma planilha presente no diretório './finances_table_to_db_and_mail/management_before_django/raw_table'. Se encontrada a aplicação segue com o processo acima e busca de anexos. Senão, a aplicação usa <b>selenium</b> para buscar pela planilha no sharepoint.
 
-<h4>Anexos</h4>
+<h3>Anexos</h3>
 
 Para obter os anexos, a aplicação utiliza a biblioteca <b>Selenium</b> para buscar no <b>sharepoint</b> pelos anexos por CNPJ e NFE. 
 Se encontrados, os anexos são baixados um por um no diretório './finances_table_to_db_and_mail/robot_sharepoint/attachments/'. Os anexos são lidos em './finances_table_to_db_and_mail/dj_project/filter_tables/views.py' e conforme o conjunto dos anexos é escolhido o template para compor o corpo do email em './finances_table_to_db_and_mail/dj_project/filter_tables/templates/'.
 
 Quando não encontrados, a aplicação segue buscando pelos próximos anexos.
 
-<h4>Relatórios</h4>
+<h3>Relatórios</h3>
 
 Os anexos encontrados e não encontrados são registrados em arquivos de texto criados em './finances_table_to_db_and_mail/robot_sharepoint/reports/'. Quando o processo é finalizado ou interrompido é automaticamente criado um terceiro arquivo de texto que junta os dois anteriores. Este terceiro arquivo é enviado para o sharepoint para servir de registro para cada operação finalizada ou não.
 
-<h4>Estudos de caso</h4>
+<h3>Estudos de caso</h3>
 
 Segue uma listagem resumida de como a aplicação se comporta por situação:
 
@@ -108,7 +109,9 @@ IDEAL:
             Relatório não enviados deve ser criada;
             Relatório final recriado.
 
-<!-- <h4>Fluxograma</h4>  ? -->
+<!-- <h3>Fluxograma</h3>  ? -->
+
+<br>
 
 ## Instalação
 
@@ -251,7 +254,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
 <br>
 
-# Comandos
+## Comandos
 
 Para todos os procedimentos necessários para a aplicação trabalhar basta rodar apenas o comando abaixo:
 
@@ -269,7 +272,7 @@ python3 run_everything_here.py
 
 <br>
 
-# Referências
+## Referências
 
 - [Django](https://www.djangoproject.com/)
 - [DjangoMail](https://docs.djangoproject.com/en/4.1/topics/email/)
