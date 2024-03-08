@@ -4,6 +4,7 @@ import sys
 import django
 import ipdb
 
+from datetime import datetime
 from pathlib import Path
 
 
@@ -23,24 +24,32 @@ from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 from utils.functions.path_length import do_we_have_spreadsheets
 from utils.functions.delete_elements import do_we_have_things_to_delete
 from utils.variables.envs import download_directory, username, password, raw_table_directory, sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
-from utils.variables.paths import raw_tables_path, reports_path
+from utils.variables.paths import edited_tables_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, elements_reports_list, sent_title
 
 root_directory = os.path.dirname(os.path.abspath(__file__))
 root_directory = str(root_directory)
 
-# Clean up old final reports:
+# Clean up former final reports:
 do_we_have_things_to_delete(reports_path, "relatorio_diario.txt")
+
+# Drafts for deleting edited table after month turn:
+delete_me_FLAG = "ME_APAGUE_NA_PRIMEIRA_OPERAÇÃO_DO_MÊS.txt"
+
+if not Path(delete_me_FLAG).exists():
+    today = datetime.now().strftime("%d-%m-%Y")
+    print(today)
+    if today.startswith("01"):
+        do_we_have_things_to_delete(raw_tables_path, ".xlsx")
+        do_we_have_things_to_delete(edited_tables_path, ".xlsx")
+    
+    Path(delete_me_FLAG).touch()
 
 do_we_have_table_to_work_with = do_we_have_spreadsheets(raw_tables_path)
 
 if not do_we_have_table_to_work_with:
     print("BAIXANDO PLANILHA DO SHAREPOINT.")
     robot_for_raw_table(username, password, sharepoint_for_database_and_upload_url, raw_tables_path)
-
-    # Raw reports creation for new database spreadsheet:
-    with reports_path.joinpath(sent_list).open("w") as file:
-        file.write(sent_title)
 
 try:
     tables_to_db.tables_to_db()

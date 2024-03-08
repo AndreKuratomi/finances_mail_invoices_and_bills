@@ -8,7 +8,6 @@ from tqdm import tqdm
 from management_before_django.table_managements.modules.compare_spreadsheets import compare_spreadsheets
 from management_before_django.table_managements.modules.take_path_from_directory import paths_with_file_name
 
-from utils.functions.delete_elements import do_we_have_things_to_delete
 from utils.functions.path_length import do_we_have_spreadsheets
 
 import ipdb
@@ -43,6 +42,7 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
 
         # COMPARE HERE:
         if table_in_edited_table_path:
+            print("Yes, we do.")
             (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_path)
             print("file_path_to_edited:", file_path_to_edited)
             # Update table just downloaded with column status:
@@ -50,15 +50,13 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
             workbook.close()
 
             compare_spreadsheets(file_path_to_raw, file_path_to_edited, complete_file_path_to_edited, sheet)
+            # ipdb.set_trace()
 
         else:
+            print("No, we don't.")
             edited_file_path = str(edited_path.resolve() / 'edited_table.xlsx')
             workbook.save(edited_file_path)
             workbook.close()
-            
-    # Delete no more necessary raw table 
-    # ipdb.set_trace()
-    do_we_have_things_to_delete(raw_path, '.xlsx')
 
     # OPENPYXL TO ADD STATUS COLUMN:
     (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_path)
