@@ -2,9 +2,9 @@
 
 - [Traduções](#traduções)
 - [Sobre](#sobre)
-- [Descrição](#descrição)
+- [Descrição_técnica](#descrição_técnica)
 - [Instalação](#instalação)
-- [Comandos](#comandos)
+- [Como_fazer_a_aplicação_funcionar](#como_fazer_a_aplicação_funcionar)
 - [Referências](#referências)
 
 <br>
@@ -24,7 +24,7 @@ Esta aplicação utiliza o framework <strong>[Django](https://www.djangoproject.
 
 <br>
 
-## Descrição
+## Descrição_técnica
 
 <b>finances_table_to_db_and_mail</b> é uma automatização do processo de análise de planilha, busca no sharepoint por arquivos por período, CNPJ e número da NFE. 
 
@@ -36,20 +36,24 @@ Ela inicialmente insere na planilha fornecida em 'raw_table/' uma coluna 'STATUS
 
 Manipulado o dataframe ele é inserido em um banco de dados <b>SQLite3</b> em 'db/' e transformado em uma model do <b>Django</b> usando o comando <strong>inspectdb</strong>. Isto possibilita o uso do framework  <b>Django</b> para utilizar o container <b>EmailMessage</b> para anexar e enviar os emails para clientes. Para cada email enviado a planilha é editada na coluna 'STATUS'.
 
+Segue uma descrição mais detalhada das partes:
+
 <h3>Planilha</h3>
 
-A aplicação iniciamente busca por uma planilha presente no diretório './finances_table_to_db_and_mail/management_before_django/raw_table'. Se encontrada a aplicação segue com o processo acima e busca de anexos. Senão, a aplicação usa <b>selenium</b> para buscar pela planilha no sharepoint.
+A aplicação iniciamente busca por uma planilha presente no diretório './finances_table_to_db_and_mail/management_before_django/raw_table'. Se encontrada a aplicação segue com o processo acima em busca de anexos. Senão, a aplicação usa a biblioteca <b>Selenium</b> para buscar pela planilha no <b>sharepoint</b>.
+
+Quando o processo é finalizado a planilha baixada (a de (...)/raw_table/) é apagada. Assim, quando o processo for refeito a aplicação buscará por uma nova planilha no <b>sharepoint</b>. Se a planilha nele estiver atualizada a aplicação ao baixá-la vai comparar ela com a planilha editada e atualizar a editada com o conteúdo novo.
 
 <h3>Anexos</h3>
 
-Para obter os anexos, a aplicação utiliza a biblioteca <b>Selenium</b> para buscar no <b>sharepoint</b> pelos anexos por CNPJ e NFE. 
+Para obter os anexos, a aplicação utiliza a biblioteca <b>Selenium</b> para buscar no <b>sharepoint</b> pelos anexos por período, CNPJ e NFE. 
 Se encontrados, os anexos são baixados um por um no diretório './finances_table_to_db_and_mail/robot_sharepoint/attachments/'. Os anexos são lidos em './finances_table_to_db_and_mail/dj_project/filter_tables/views.py' e conforme o conjunto dos anexos é escolhido o template para compor o corpo do email em './finances_table_to_db_and_mail/dj_project/filter_tables/templates/'.
 
 Quando não encontrados, a aplicação segue buscando pelos próximos anexos.
 
 <h3>Relatórios</h3>
 
-Os anexos encontrados e não encontrados são registrados em arquivos de texto criados em './finances_table_to_db_and_mail/robot_sharepoint/reports/'. Quando o processo é finalizado ou interrompido é automaticamente criado um terceiro arquivo de texto que junta os dois anteriores. Este terceiro arquivo é enviado para o sharepoint para servir de registro para cada operação finalizada ou não.
+Os anexos encontrados e não encontrados são registrados em arquivos de texto criados em './finances_table_to_db_and_mail/robot_sharepoint/reports/'. Quando o processo é finalizado ou interrompido (mas não fechado) é automaticamente criado um terceiro arquivo de texto que junta os dois anteriores. Este terceiro arquivo é enviado para o sharepoint para servir de registro para cada envio feito ou não.
 
 <h3>Estudos de caso</h3>
 
@@ -57,56 +61,52 @@ Segue uma listagem resumida de como a aplicação se comporta por situação:
 
 ERROS:
 
-    1. Processo interrompido (cai a luz, máquina sem internet, usuário fecha terminal sem querer):
+    1. Processo interrompido (falta de luz, falta de internet, ou fechamento da aplicação):
         Procedimento:
             Fim do processo.
         Ao retomar:
-            Base de dados se mantém como estava;
-            Tabela baixada deve se manter;
-            Tabela editada deve se manter
-            Relatório enviados se mantém;
-            Relatório não enviados apagado;
-            Relatório final recriado.
+            Tabela baixada se mantém como estava;
+            Tabela editada idem;
+            Relatório 'enviados' idem;
+            Relatório 'não enviados' recriado;
+            Relatório final idem.
 
-    2. Processo interrompido (erro interno ou interrupção voluntária do processo no terminal (ex: fim de expediente)):
+    2.  Processo interrompido (erro interno ou interrupção voluntária do processo no terminal (CTRL + C uma única vez)):
         Procedimento:
-            Relatório final (enviados e não encontrados) enviado sharepoint;
+            Relatório final ('enviados' e 'não enviados') enviado sharepoint;
             Fim do processo.
         Ao retomar:
-            Base de dados se mantém como estava;
-            Tabela baixada deve se manter como estava;
-            Tabela editada deve se manter como estava;
-            Relatório enviados se mantém;
-            Relatório não enviados apagado;
-            Relatório final recriado.
+            Tabela baixada se mantém como estava;
+            Tabela editada idem;
+            Relatório 'enviados' idem;
+            Relatório 'não enviados' recriado;
+            Relatório final idem.
 
 IDEAL:
 
     3. Processo finalizado durante período faturamentos (novos faturamentos virão):
         Procedimento:
-            Relatório final (enviados e não encontrados) enviado sharepoint;
+            Relatório final ('enviados' e 'não enviados') enviado sharepoint;
             Apagar tabela baixada;
             Manter tabela editada;
             Fim do processo.
         Ao retomar:
-            Base de dados se mantém;
-            Tabela baixada deve se manter como estava;
-            Tabela editada deve se manter como estava;
-            Relatório enviados se mantém;
-            Relatório não enviados apagado;
+            Tabela baixada se mantém como estava;
+            Tabela editada idem;
+            Relatório 'enviados' idem;
+            Relatório 'não enviados' recriado;
             Relatório final recriado.
 
-    4. Processo finalizado (período faturamentos encerrado - todos os faturamentos enviados OU VIRADA DO MÊS*):
+    4. Processo finalizado com todos os faturamentos do mês (virada do mês):
         Procedimento:
             Apagar tabelas;
             Apagar relatórios;
             Fim do processo.
         Ao retomar:
-            Baixar base de dados;
-            Tabela baixada deve ser criada;
-            Tabela editada deve ser criada;
-            Relatório enviados deve ser criada;
-            Relatório não enviados deve ser criada;
+            Tabela baixada criada;
+            Tabela editada criada;
+            Relatório 'enviados' criado;
+            Relatório 'não enviados' criado;
             Relatório final recriado.
 
 <!-- <h3>Fluxograma</h3>  ? -->
@@ -254,21 +254,69 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
 <br>
 
-## Comandos
+## Como_fazer_a_aplicação_funcionar
 
-Para todos os procedimentos necessários para a aplicação trabalhar basta rodar apenas o comando abaixo:
+1. INÍCIO DA OPERAÇÃO:
 
-./
+    1.1. Via arquivo .bat:
 
-WINDOWS:
-```
-py run_everything_here.py
-```
+    Para o usuário leigo basta apenas clicar duas vezes no arquivo script_for_bat_file.bat*: 
 
-LINUX:
-```
-python3 run_everything_here.py
-```
+    <figure>
+        <img src="../assets/double_click_.bat_file.png" alt="Double-click .bat file" style="">
+        <figcaption style="display: none;">Double-click .bat file</figcaption>
+    </figure>
+
+    *<b>Obs:</b> Este arquivo script_for_bat_file.bat pode ser retirado dos arquivos da aplicação e colocado na área de trabalho, por exemplo.
+
+    <br>
+    
+    1.2. Via IDE:
+
+    Para todos os procedimentos necessários para a aplicação trabalhar basta rodar apenas o comando abaixo:
+
+    ./
+
+    WINDOWS:
+    ```
+    py run_everything_here.py
+    ```
+
+    LINUX:
+    ```
+    python3 run_everything_here.py
+    ```
+    
+<br>
+    
+
+2. INTERRUPÇÃO TOTAL DA APLICAÇÃO (SEM ENVIO DE RELATÓRIOS):
+
+    Basta fechar o arquivo script_for_bat_file.bat ou o IDE.
+    
+<br>
+    
+
+3. INTERRUPÇÃO PARCIAL DA APLICAÇÃO (COM ENVIO DE RELATÓRIO DO QUE FOI FEITO ATÉ A INTERRUPÇÃO.)
+
+    Basta clicar <b>"CTRL + C"</b> UMA ÚNICA VEZ que o programa enviará o relatório automaticamente. Se clicar várias vezes nenhum relatório será enviado.
+
+    <figure>
+        <img src="../assets/process_partially_interrupted.png" alt="Double-click .bat file" style="">
+        <figcaption style="display: none;">Double-click .bat file</figcaption>
+    </figure>
+
+    Ao clicar <b>"CTRL + C"</b> a aplicação mostrará a imagem 'ELABORANDO RELATÓRIO FINAL E ENVIANDO'. Aí é só aguardar aparecer 'PROCESSO ENCERRADO. CHECAR RELATÓRIOS.' para ter certeza de que o processo foi finalizado.
+<br>
+
+4. Para a primeira operação do mês:
+
+    Antes de rodar a aplicação pela primeira vez no mês (para os faturamentos do mês) é preciso manualmente apagar na aplicação o arquivo <b>ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</b>.
+
+    <figure><img src="../assets/ME_APAGUE.png" alt="ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS"><figcaption style="display: none;">ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</figcaption></figure>
+
+    Só isso já fará a aplicação apagar o que ela contém do mês anterior e buscar conteúdo novo.
+
 
 <br>
 
