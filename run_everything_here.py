@@ -34,7 +34,7 @@ root_directory = str(root_directory)
 do_we_have_things_to_delete(reports_path, "relatorio_diario.txt")
 
 # Drafts for deleting edited table after month turn:
-delete_me_FLAG = "ME_APAGUE_NA_PRIMEIRA_OPERAÇÃO_DO_MÊS.txt"
+delete_me_FLAG = "ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS.txt"
 
 if not Path(delete_me_FLAG).exists():
     today = datetime.now().strftime("%d-%m-%Y")
@@ -44,6 +44,8 @@ if not Path(delete_me_FLAG).exists():
         do_we_have_things_to_delete(edited_tables_path, ".xlsx")
     
     Path(delete_me_FLAG).touch()
+    with open(delete_me_FLAG, 'w') as file:
+        file.write("Só me apague quando for a primeira operação do mês, cara...")
 
 do_we_have_table_to_work_with = do_we_have_spreadsheets(raw_tables_path)
 
