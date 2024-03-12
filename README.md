@@ -263,7 +263,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
     Para o usuário leigo basta apenas clicar duas vezes no arquivo script_for_bat_file.bat*: 
 
     <figure>
-        <img src="../assets/double_click_.bat_file.png" alt="Double-click .bat file" style="">
+        <img src="./assets/double_click_.bat_file.png" alt="Double-click .bat file" style="">
         <!-- <figcaption style="display: none;">Double-click .bat file</figcaption> -->
     </figure>
 
@@ -302,7 +302,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
     Basta clicar <b>"CTRL + C"</b> UMA ÚNICA VEZ que o programa enviará o relatório automaticamente. Se clicar várias vezes nenhum relatório será enviado.
 
     <figure>
-        <img src="../assets/process_partially_interrupted.png" alt="Double-click .bat file" style="">
+        <img src="./assets/process_partially_interrupted.png" alt="Double-click .bat file" style="">
         <!-- <figcaption style="display: none;">Double-click .bat file</figcaption> -->
     </figure>
 
@@ -314,7 +314,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
     Antes de rodar a aplicação pela primeira vez no mês (para os faturamentos do mês) é preciso manualmente apagar na aplicação o arquivo <b>ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</b>.
 
     <figure>
-        <img src="../assets/ME_APAGUE.png" alt="ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS">
+        <img src="./assets/ME_APAGUE.png" alt="ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS">
         <!-- <figcaption style="display: none;">ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</figcaption> -->
     </figure>
 
