@@ -264,7 +264,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
     <figure>
         <img src="../assets/double_click_.bat_file.png" alt="Double-click .bat file" style="">
-        <figcaption style="display: none;">Double-click .bat file</figcaption>
+        <!-- <figcaption style="display: none;">Double-click .bat file</figcaption> -->
     </figure>
 
     *<b>Obs:</b> Este arquivo script_for_bat_file.bat pode ser retirado dos arquivos da aplicação e colocado na área de trabalho, por exemplo.
@@ -303,7 +303,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
     <figure>
         <img src="../assets/process_partially_interrupted.png" alt="Double-click .bat file" style="">
-        <figcaption style="display: none;">Double-click .bat file</figcaption>
+        <!-- <figcaption style="display: none;">Double-click .bat file</figcaption> -->
     </figure>
 
     Ao clicar <b>"CTRL + C"</b> a aplicação mostrará a imagem 'ELABORANDO RELATÓRIO FINAL E ENVIANDO'. Aí é só aguardar aparecer 'PROCESSO ENCERRADO. CHECAR RELATÓRIOS.' para ter certeza de que o processo foi finalizado.
@@ -313,7 +313,10 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
     Antes de rodar a aplicação pela primeira vez no mês (para os faturamentos do mês) é preciso manualmente apagar na aplicação o arquivo <b>ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</b>.
 
-    <figure><img src="../assets/ME_APAGUE.png" alt="ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS"><figcaption style="display: none;">ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</figcaption></figure>
+    <figure>
+        <img src="../assets/ME_APAGUE.png" alt="ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS">
+        <!-- <figcaption style="display: none;">ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</figcaption> -->
+    </figure>
 
     Só isso já fará a aplicação apagar o que ela contém do mês anterior e buscar conteúdo novo.
 
