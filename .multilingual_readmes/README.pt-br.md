@@ -335,9 +335,3 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 - [Selenium](https://pypi.org/project/selenium/)
 - [SQLite3](https://docs.python.org/3/library/sqlite3.html)
 - [Visual Studio Code (VSCode)](https://code.visualstudio.com/)
-
-<style>
-    figcaption {
-        display: none;
-    }
-</style>
