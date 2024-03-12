@@ -27,13 +27,14 @@ from utils.variables.envs import download_directory, username, password, raw_tab
 from utils.variables.paths import edited_tables_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, elements_reports_list, sent_title
 
-root_directory = os.path.dirname(os.path.abspath(__file__))
-root_directory = str(root_directory)
+# Diretório da aplicação para django depois trabalhar com anexos:
+diretorio_raiz = os.path.dirname(os.path.abspath(__file__))
+diretorio_raiz = str(diretorio_raiz)
 
-# Clean up former final reports:
+# Apagar relatório final anterior:
 do_we_have_things_to_delete(reports_path, "relatorio_diario.txt")
 
-# Drafts for deleting edited table after month turn:
+# Rascunhos para deletar tabela editada após virada do mês:
 delete_me_FLAG = "ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS.txt"
 
 if not Path(delete_me_FLAG).exists():
@@ -47,20 +48,19 @@ if not Path(delete_me_FLAG).exists():
     with open(delete_me_FLAG, 'w') as file:
         file.write("Só me apague quando for a primeira operação do mês...")
     
-    # ONLY FIRST DAY OF THE MONTH!
-    # Raw reports creation for new database spreadsheet:
+    # Criação de relatório de envios por CNPJ e NFE:
     with reports_path.joinpath(sent_list).open("w") as file:
         file.write(sent_title)
 
-do_we_have_table_to_work_with = do_we_have_spreadsheets(raw_tables_path)
+temos_tabela_para_trabalhar = do_we_have_spreadsheets(raw_tables_path)
 
-if not do_we_have_table_to_work_with:
+if not temos_tabela_para_trabalhar:
     print("BAIXANDO PLANILHA DO SHAREPOINT.")
     robot_for_raw_table(username, password, sharepoint_for_database_and_upload_url, raw_tables_path)
 
 try:
     tables_to_db.tables_to_db()
-    EmailAttachByTable().post(root_directory)
+    EmailAttachByTable().post(diretorio_raiz)
 except Exception as e: 
     print(f"PROCESSO INTERROMPIDO! Error: {e} CONTATAR DEV RESPONSÁVEL \n Mas pode continuar.")
 finally: 

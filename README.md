@@ -260,14 +260,14 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
     1.1. Via arquivo .bat:
 
-    Para o usuário leigo basta apenas clicar duas vezes no arquivo script_for_bat_file.bat*: 
+    Para o usuário leigo basta apenas clicar duas vezes no arquivo rode_aplicacao_aqui.bat*: 
 
     <figure>
-        <img src="../assets/double_click_.bat_file.png" alt="Double-click .bat file" style="">
+        <img src="./assets/double_click_.bat_file.png" alt="Double-click .bat file" style="">
         <!-- <figcaption style="display: none;">Double-click .bat file</figcaption> -->
     </figure>
 
-    *<b>Obs:</b> Este arquivo script_for_bat_file.bat pode ser retirado dos arquivos da aplicação e colocado na área de trabalho, por exemplo.
+    *<b>Obs:</b> Este arquivo rode_aplicacao_aqui.bat pode ser retirado dos arquivos da aplicação e colocado na área de trabalho, por exemplo.
 
     <br>
     
@@ -279,12 +279,12 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
     WINDOWS:
     ```
-    py run_everything_here.py
+    py rode_tudo_aqui.py
     ```
 
     LINUX:
     ```
-    python3 run_everything_here.py
+    python3 rode_tudo_aqui.py
     ```
     
 <br>
@@ -292,7 +292,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
 2. INTERRUPÇÃO TOTAL DA APLICAÇÃO (SEM ENVIO DE RELATÓRIOS):
 
-    Basta fechar o arquivo script_for_bat_file.bat ou o IDE.
+    Basta fechar o arquivo rode_aplicacao_aqui.bat ou o IDE.
     
 <br>
     
@@ -302,7 +302,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
     Basta clicar <b>"CTRL + C"</b> UMA ÚNICA VEZ que o programa enviará o relatório automaticamente. Se clicar várias vezes nenhum relatório será enviado.
 
     <figure>
-        <img src="../assets/process_partially_interrupted.png" alt="Double-click .bat file" style="">
+        <img src="./assets/process_partially_interrupted.png" alt="Double-click .bat file" style="">
         <!-- <figcaption style="display: none;">Double-click .bat file</figcaption> -->
     </figure>
 
@@ -314,7 +314,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
     Antes de rodar a aplicação pela primeira vez no mês (para os faturamentos do mês) é preciso manualmente apagar na aplicação o arquivo <b>ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</b>.
 
     <figure>
-        <img src="../assets/ME_APAGUE.png" alt="ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS">
+        <img src="./assets/ME_APAGUE.png" alt="ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS">
         <!-- <figcaption style="display: none;">ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</figcaption> -->
     </figure>
 
