@@ -37,15 +37,20 @@ do_we_have_things_to_delete(reports_path, "relatorio_diario.txt")
 delete_me_FLAG = "ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS.txt"
 
 if not Path(delete_me_FLAG).exists():
-    today = datetime.now().strftime("%d-%m-%Y")
-    print(today)
-    if today.startswith("01"):
-        do_we_have_things_to_delete(raw_tables_path, ".xlsx")
-        do_we_have_things_to_delete(edited_tables_path, ".xlsx")
+    # today = datetime.now().strftime("%d-%m-%Y")
+    # print(today)
+    # if today.startswith("01"):
+    do_we_have_things_to_delete(raw_tables_path, ".xlsx")
+    do_we_have_things_to_delete(edited_tables_path, ".xlsx")
     
     Path(delete_me_FLAG).touch()
     with open(delete_me_FLAG, 'w') as file:
-        file.write("Só me apague quando for a primeira operação do mês, cara...")
+        file.write("Só me apague quando for a primeira operação do mês...")
+    
+    # ONLY FIRST DAY OF THE MONTH!
+    # Raw reports creation for new database spreadsheet:
+    with reports_path.joinpath(sent_list).open("w") as file:
+        file.write(sent_title)
 
 do_we_have_table_to_work_with = do_we_have_spreadsheets(raw_tables_path)
 
