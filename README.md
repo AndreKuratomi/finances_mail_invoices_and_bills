@@ -260,14 +260,14 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
     1.1. Via arquivo .bat:
 
-    Para o usuário leigo basta apenas clicar duas vezes no arquivo script_for_bat_file.bat*: 
+    Para o usuário leigo basta apenas clicar duas vezes no arquivo rode_aplicacao_aqui.bat*: 
 
     <figure>
         <img src="./assets/double_click_.bat_file.png" alt="Double-click .bat file" style="">
         <!-- <figcaption style="display: none;">Double-click .bat file</figcaption> -->
     </figure>
 
-    *<b>Obs:</b> Este arquivo script_for_bat_file.bat pode ser retirado dos arquivos da aplicação e colocado na área de trabalho, por exemplo.
+    *<b>Obs:</b> Este arquivo rode_aplicacao_aqui.bat pode ser retirado dos arquivos da aplicação e colocado na área de trabalho, por exemplo.
 
     <br>
     
@@ -279,12 +279,12 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
     WINDOWS:
     ```
-    py run_everything_here.py
+    py rode_tudo_aqui.py
     ```
 
     LINUX:
     ```
-    python3 run_everything_here.py
+    python3 rode_tudo_aqui.py
     ```
     
 <br>
@@ -292,7 +292,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
 2. INTERRUPÇÃO TOTAL DA APLICAÇÃO (SEM ENVIO DE RELATÓRIOS):
 
-    Basta fechar o arquivo script_for_bat_file.bat ou o IDE.
+    Basta fechar o arquivo rode_aplicacao_aqui.bat ou o IDE.
     
 <br>
     
