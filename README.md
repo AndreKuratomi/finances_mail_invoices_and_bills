@@ -40,9 +40,9 @@ Segue uma descrição mais detalhada das partes:
 
 <h3>Planilha</h3>
 
-A aplicação iniciamente busca por uma planilha presente no diretório './finances_table_to_db_and_mail/management_before_django/raw_table'. Se encontrada a aplicação segue com o processo acima em busca de anexos. Senão, a aplicação usa a biblioteca <b>Selenium</b> para buscar pela planilha no <b>sharepoint</b>.
+A aplicação iniciamente busca por uma planilha presente no seu diretório './finances_table_to_db_and_mail/management_before_django/raw_table'. Se encontrada a aplicação segue com o processo acima em busca de anexos. Senão, a aplicação usa a biblioteca <b>Selenium</b> para buscar pela planilha no <b>sharepoint</b>.
 
-Quando o processo é finalizado a planilha baixada (a de (...)/raw_table/) é apagada. Assim, quando o processo for refeito a aplicação buscará por uma nova planilha no <b>sharepoint</b>. Se a planilha nele estiver atualizada a aplicação ao baixá-la vai comparar ela com a planilha editada e atualizar a editada com o conteúdo novo.
+Quando o processo é finalizado a planilha baixada em 'raw_table/' é apagada. Assim, quando o processo for refeito a aplicação buscará por uma nova planilha no <b>sharepoint</b>. Se a planilha recém-baixada estiver atualizada a aplicação ao baixá-la vai comparar ela com a planilha editada de 'edite_table/' e atualizar a editada com o conteúdo novo.
 
 <h3>Anexos</h3>
 
@@ -61,21 +61,21 @@ Segue uma listagem resumida de como a aplicação se comporta por situação:
 
 ERROS:
 
-    1. Processo interrompido (falta de luz, falta de internet, ou fechamento da aplicação):
+    1. Processo interrompido totalmente (falta de luz, falta de internet, ou fechamento da aplicação):
         Procedimento:
             Fim do processo.
-        Ao retomar:
+        Quando retomado:
             Tabela baixada se mantém como estava;
             Tabela editada idem;
             Relatório 'enviados' idem;
             Relatório 'não enviados' recriado;
             Relatório final idem.
 
-    2.  Processo interrompido (erro interno ou interrupção voluntária do processo no terminal (CTRL + C uma única vez)):
+    2.  Processo interrompido parcialmente (erro interno ou interrupção voluntária do processo no terminal (CTRL + C uma única vez)):
         Procedimento:
             Relatório final ('enviados' e 'não enviados') enviado sharepoint;
             Fim do processo.
-        Ao retomar:
+        Quando retomado:
             Tabela baixada se mantém como estava;
             Tabela editada idem;
             Relatório 'enviados' idem;
@@ -84,13 +84,13 @@ ERROS:
 
 IDEAL:
 
-    3. Processo finalizado durante período faturamentos (novos faturamentos virão):
+    3. Processo finalizado por tabela baixada (novos faturamentos virão):
         Procedimento:
             Relatório final ('enviados' e 'não enviados') enviado sharepoint;
             Apagar tabela baixada;
             Manter tabela editada;
             Fim do processo.
-        Ao retomar:
+        Quando retomado:
             Tabela baixada se mantém como estava;
             Tabela editada idem;
             Relatório 'enviados' idem;
@@ -101,13 +101,12 @@ IDEAL:
         Procedimento:
             Apagar tabelas;
             Apagar relatórios;
-            Fim do processo.
-        Ao retomar:
             Tabela baixada criada;
             Tabela editada criada;
             Relatório 'enviados' criado;
             Relatório 'não enviados' criado;
             Relatório final recriado.
+        
 
 <!-- <h3>Fluxograma</h3>  ? -->
 
