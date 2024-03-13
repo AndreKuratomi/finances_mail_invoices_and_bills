@@ -12,7 +12,7 @@
 ## Traduções
 
 - [Português brasileiro / Brazilian portuguese](https://github.com/JC-GESTAO-DE-RISCOS/notas_fiscais_financeiro)
-- [Inglês / English](./.multilingual_readmes/README.en-uk.md)
+- [Inglês / English](/.multilingual_readmes/README_en-uk.md)
 
 <br>
 
