@@ -15,7 +15,7 @@ from management_before_django.table_managements.modules.status_update import sta
 from robot_sharepoint.modules.robots.robot_for_login_and_download_from_sharepoint import robot_for_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
-from utils.functions.delete_elements import do_we_have_things_to_delete
+from utils.functions.deletar_elementos import temos_algo_para_deletar
 from utils.variables.envs import username, password, sharepoint_medicoes_url, download_directory, host_email
 from utils.variables.paths import edited_tables_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, not_found_title, sent_title
@@ -184,7 +184,7 @@ class EmailAttachByTable(APIView):
 
                         email.send()
                         print("Email successfully sent! Check inbox.")
-                        
+
                         # Fill element sent list:
                         sent_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
                         with reports_path.joinpath(sent_list).open("a") as file:
@@ -197,7 +197,7 @@ class EmailAttachByTable(APIView):
                     continue
 
             # Delete no more necessary raw table 
-            do_we_have_things_to_delete(raw_tables_path, '.xlsx')
+            temos_algo_para_deletar(raw_tables_path, '.xlsx')
 
             print("Application finished its process succesfully!")
 
