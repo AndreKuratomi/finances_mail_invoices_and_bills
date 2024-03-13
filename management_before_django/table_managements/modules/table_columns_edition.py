@@ -8,7 +8,7 @@ from tqdm import tqdm
 from management_before_django.table_managements.modules.compare_spreadsheets import compare_spreadsheets
 from management_before_django.table_managements.modules.take_path_from_directory import paths_with_file_name
 
-from utils.functions.path_length import do_we_have_spreadsheets
+from utils.functions.path_length import temos_tabelas
 
 import ipdb
 
@@ -36,7 +36,7 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
             # print(cell)
             attempt.cell(row=cell, column=new_column).value = "Não enviado"
 
-        table_in_edited_table_path = do_we_have_spreadsheets(edited_path)
+        table_in_edited_table_path = temos_tabelas(edited_path)
 
         print("file_path_to_raw:", file_path_to_raw)
 
