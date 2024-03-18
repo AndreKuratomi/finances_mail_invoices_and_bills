@@ -19,6 +19,7 @@ from management_before_django.table_managements.scripts import tables_to_db
 
 from robot_sharepoint.modules.robots.robot_to_upload_files import upload_files_to_sharepoint
 from robot_sharepoint.modules.robots.robot_for_login_and_download_raw_table import robot_for_raw_table
+from robot_sharepoint.modules.robots.robo_para_download_contatos import download_contatos_no_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.path_length import temos_tabelas
@@ -55,7 +56,8 @@ if not Path(delete_me_FLAG).exists():
 temos_tabela_para_trabalhar = temos_tabelas(raw_tables_path)
 
 if not temos_tabela_para_trabalhar:
-    print("BAIXANDO PLANILHA DO SHAREPOINT.")
+    print("BAIXANDO PLANILHAS DO SHAREPOINT.")
+    download_contatos_no_sharepoint(username, password, sharepoint_for_database_and_upload_url, raw_tables_path)
     robot_for_raw_table(username, password, sharepoint_for_database_and_upload_url, raw_tables_path)
 
 try:

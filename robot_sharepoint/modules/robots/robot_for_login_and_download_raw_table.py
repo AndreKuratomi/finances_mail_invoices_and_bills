@@ -28,7 +28,7 @@ def robot_for_raw_table(username: str, password: str, site_url: str,
 
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
 
-    empty_download_directories(download_dir, default_download_dir)
+    # empty_download_directories(download_dir, default_download_dir)
     # ipdb.set_trace()
 
     # CONNECT TO BROWSER:
@@ -117,7 +117,7 @@ def robot_for_raw_table(username: str, password: str, site_url: str,
     time.sleep(1)
     pbar.update(1)
     time.sleep(1)
-    
+
     while len(list(Path(default_download_dir).iterdir())) == 0:
         time.sleep(1)
         if progress_bar:
