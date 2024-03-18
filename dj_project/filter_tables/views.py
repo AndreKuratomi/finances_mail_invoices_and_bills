@@ -12,7 +12,8 @@ from tqdm import tqdm
 from filter_tables.models import TableName
 
 from management_before_django.table_managements.modules.status_update import status_update
-from robot_sharepoint.modules.robots.robo_para_download_no_sharepoint import download_no_sharepoint
+
+from robot_sharepoint.modules.robots.robo_para_download_no_sharepoint import download_anexos_no_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.deletar_elementos import temos_algo_para_deletar
@@ -76,7 +77,7 @@ class EmailAttachByTable(APIView):
                     }
 
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
-                    download_no_sharepoint(
+                    download_anexos_no_sharepoint(
                         username,
                         password,
                         sharepoint_medicoes_url,
