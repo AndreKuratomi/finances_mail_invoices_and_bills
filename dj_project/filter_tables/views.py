@@ -55,8 +55,8 @@ class EmailAttachByTable(APIView):
                 file.write(not_found_title)
 
             for row in tqdm(table_data, "Each line, each search and email"):
-
                 cnpj = row.cnpj
+                contato = row.contatos
                 nfe = row.numero
                 nome_do_cliente = row.nome_do_cliente
                 status = row.status
@@ -66,14 +66,14 @@ class EmailAttachByTable(APIView):
                 if status == "Não enviado":
 
                     row_data = {
+                        # "competencia_por_ano": "competencia_por_ano",
+                        "contact": contato,
+                        # "contact": "andrekuratomi@gmail.com"
                         "cnpj": cnpj, 
                         "nfe": nfe, 
                         "nome_do_cliente": nome_do_cliente, 
                         "valor_liquido": valor_liquido, 
                         "vencimento": vencimento, 
-                        # "contact": contato,
-                        # "competencia_por_ano": "competencia_por_ano",
-                        "contact": "andrekuratomi@gmail.com"
                     }
 
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
@@ -103,6 +103,7 @@ class EmailAttachByTable(APIView):
                     tipo_de_servico = ""
                     table_template = "table_template_deposito.html"
                     
+                    ipdb.set_trace()
                     # NOT FOUND CNPJ AND/OR NFE:
                     if len(tables_path_content) <= 1:
                         
@@ -143,7 +144,7 @@ class EmailAttachByTable(APIView):
                         print("nome_do_cliente_data:", row_data['nome_do_cliente'])
                         print("table_template:", table_template)
                         print("tipo_de_servico:", tipo_de_servico)
-
+                        ipdb.set_trace()
                         # Insert table to mail body:
                         mail_content = render_to_string(
                             table_template, {

@@ -6,7 +6,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 from management_before_django.table_managements.modules.compare_spreadsheets import compare_spreadsheets
-from management_before_django.table_managements.modules.take_path_from_directory import paths_with_file_name
+from management_before_django.table_managements.modules.take_path_from_directory import paths_with_file_name, paths_com_muitos_nomes_de_arquivos
 
 from utils.functions.path_length import temos_tabelas
 
@@ -16,27 +16,51 @@ import ipdb
 def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.DataFrame:
     """Receives the tables' path, filters it as necessary and inserts it to Pandas dataframe"""
 
-    (complete_file_path_to_raw, file_path_to_raw) = paths_with_file_name(raw_path)
+    (contatos, complete_file_path_to_raw, file_path_to_raw) = paths_com_muitos_nomes_de_arquivos(raw_path)
+    # print(contatos)
+
+    # OPENPYXL PARA ADICIONAR COLUNA CONTATOS:
+    workbook_contacts_data = load_workbook(data_only=True, filename=contatos)
+    contacts_data = workbook_contacts_data['1-Clientes']
+
+    workbook_all_data = load_workbook(data_only=True, filename=file_path_to_raw)
+    print(file_path_to_raw)
+    all_data = workbook_all_data['2-por cliente']
+
+    nomes_colunas = [col.value for col in all_data[1]]
+
+    if "CONTATOS" not in nomes_colunas:
+        nova_coluna = all_data.max_column + 1
+        
+        all_data.insert_cols(nova_coluna)
+        all_data.cell(row=1, column=nova_coluna).value = "CONTATOS"
+
+        # Comparing by CNPJ:
+        # for cell in range(2, all_data.max_row):
+        for index, all_data_row in enumerate(all_data.iter_rows(min_row=2, values_only=True), start=2):
+            for contacts_row in contacts_data.iter_rows(min_row=2, values_only=True):
+                contacts_cnpj = contacts_row[4].replace('.', '').replace('/', '').replace('-', '')
+                if contacts_cnpj == all_data_row[4]:
+                    all_data.cell(row=index, column=nova_coluna).value = contacts_row[7]
+                    break       
+        workbook_all_data.save(complete_file_path_to_raw)
 
     # OPENPYXL TO ADD STATUS COLUMN:
 
-    workbook = load_workbook(data_only=True, filename=file_path_to_raw)
-    attempt = workbook.active
-
-    col_names = [col.value for col in attempt[1]]
+    col_names = [col.value for col in all_data[1]]
     # do_we_have_status = [elem.value for elem in col_names if elem.value = "STATUS"]
 
     if "STATUS" not in col_names:
-        new_column = attempt.max_column + 1
+        new_column = all_data.max_column + 1
 
-        attempt.insert_cols(new_column)
-        attempt.cell(row=1, column=new_column).value = "STATUS"
+        all_data.insert_cols(new_column)
+        all_data.cell(row=1, column=new_column).value = "STATUS"
 
-        for cell in range(2, attempt.max_row + 1):
+        for cell in range(2, all_data.max_row + 1):
             # print(cell)
-            attempt.cell(row=cell, column=new_column).value = "Não enviado"
+            all_data.cell(row=cell, column=new_column).value = "Não enviado"
 
-        table_in_edited_table_path = temos_tabelas(edited_path)
+        table_in_edited_table_path = temos_tabelas(edited_path, 1)
 
         print("file_path_to_raw:", file_path_to_raw)
 
@@ -46,8 +70,8 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
             (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_path)
             print("file_path_to_edited:", file_path_to_edited)
             # Update table just downloaded with column status:
-            workbook.save(file_path_to_raw)
-            workbook.close()
+            workbook_all_data.save(file_path_to_raw)
+            workbook_all_data.close()
 
             compare_spreadsheets(file_path_to_raw, file_path_to_edited, complete_file_path_to_edited, sheet)
             # ipdb.set_trace()
@@ -55,8 +79,8 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
         else:
             print("No, we don't.")
             edited_file_path = str(edited_path.resolve() / 'edited_table.xlsx')
-            workbook.save(edited_file_path)
-            workbook.close()
+            workbook_all_data.save(edited_file_path)
+            workbook_all_data.close()
 
     # OPENPYXL TO ADD STATUS COLUMN:
     (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_path)
@@ -69,11 +93,11 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
 
     # First row for titles:
     headers = [cell.value for cell in table_sheet[1]]
-    headers = [headers[3], headers[4], headers[6],  headers[10], headers[18], headers[23]]
+    headers = [headers[3], headers[4], headers[6],  headers[10], headers[18], headers[23], headers[24]]
 
     # Other rows for content:
     for row in tqdm(table_sheet.iter_rows(min_row=2), "Filtering rows by columns D, E, K, S and X..."):
-        rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 10, 18, 23]]) #IMPROVE
+        rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 10, 18, 23, 24]]) #IMPROVE
 
     # PANDAS!
     df = pd.DataFrame(rows, columns=headers)
