@@ -19,6 +19,7 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
     (contatos, complete_file_path_to_raw, file_path_to_raw) = paths_com_muitos_nomes_de_arquivos(raw_path)
     # print(contatos)
 
+
     # OPENPYXL PARA ADICIONAR COLUNA CONTATOS:
     workbook_contacts_data = load_workbook(data_only=True, filename=contatos)
     contacts_data = workbook_contacts_data['1-Clientes']
@@ -42,11 +43,12 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
                 contacts_cnpj = contacts_row[4].replace('.', '').replace('/', '').replace('-', '')
                 if contacts_cnpj == all_data_row[4]:
                     all_data.cell(row=index, column=nova_coluna).value = contacts_row[7]
-                    break       
+                    break
+  
         workbook_all_data.save(complete_file_path_to_raw)
+ 
 
     # OPENPYXL TO ADD STATUS COLUMN:
-
     col_names = [col.value for col in all_data[1]]
     # do_we_have_status = [elem.value for elem in col_names if elem.value = "STATUS"]
 
@@ -82,7 +84,23 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
             workbook_all_data.save(edited_file_path)
             workbook_all_data.close()
 
-    # OPENPYXL TO ADD STATUS COLUMN:
+
+    # OPENPYXL FOR NOW FOR TEST EMAILS:
+    (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_path)
+
+    workbook = load_workbook(data_only=True, filename=file_path_to_edited)
+    table_sheet = workbook[sheet]
+
+    for cell in range(2, table_sheet.max_row + 1):
+        if cell % 2 == 0:
+            table_sheet.cell(row=cell, column=table_sheet.max_column-1).value = "cleidiane.souza@jcgestaoderiscos.com.br"
+        else:
+            table_sheet.cell(row=cell, column=table_sheet.max_column-1).value = "andre.kuratomi@jcgestaoderiscos.com.br"
+    
+    workbook.save(complete_file_path_to_edited)
+    workbook.close()
+    # ipdb.set_trace()
+    # OPENPYXL TO ADD TO PANDAS:
     (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_path)
 
     workbook = load_workbook(data_only=True, filename=file_path_to_edited)
