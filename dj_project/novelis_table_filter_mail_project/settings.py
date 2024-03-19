@@ -71,8 +71,8 @@ ROOT_URLCONF = 'novelis_table_filter_mail_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # list of directories where the engine should look for template source files
+        'APP_DIRS': True, # if the engine should look for templates inside installed apps.
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -129,10 +129,17 @@ DEFAUT_CHARSET = 'ISO-8859-1'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
+# https://docs.djangoproject.com/en/5.0/ref/settings/#static-files
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "filter_tables", "static")]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/assets/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/bases/assets')]
+STATIC_ROOT = os.path.join('assets')
+
+# # User-uploaded (Media) files
+# # https://docs.djangoproject.com/en/5.0/ref/settings/#std-setting-MEDIA_ROOT
+
+# MEDIA_ROOT = os.path.join('media')
+# MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

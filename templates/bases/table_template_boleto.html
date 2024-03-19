@@ -1,11 +1,11 @@
-<!-- {% extends 'bases/table_template_deposito.html' %} -->
+{% load static %}
 
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
+        <!-- <style>
             body, main, section, p, br, span {
                 box-sizing: border-box;
                 margin: 0;
@@ -38,9 +38,9 @@
                 color: red;
                 font-weight: bold;
             }
-        </style>
+        </style> -->
         <!-- <link rel="stylesheet" type="text/css" href="./styles.css"> -->
-        <!-- <link rel="stylesheet" type="text/css" href="{% static 'assets/css/styles.css' %}"> -->
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/css/styles.css' %}">
     </head>
     <body>
         <main id="main">
@@ -58,14 +58,8 @@
                 <p class="section_content"><span class="to_red_and_bold">Valor líquido a pagar: R$</span> {{valor_liquido}}</p>
             </section>
             <section>
-                <!-- Pagamento depósito -->
-                <p>Os dados bancários para pagamento são:</p>
-                <br>
-                <p>BANCO BRADESCO (237)</p>
-                <p>AGÊNCIA: 1382</p>
-                <p>C/C: 108901-3</p>
-                <p>CNPJ: 06.210.366/00001-71</p>
-                <p>J&C GESTÃO DE RISCOS EIRELI</p>
+                <!-- Pagamento boletos -->
+                <p id="boleto">O pagamento deve ser efetuado através do boleto bancário anexo à nota fiscal.</p>
             </section>
         </main>
     </body>

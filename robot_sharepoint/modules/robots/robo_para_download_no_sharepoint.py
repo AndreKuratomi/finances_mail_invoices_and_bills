@@ -1,6 +1,8 @@
 import os
 import time
 
+from datetime import datetime
+
 from pathlib import Path
 
 from selenium import webdriver
@@ -21,7 +23,7 @@ from robot_sharepoint.modules.robot_utils import unzip_files
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
 
 
-def robot_for_sharepoint(username: str, password: str, site_url: str, 
+def download_anexos_no_sharepoint(username: str, password: str, site_url: str, 
                         download_dir: str, cnpj: str, nfe: str, progress_bar: bool = True) -> None:
     
     # print("CNPJ:", cnpj)
@@ -72,17 +74,27 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
     password_input.send_keys(Keys.RETURN)
     pbar.update(1)
 
+    months_list = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
+    
     # CLICKING FOLDERS:
     # root_folder = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - MEDIÇÕES']")))
     # pbar.update(1)
     # root_folder.click()
     # pbar.update(1)
-
-    # year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']"))) # criar lógica para obter ano do calendário
+    
+    current_year = datetime.now().strftime("%Y")
+    # year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO {current_year}']"))) # criar lógica para obter ano do calendário
     # pbar.update(1)
     # year.click()
     # pbar.update(1)
-    # ipdb.set_trace()
+
+    current_month = datetime.now().strftime("%m")
+
+    month_number = int(current_month)-1
+    month_name = months_list[month_number]
+    ipdb.set_trace()
+
+    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title=f"{current_month} - {month_name}""]"))) # criar lógica para obter mês do calendário - 1
     month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - JANEIRO']"))) # criar lógica para obter mês do calendário - 1
     pbar.update(1)
     month.click()

@@ -32,4 +32,5 @@ sharepoint_medicoes_url="https://jcgestaoderiscos.sharepoint.com/sites/Faturamen
 # print("sharepoint_medicoes_url:", sharepoint_medicoes_url)
 # ipdb.set_trace()
 sheet = os.getenv("SHEET")
+sheet_contacts = os.getenv("SHEET_CONTACTS")
 # sharepoint_url = os.getenv("SHAREPOINT_URL")
