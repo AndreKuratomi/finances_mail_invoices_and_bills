@@ -114,7 +114,7 @@ def workbook_para_pandas(table_sheet) -> pd.DataFrame:
     # Editing date column to show only date in brazilian format:
     df['Dt Vencto'] = pd.to_datetime(df['Dt Vencto'], errors='coerce')
     df['Dt Vencto'] = df['Dt Vencto'].dt.tz_localize('UTC').dt.tz_convert('America/Sao_Paulo')
-    df['Dt Vencto'] = df['Dt Vencto'].dt.strftime('%d/%m/%Y')
+    df['Dt Vencto'] = (df['Dt Vencto'] + pd.Timedelta(days=1)).dt.strftime('%d/%m/%Y')
     print(df)
 
     return df
