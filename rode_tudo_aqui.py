@@ -28,6 +28,7 @@ from utils.variables.envs import download_directory, username, password, raw_tab
 from utils.variables.paths import edited_tables_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, elements_reports_list, sent_title
 
+
 # Diretório da aplicação para django depois trabalhar com anexos:
 diretorio_raiz = os.path.dirname(os.path.abspath(__file__))
 diretorio_raiz = str(diretorio_raiz)
@@ -53,7 +54,7 @@ if not Path(delete_me_FLAG).exists():
     with reports_path.joinpath(sent_list).open("w") as file:
         file.write(sent_title)
 
-temos_tabela_para_trabalhar = temos_tabelas(raw_tables_path)
+temos_tabela_para_trabalhar = temos_tabelas(raw_tables_path, 2)
 
 if not temos_tabela_para_trabalhar:
     print("BAIXANDO PLANILHAS DO SHAREPOINT.")
