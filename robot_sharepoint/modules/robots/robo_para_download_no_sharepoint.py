@@ -83,7 +83,7 @@ def download_anexos_no_sharepoint(username: str, password: str, site_url: str,
     # pbar.update(1)
     
     current_year = datetime.now().strftime("%Y")
-    # year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO {current_year}']"))) # criar lógica para obter ano do calendário
+    # year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO {current_year}']"))) # lógica para obter ano do calendário
     # pbar.update(1)
     # year.click()
     # pbar.update(1)
@@ -92,9 +92,9 @@ def download_anexos_no_sharepoint(username: str, password: str, site_url: str,
 
     month_number = int(current_month)-1
     month_name = months_list[month_number]
-    ipdb.set_trace()
 
-    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title=f"{current_month} - {month_name}""]"))) # criar lógica para obter mês do calendário - 1
+    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title={current_month} - {month_name}]"))) # lógica para obter mês do calendário - 1
+    # ipdb.set_trace()
     month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - JANEIRO']"))) # criar lógica para obter mês do calendário - 1
     pbar.update(1)
     month.click()
