@@ -1,16 +1,13 @@
 import time
 
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, mail_admins
 from django.template.loader import render_to_string
 
-from pathlib import Path
-
-from rest_framework.views import APIView
-
-from tqdm import tqdm
-
+from datetime import datetime
 from filter_tables.models import TableName
-
+from pathlib import Path
+from rest_framework.views import APIView
+from tqdm import tqdm
 from management_before_django.table_managements.modules.status_update import status_update
 
 from robot_sharepoint.modules.robots.robo_para_download_no_sharepoint import download_anexos_no_sharepoint
@@ -160,6 +157,28 @@ class EmailAttachByTable(APIView):
 
                         time.sleep(2)  # wait for file to be created
 
+                        # FORMATAÇÃO DE DATA:
+
+                        dia = (datetime.now()).strftime("%d/%m/%Y")
+                        horas = (datetime.now()).strftime("%H:%M:%S")
+
+                        admin_email_message = """\
+                            <html>
+                                <head></head>
+                                <body>
+                                    <p>Notificação: O(A) usuário(a) %s trocou de senha às %s em %s.</p>
+                                    <br>
+                                    
+                                    <h3>ALGO</h3>
+                                </body>
+                            </html>
+                        """ % (nome_do_cliente, horas, dia)
+                        mail_admins(
+                            "Aviso de troca de senha - Usuário(a) {b1}".format(b1=nome_do_cliente), 
+                            "",
+                            fail_silently=False,
+                            html_message=admin_email_message
+                        )
                         email = EmailMessage(
                             "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
                             .format(
