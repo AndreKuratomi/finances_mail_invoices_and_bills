@@ -1,6 +1,6 @@
 import time
 
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, mail_admins
 from django.template.loader import render_to_string
 
 from pathlib import Path
@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 from filter_tables.models import TableName
 
-from management_before_django.table_managements.modules.status_update import status_update
+from management_before_django.table_managements.modules.openpyxl_module import status_update
 
 from robot_sharepoint.modules.robots.robo_para_download_no_sharepoint import download_anexos_no_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
@@ -67,8 +67,8 @@ class EmailAttachByTable(APIView):
 
                     row_data = {
                         # "competencia_por_ano": "competencia_por_ano",
-                        "contact": contato,
-                        # "contact": "andrekuratomi@gmail.com"
+                        # "contact": contato,
+                        "contact": "andrekuratomi@gmail.com",
                         "cnpj": cnpj, 
                         "nfe": nfe, 
                         "nome_do_cliente": nome_do_cliente, 
@@ -103,7 +103,7 @@ class EmailAttachByTable(APIView):
                     tipo_de_servico = ""
                     table_template = "table_template_deposito.html"
                     
-                    ipdb.set_trace()
+                    # ipdb.set_trace()
                     # NOT FOUND CNPJ AND/OR NFE:
                     if len(tables_path_content) <= 1:
                         
@@ -144,7 +144,7 @@ class EmailAttachByTable(APIView):
                         print("nome_do_cliente_data:", row_data['nome_do_cliente'])
                         print("table_template:", table_template)
                         print("tipo_de_servico:", tipo_de_servico)
-                        ipdb.set_trace()
+                        # ipdb.set_trace()
                         # Insert table to mail body:
                         mail_content = render_to_string(
                             table_template, {

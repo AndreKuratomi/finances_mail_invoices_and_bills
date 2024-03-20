@@ -1,4 +1,3 @@
-from ..modules.compare_spreadsheets import compare_spreadsheets
 from ..modules.create_model import create_model_from_database
 from ..modules.insert_table_to_db import insert_table_to_db
 from ..modules.table_columns_edition import filter_table_column
