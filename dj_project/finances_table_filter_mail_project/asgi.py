@@ -1,5 +1,5 @@
 """
-ASGI config for novelis_table_filter_mail_project project.
+ASGI config for finances_table_filter_mail_project project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'novelis_table_filter_mail_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'finances_table_filter_mail_project.settings')
 
 application = get_asgi_application()
