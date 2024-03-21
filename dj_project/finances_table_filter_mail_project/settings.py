@@ -131,9 +131,9 @@ DEFAUT_CHARSET = 'ISO-8859-1'
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 # https://docs.djangoproject.com/en/5.0/ref/settings/#static-files
 
-STATIC_URL = '/assets/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'templates/bases/assets')]
-STATIC_ROOT = os.path.join('assets')
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (os.path.join(BASE_DIR, 'templates/bases'), os.path.join(BASE_DIR, 'templates/assets'))
+STATIC_ROOT = os.path.join('static')
 
 # # User-uploaded (Media) files
 # # https://docs.djangoproject.com/en/5.0/ref/settings/#std-setting-MEDIA_ROOT
