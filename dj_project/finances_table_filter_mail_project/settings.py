@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+from utils.variables.envs import nfe_email
 
 import os
 from dotenv import load_dotenv
@@ -150,7 +151,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 
 #EMAIL:
-# ADMINS = [('Suporte', 'andre.kuratomi@jcgestaoderiscos.com.br')]
+# ADMINS = [("NFE_JC", nfe_email)]
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp-mail.outlook.com'
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")

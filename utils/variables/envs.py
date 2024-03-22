@@ -7,12 +7,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Keys for login:
-username = os.getenv("EMAIL_HOST_USER")
+username = os.getenv("EMAIL_HOST_USER") # email!
 password = os.getenv("EMAIL_HOST_PASSWORD")
-# username = os.getenv("PERSONAL_USER")
-# password = os.getenv("PERSONAL_PASSWORD")
-username_test = os.getenv("EMAIL_HOST_USER_TEST")
-password_test = os.getenv("EMAIL_HOST_PASSWORD_TEST")
+nfe_email = os.getenv("EMAIL_NFE")
 
 # Input ids:
 hover_selector = os.getenv("HOVER_SELECTOR")
@@ -30,7 +27,7 @@ sharepoint_for_database_and_upload_url="https://jcgestaoderiscos.sharepoint.com/
 sharepoint_medicoes_url="https://jcgestaoderiscos.sharepoint.com/sites/Faturamento/Documentos%20Compartilhados/Forms/AllItems.aspx?id=%2Fsites%2FFaturamento%2FDocumentos%20Compartilhados%2F01%20%2D%20MEDI%C3%87%C3%95ES%2FANO%202024&p=true&fromShare=true&ga=1"
 # print("sharepoint_for_database_and_upload_url:", sharepoint_for_database_and_upload_url)
 # print("sharepoint_medicoes_url:", sharepoint_medicoes_url)
-# ipdb.set_trace()
+
+# Table sheets:
 sheet = os.getenv("SHEET")
 sheet_contacts = os.getenv("SHEET_CONTACTS")
-# sharepoint_url = os.getenv("SHAREPOINT_URL")
