@@ -1,9 +1,11 @@
 import pandas as pd
 
-from management_before_django.table_managements.modules.take_path_from_directory import paths_with_file_name
+from management_before_django.table_managements.modules.paths_module import paths_with_file_name
+
 from openpyxl import load_workbook
 from openpyxl.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
+
 from pathlib import Path
 from tqdm import tqdm
 from utils.functions.path_length import temos_tabelas
@@ -144,7 +146,7 @@ def contatos_teste(table_sheet: Worksheet, workbook: Workbook, complete_file_pat
     # ipdb.set_trace()
 
 
-def workbook_para_pandas(table_sheet: str) -> pd.DataFrame:
+def workbook_para_pandas(table_sheet: Worksheet) -> pd.DataFrame:
     """Da tabela editada acima com Openpyxl para Dataframe Pandas."""
 
     rows = list()
@@ -154,11 +156,11 @@ def workbook_para_pandas(table_sheet: str) -> pd.DataFrame:
     headers = [headers[3], headers[4], headers[6],  headers[10], headers[18], headers[23], headers[24], headers[25]]
 
     # Other rows for content:
-    for row in tqdm(table_sheet.iter_rows(min_row=2), "Filtering rows by columns D, E, K, S, X and Z..."):
+    for row in tqdm(table_sheet.iter_rows(min_row=2), "Filtering rows by columns D, E, G, K, S, X, Y and Z..."):
         rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 10, 18, 23, 24, 25]]) #IMPROVE
     # PANDAS!
     df = pd.DataFrame(rows, columns=headers)
-    ipdb.set_trace()
+    # ipdb.set_trace()
     # # Drop first row (only for this case!):
     # df.drop(0, inplace=True)
 

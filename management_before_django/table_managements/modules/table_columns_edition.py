@@ -6,7 +6,7 @@ from pathlib import Path
 from tqdm import tqdm
 
 from management_before_django.table_managements.modules.openpyxl_module import adicionar_coluna_contatos, adicionar_coluna_referencia, adicionar_coluna_status, contatos_teste, workbook_para_pandas
-from management_before_django.table_managements.modules.take_path_from_directory import paths_with_file_name, paths_com_muitos_nomes_de_arquivos
+from management_before_django.table_managements.modules.paths_module import paths_with_file_name, paths_com_muitos_nomes_de_arquivos
 
 from utils.variables.envs import sheet, sheet_contacts
 
@@ -44,5 +44,5 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
     # Funções Openpyxl:
     contatos_teste(table_sheet, workbook_edited, complete_file_path_to_edited)
     pandas_dataframe = workbook_para_pandas(table_sheet)
-    ipdb.set_trace()
+
     return pandas_dataframe
