@@ -73,7 +73,7 @@ class EmailAttachByTable(APIView):
                         "valor_liquido": valor_liquido, 
                         "vencimento": vencimento, 
                     }
-
+                    # ipdb.set_trace()
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
                     download_anexos_no_sharepoint(
                         username,
@@ -163,7 +163,7 @@ class EmailAttachByTable(APIView):
                             mail_content, # BODY
                             "{}".format(host_email), # FROM
                             [row_data['contact']], # TO
-                            [nfe_email], # BCC
+                            [nfe_email, "andrekuratomi@gmail.com"], # BCC
                         )
                         
                         # Reading HTML tags:

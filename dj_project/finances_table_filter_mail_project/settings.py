@@ -11,12 +11,13 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-from utils.variables.envs import nfe_email
 
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
+
+nfe_email = os.getenv("NFE_EMAIL")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parents[2]
