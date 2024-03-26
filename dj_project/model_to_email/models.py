@@ -137,6 +137,7 @@ class TableName(models.Model):
     dt_vencto = models.TextField(db_column='Dt Vencto', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
     valor_liquido = models.FloatField(db_column='Valor Liquido', blank=True, null=True)  # Field name made lowercase. Field renamed to remove unsuitable characters.
     contatos = models.TextField(db_column='CONTATOS', blank=True, null=True)  # Field name made lowercase.
+    referencias = models.TextField(db_column='REFERENCIAS', blank=True, null=True)  # Field name made lowercase.
     status = models.TextField(db_column='STATUS', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
