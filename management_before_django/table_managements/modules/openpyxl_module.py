@@ -2,6 +2,8 @@ import pandas as pd
 
 from management_before_django.table_managements.modules.take_path_from_directory import paths_with_file_name
 from openpyxl import load_workbook
+from openpyxl.workbook import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
 from pathlib import Path
 from tqdm import tqdm
 from utils.functions.path_length import temos_tabelas
@@ -9,7 +11,7 @@ from utils.functions.path_length import temos_tabelas
 import ipdb
 
 
-def adicionar_coluna_contatos(all_data, contacts_data, workbook_all_data, complete_file_path_to_raw) -> None:
+def adicionar_coluna_contatos(all_data: Worksheet, contacts_data: Worksheet, workbook_all_data: Workbook, complete_file_path_to_raw: str) -> None:
     """Openpyxl para adicionar coluna 'CONTATOS'."""
 
     nomes_colunas = [col.value for col in all_data[1]]
@@ -29,6 +31,26 @@ def adicionar_coluna_contatos(all_data, contacts_data, workbook_all_data, comple
                     break
   
         workbook_all_data.save(complete_file_path_to_raw)
+
+
+def adicionar_coluna_referencia(all_data: Worksheet, workbook_all_data: Workbook, complete_file_path_to_raw: str) -> None:
+    """Openpyxl para adicionar coluna 'REFERENCIAS' coletando informações de mês e ano da coluna 'DATA EMISSAO'."""
+
+    nomes_colunas = [col.value for col in all_data[1]]
+
+    if "REFERENCIAS" not in nomes_colunas:
+        nova_coluna = all_data.max_column + 1
+
+        all_data.insert_cols(nova_coluna)
+        all_data.cell(row=1, column=nova_coluna).value = "REFERENCIAS"
+
+        # coletar informação da coluna J, editar e inserir na coluna nova.
+        for index, all_data_row in enumerate(all_data.iter_rows(min_row=2, values_only=True), start=2):
+            data_editada = str(all_data_row[9])[5:7] + '-' + str(all_data_row[9])[:4]
+            all_data.cell(row=index, column=nova_coluna).value = data_editada
+
+        workbook_all_data.save(complete_file_path_to_raw)
+        workbook_all_data.close()
 
 
 def compare_spreadsheets(path_to_raw: str, path_to_edited: str, full_path_to_edited: str, sheet: str) -> None:
@@ -68,7 +90,7 @@ def compare_spreadsheets(path_to_raw: str, path_to_edited: str, full_path_to_edi
     print("DONE!")
 
 
-def adicionar_coluna_status(all_data, edited_path, file_path_to_raw, workbook_all_data, sheet) -> None:
+def adicionar_coluna_status(all_data: Worksheet, edited_path: Path, file_path_to_raw: str, workbook_all_data: Workbook, sheet: str) -> None:
     """Openpyxl para adicionar coluna 'STATUS'."""
     col_names = [col.value for col in all_data[1]]
     # do_we_have_status = [elem.value for elem in col_names if elem.value = "STATUS"]
@@ -108,35 +130,35 @@ def adicionar_coluna_status(all_data, edited_path, file_path_to_raw, workbook_al
             workbook_all_data.close()
 
 
-def contatos_teste(table_sheet, workbook, complete_file_path_to_edited) -> None:
+def contatos_teste(table_sheet: Worksheet, workbook: Workbook, complete_file_path_to_edited: str) -> None:
     """Openpyxl para alterar contatos para emails teste."""
 
     for cell in range(2, table_sheet.max_row + 1):
         if cell % 2 == 0:
-            table_sheet.cell(row=cell, column=table_sheet.max_column-1).value = "cleidiane.souza@jcgestaoderiscos.com.br"
+            table_sheet.cell(row=cell, column=24).value = "cleidiane.souza@jcgestaoderiscos.com.br"
         else:
-            table_sheet.cell(row=cell, column=table_sheet.max_column-1).value = "andre.kuratomi@jcgestaoderiscos.com.br"
+            table_sheet.cell(row=cell, column=24).value = "andre.kuratomi@jcgestaoderiscos.com.br"
     
     workbook.save(complete_file_path_to_edited)
     workbook.close()
     # ipdb.set_trace()
 
 
-def workbook_para_pandas(table_sheet) -> pd.DataFrame:
+def workbook_para_pandas(table_sheet: str) -> pd.DataFrame:
     """Da tabela editada acima com Openpyxl para Dataframe Pandas."""
 
     rows = list()
 
     # First row for titles:
     headers = [cell.value for cell in table_sheet[1]]
-    headers = [headers[3], headers[4], headers[6],  headers[10], headers[18], headers[23], headers[24]]
+    headers = [headers[3], headers[4], headers[6],  headers[10], headers[18], headers[23], headers[24], headers[25]]
 
     # Other rows for content:
-    for row in tqdm(table_sheet.iter_rows(min_row=2), "Filtering rows by columns D, E, K, S and X..."):
-        rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 10, 18, 23, 24]]) #IMPROVE
+    for row in tqdm(table_sheet.iter_rows(min_row=2), "Filtering rows by columns D, E, K, S, X and Z..."):
+        rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 10, 18, 23, 24, 25]]) #IMPROVE
     # PANDAS!
     df = pd.DataFrame(rows, columns=headers)
-
+    ipdb.set_trace()
     # # Drop first row (only for this case!):
     # df.drop(0, inplace=True)
 
