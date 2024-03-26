@@ -4,16 +4,15 @@ import sys
 import django
 import ipdb
 
-from datetime import datetime
 from pathlib import Path
 
 
 # Preparing django to run outside its dir:
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'novelis_table_filter_mail_project.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'finances_table_filter_mail_project.settings')
 sys.path.append("./dj_project")
 django.setup()
 
-from dj_project.filter_tables.views import EmailAttachByTable
+from dj_project.model_to_email.views import EmailAttachByTable
 
 from management_before_django.table_managements.scripts import tables_to_db
 
@@ -40,9 +39,6 @@ temos_algo_para_deletar(reports_path, "relatorio_diario.txt")
 delete_me_FLAG = "ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS.txt"
 
 if not Path(delete_me_FLAG).exists():
-    # today = datetime.now().strftime("%d-%m-%Y")
-    # print(today)
-    # if today.startswith("01"):
     temos_algo_para_deletar(raw_tables_path, ".xlsx")
     temos_algo_para_deletar(edited_tables_path, ".xlsx")
     

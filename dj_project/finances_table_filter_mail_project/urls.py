@@ -1,5 +1,5 @@
 """
-URL configuration for novelis_table_filter_mail_project project.
+URL configuration for finances_table_filter_mail_project project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -19,5 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('filter_tables.urls'))
+    path('api/', include('model_to_email.urls'))
 ]

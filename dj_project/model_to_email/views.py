@@ -3,13 +3,11 @@ import time
 from django.core.mail import EmailMessage, mail_admins
 from django.template.loader import render_to_string
 
+from datetime import datetime
+from model_to_email.models import TableName
 from pathlib import Path
-
 from rest_framework.views import APIView
-
 from tqdm import tqdm
-
-from filter_tables.models import TableName
 
 from management_before_django.table_managements.modules.openpyxl_module import status_update
 
@@ -17,7 +15,7 @@ from robot_sharepoint.modules.robots.robo_para_download_no_sharepoint import dow
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.deletar_elementos import temos_algo_para_deletar
-from utils.variables.envs import username, password, sharepoint_medicoes_url, download_directory, host_email
+from utils.variables.envs import username, password, nfe_email, sharepoint_medicoes_url, download_directory, host_email
 from utils.variables.paths import edited_tables_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, not_found_title, sent_title
 
@@ -67,15 +65,15 @@ class EmailAttachByTable(APIView):
 
                     row_data = {
                         # "competencia_por_ano": "competencia_por_ano",
-                        # "contact": contato,
-                        "contact": "andrekuratomi@gmail.com",
+                        "contact": contato,
+                        # "contact": "andrekuratomi@gmail.com",
                         "cnpj": cnpj, 
                         "nfe": nfe, 
                         "nome_do_cliente": nome_do_cliente, 
                         "valor_liquido": valor_liquido, 
                         "vencimento": vencimento, 
                     }
-
+                    # ipdb.set_trace()
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
                     download_anexos_no_sharepoint(
                         username,
@@ -84,12 +82,6 @@ class EmailAttachByTable(APIView):
                         download_directory,
                         cnpj,
                         nfe,
-                        # "11068167000453", # boleto
-                        # "17774" # boleto
-                        # "02390435000115",
-                        # "17779"
-                        # "61102778000872", # not_found
-                        # "17757" # not_found
                     )
 
                     anexos_path = "/robot_sharepoint/anexos/"
@@ -144,7 +136,7 @@ class EmailAttachByTable(APIView):
                         print("nome_do_cliente_data:", row_data['nome_do_cliente'])
                         print("table_template:", table_template)
                         print("tipo_de_servico:", tipo_de_servico)
-                        # ipdb.set_trace()
+
                         # Insert table to mail body:
                         mail_content = render_to_string(
                             table_template, {
@@ -166,12 +158,12 @@ class EmailAttachByTable(APIView):
                                 a1=tipo_de_servico, 
                                 a2=competencia_por_ano,
                                 a3=row_data['nome_do_cliente'], 
-                                # a4='17774'
                                 a4=row_data['nfe']
-                            ),
-                            mail_content,
-                            "{}".format(host_email), 
-                            [row_data['contact']],
+                            ), # SUBJECT
+                            mail_content, # BODY
+                            "{}".format(host_email), # FROM
+                            [row_data['contact']], # TO
+                            [nfe_email, "andrekuratomi@gmail.com"], # BCC
                         )
                         
                         # Reading HTML tags:
@@ -186,6 +178,30 @@ class EmailAttachByTable(APIView):
 
                         email.send()
                         print("Email successfully sent! Check inbox.")
+
+                        # # FORMATAÇÃO DE DATA:
+
+                        # dia = (datetime.now()).strftime("%d/%m/%Y")
+                        # horas = (datetime.now()).strftime("%H:%M:%S")
+
+                        # admin_email_message = """\
+                        #     <html>
+                        #         <head></head>
+                        #         <body>
+                        #             <p>Notificação: Foi enviado email para o usuário %s às %s em %s.</p>
+                        #             <br>
+                                    
+                        #             <h3>J&C</h3>
+                        #         </body>
+                        #     </html>
+                        # """ % (nome_do_cliente, horas, dia)
+
+                        # mail_admins(
+                        #     "Aviso de envio de email - Usuário {b1}".format(b1=nome_do_cliente), 
+                        #     "",
+                        #     fail_silently=False,
+                        #     html_message=admin_email_message
+                        # )
 
                         # Fill element sent list:
                         sent_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
