@@ -1,6 +1,8 @@
 import os
 import time
 
+from datetime import datetime
+
 from pathlib import Path
 
 from selenium import webdriver
@@ -21,8 +23,8 @@ from robot_sharepoint.modules.robot_utils import unzip_files
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
 
 
-def robot_for_sharepoint(username: str, password: str, site_url: str, 
-                        download_dir: str, cnpj: str, nfe: str, progress_bar: bool = True) -> None:
+def download_anexos_no_sharepoint(username: str, password: str, site_url: str, 
+                        download_dir: str, cnpj: str, nfe: str, refs: str, progress_bar: bool = True) -> None:
     
     # print("CNPJ:", cnpj)
     print("sharepoint_robot:", __name__)
@@ -72,18 +74,28 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
     password_input.send_keys(Keys.RETURN)
     pbar.update(1)
 
+    # TIME LOGIC:
+
+    year = refs[3:]
+
+    month = refs[0:2]
+    months_list = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
+    month_number = int(month) - 1
+    month_name = months_list[month_number]
+    mes_sharepoint = month + ' - ' + month_name
+    
     # CLICKING FOLDERS:
     # root_folder = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - MEDIÇÕES']")))
     # pbar.update(1)
     # root_folder.click()
     # pbar.update(1)
-
-    # year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']"))) # criar lógica para obter ano do calendário
+    
+    # year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title=f'ANO {year}']"))) # lógica para obter ano do calendário
     # pbar.update(1)
     # year.click()
     # pbar.update(1)
-    # ipdb.set_trace()
-    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - JANEIRO']"))) # criar lógica para obter mês do calendário - 1
+
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']"))) # lógica para obter mês do calendário - 1
     pbar.update(1)
     month.click()
     pbar.update(1)
@@ -166,4 +178,5 @@ def robot_for_sharepoint(username: str, password: str, site_url: str,
             print("No client found for {}!".format(cnpj))
 
     except Exception as e:
-        print(f"Error while robot in CNPJ folder: {e}")
+        print("No client found for {}!".format(cnpj))
+        print(f"Error while robot in CNPJ folder: {cnpj}")

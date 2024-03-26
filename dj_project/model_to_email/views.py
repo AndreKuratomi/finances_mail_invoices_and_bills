@@ -1,22 +1,21 @@
 import time
 
-from django.core.mail import EmailMessage
+from django.core.mail import EmailMessage, mail_admins
 from django.template.loader import render_to_string
 
+from datetime import datetime
+from model_to_email.models import TableName
 from pathlib import Path
-
 from rest_framework.views import APIView
-
 from tqdm import tqdm
 
-from filter_tables.models import TableName
+from management_before_django.table_managements.modules.openpyxl_module import status_update
 
-from management_before_django.table_managements.modules.status_update import status_update
-from robot_sharepoint.modules.robots.robot_for_login_and_download_from_sharepoint import robot_for_sharepoint
+from robot_sharepoint.modules.robots.robo_para_download_no_sharepoint import download_anexos_no_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.deletar_elementos import temos_algo_para_deletar
-from utils.variables.envs import username, password, sharepoint_medicoes_url, download_directory, host_email
+from utils.variables.envs import username, password, nfe_email, sharepoint_medicoes_url, download_directory, host_email
 from utils.variables.paths import edited_tables_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, not_found_title, sent_title
 
@@ -54,10 +53,11 @@ class EmailAttachByTable(APIView):
                 file.write(not_found_title)
 
             for row in tqdm(table_data, "Each line, each search and email"):
-
                 cnpj = row.cnpj
+                contato = row.contatos
                 nfe = row.numero
                 nome_do_cliente = row.nome_do_cliente
+                referencias = row.referencias
                 status = row.status
                 valor_liquido = row.valor_liquido
                 vencimento = row.dt_vencto
@@ -65,43 +65,44 @@ class EmailAttachByTable(APIView):
                 if status == "Não enviado":
 
                     row_data = {
+                        # "competencia_por_ano": "competencia_por_ano",
+                        "contact": contato,
+                        # "contact": "andrekuratomi@gmail.com",
                         "cnpj": cnpj, 
                         "nfe": nfe, 
-                        "nome_do_cliente": nome_do_cliente, 
+                        "nome_do_cliente": nome_do_cliente,
+                        "referencias": referencias,
                         "valor_liquido": valor_liquido, 
                         "vencimento": vencimento, 
-                        # "contact": contato,
-                        # "competencia_por_ano": "competencia_por_ano",
-                        "contact": "andrekuratomi@gmail.com"
                     }
+                    # ipdb.set_trace()
+                    
+                    # Extração de mês e ano:
+                    refs = str(row_data['referencias'])
 
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
-                    robot_for_sharepoint(
+                    download_anexos_no_sharepoint(
                         username,
                         password,
                         sharepoint_medicoes_url,
                         download_directory,
                         cnpj,
                         nfe,
-                        # "11068167000453", # boleto
-                        # "17774" # boleto
-                        # "02390435000115",
-                        # "17779"
-                        # "61102778000872", # not_found
-                        # "17757" # not_found
+                        refs
                     )
 
-                    attachments_path = "/robot_sharepoint/attachments/"
-                    full_attachments_path = root_dir + attachments_path
+                    anexos_path = "/robot_sharepoint/anexos/"
+                    full_anexos_path = root_dir + anexos_path
 
-                    # Extract info from attachments:
-                    path = Path(full_attachments_path)
+                    # Extract info from anexos:
+                    path = Path(full_anexos_path)
                     tables_path_content = list(path.iterdir())
 
                     competencia_por_ano = "02/01/2024"
                     tipo_de_servico = ""
                     table_template = "table_template_deposito.html"
                     
+                    # ipdb.set_trace()
                     # NOT FOUND CNPJ AND/OR NFE:
                     if len(tables_path_content) <= 1:
                         
@@ -112,12 +113,12 @@ class EmailAttachByTable(APIView):
 
                     else:
                         for file in tables_path_content:
-                            print("Attachments:",file)
+                            print("anexos:",file)
                             if file.is_file():
                                 string_file = str(file)
 
                                 if string_file.endswith('.pdf') or string_file.endswith('.xlsx'):
-                                    prefix = full_attachments_path
+                                    prefix = full_anexos_path
                                     filtered = string_file[len(prefix):]
 
                                     if filtered.startswith("NFE"):
@@ -164,12 +165,12 @@ class EmailAttachByTable(APIView):
                                 a1=tipo_de_servico, 
                                 a2=competencia_por_ano,
                                 a3=row_data['nome_do_cliente'], 
-                                # a4='17774'
                                 a4=row_data['nfe']
-                            ),
-                            mail_content,
-                            "{}".format(host_email), 
-                            [row_data['contact']],
+                            ), # SUBJECT
+                            mail_content, # BODY
+                            "{}".format(host_email), # FROM
+                            [row_data['contact']], # TO
+                            [nfe_email, "andrekuratomi@gmail.com"], # BCC
                         )
                         
                         # Reading HTML tags:
@@ -184,6 +185,30 @@ class EmailAttachByTable(APIView):
 
                         email.send()
                         print("Email successfully sent! Check inbox.")
+
+                        # # FORMATAÇÃO DE DATA:
+
+                        # dia = (datetime.now()).strftime("%d/%m/%Y")
+                        # horas = (datetime.now()).strftime("%H:%M:%S")
+
+                        # admin_email_message = """\
+                        #     <html>
+                        #         <head></head>
+                        #         <body>
+                        #             <p>Notificação: Foi enviado email para o usuário %s às %s em %s.</p>
+                        #             <br>
+                                    
+                        #             <h3>J&C</h3>
+                        #         </body>
+                        #     </html>
+                        # """ % (nome_do_cliente, horas, dia)
+
+                        # mail_admins(
+                        #     "Aviso de envio de email - Usuário {b1}".format(b1=nome_do_cliente), 
+                        #     "",
+                        #     fail_silently=False,
+                        #     html_message=admin_email_message
+                        # )
 
                         # Fill element sent list:
                         sent_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
