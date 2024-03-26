@@ -6,7 +6,7 @@ import ipdb
 
 
 def paths_with_file_name(path: Path) -> Tuple[str, str]:
-    """Take full path to directory."""
+    """Take full path to directory raw_table."""
     # ipdb.set_trace()
     # Checking path content:
     tables_path_content = list(path.iterdir())  
@@ -35,7 +35,7 @@ def paths_with_file_name(path: Path) -> Tuple[str, str]:
     
 
 def paths_com_muitos_nomes_de_arquivos(path: Path) -> Tuple[str, str, str]:
-    """Take full path to directory."""
+    """Take full path to directory edited_table."""
     # ipdb.set_trace()
     # Checking path content:
     tables_path_content = list(path.iterdir())  
@@ -59,4 +59,5 @@ def paths_com_muitos_nomes_de_arquivos(path: Path) -> Tuple[str, str, str]:
         else:
             outro = elemento_para_trabalhar_com
             complete_path_to_dir = str(path.resolve() / elemento_para_trabalhar_com.name)
+    
     return (contatos, complete_path_to_dir, outro)

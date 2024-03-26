@@ -57,6 +57,7 @@ class EmailAttachByTable(APIView):
                 contato = row.contatos
                 nfe = row.numero
                 nome_do_cliente = row.nome_do_cliente
+                referencias = row.referencias
                 status = row.status
                 valor_liquido = row.valor_liquido
                 vencimento = row.dt_vencto
@@ -69,11 +70,16 @@ class EmailAttachByTable(APIView):
                         # "contact": "andrekuratomi@gmail.com",
                         "cnpj": cnpj, 
                         "nfe": nfe, 
-                        "nome_do_cliente": nome_do_cliente, 
+                        "nome_do_cliente": nome_do_cliente,
+                        "referencias": referencias,
                         "valor_liquido": valor_liquido, 
                         "vencimento": vencimento, 
                     }
                     # ipdb.set_trace()
+                    
+                    # Extração de mês e ano:
+                    refs = str(row_data['referencias'])
+
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
                     download_anexos_no_sharepoint(
                         username,
@@ -82,6 +88,7 @@ class EmailAttachByTable(APIView):
                         download_directory,
                         cnpj,
                         nfe,
+                        refs
                     )
 
                     anexos_path = "/robot_sharepoint/anexos/"
