@@ -20,7 +20,6 @@ def create_model_from_database() -> None:
 
     # Windows
     command = f'cd {django_project_path} && py manage.py inspectdb > {models_file_path}'
-    
     os.system(command)
 
     time.sleep(1)  # wait for file to be created
@@ -29,14 +28,21 @@ def create_model_from_database() -> None:
     with open(f"{models_file_path}", "r") as file:
         lines = file.readlines()
 
-    # Edit model content: 
-    with open(f"{models_file_path}", "w") as file:
-        for line in tqdm(lines, "Editing django model from SQLite3..."):
+    updated_lines = []
+    for line in tqdm(lines, "Editing django model from SQLite3..."):
 
-            if "id = models.IntegerField(blank=True, null=True)" in line:
-                file.write(line.replace("id = models.IntegerField(blank=True, null=True)", "id = models.AutoField(primary_key=True)"))
-            elif "class Meta:" in line:
-                file.write(line)
-                file.write("        app_label = 'model_to_email'\n")
-            else:
-                file.write(line)
+        if "id = models.IntegerField(blank=True, null=True)" in line:
+            updated_lines.append(line.replace("id = models.IntegerField(blank=True, null=True)", "id = models.AutoField(primary_key=True)"))
+        elif "class Meta:" in line:
+            updated_lines.append(line)
+            updated_lines.append("        app_label = 'model_to_email'\n")
+        else:
+            updated_lines.append(line)
+    
+    # Edit model content directly: 
+    with open(f"{models_file_path}", "w") as file:
+        file.writelines(updated_lines)
+        # Ensure file is flushed and changes are committed before proceeding
+        file.flush()
+        os.fsync(file.fileno())
+
