@@ -2,9 +2,7 @@ from ..modules.create_model import create_model_from_database
 from ..modules.insert_table_to_db import insert_table_to_db
 from ..modules.table_columns_edition import filter_table_column
 
-from robot_sharepoint.modules.robots.robot_for_login_and_download_raw_table import robot_for_raw_table
-
-from utils.variables.envs import sheet, download_directory, download_selector, username, password, sharepoint_medicoes_url
+from utils.variables.envs import sheet
 from utils.variables.paths import db, edited_tables_path, raw_tables_path
 
 import ipdb
