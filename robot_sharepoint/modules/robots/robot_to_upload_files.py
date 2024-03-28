@@ -16,14 +16,14 @@ from tqdm import tqdm
 import ipdb
 
 
-def upload_files_to_sharepoint(username: str, password: str, reports_path: Path, site_url: str, progress_bar: bool = True) -> None:
+def upload_files_to_sharepoint(user_email: str, password: str, reports_path: Path, site_url: str, progress_bar: bool = True) -> None:
     # CONNECT TO BROWSER:
     if progress_bar:
         pbar = tqdm(desc="Connecting to browser and uploading file", total=0)
 
     # Driver instance:
     options = Options()
-    options.add_argument('--headless=new')
+    # options.add_argument('--headless=new')
     options.add_argument('-inprivate')
 
     driver = webdriver.Edge(options=options)
@@ -31,9 +31,9 @@ def upload_files_to_sharepoint(username: str, password: str, reports_path: Path,
     driver.maximize_window()
 
     # LOGIN:
-    username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
-    username_input.send_keys(username)
-    username_input.send_keys(Keys.RETURN)
+    user_email_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
+    user_email_input.send_keys(user_email)
+    user_email_input.send_keys(Keys.RETURN)
 
     password_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "input[type='password']")))
     password_input.send_keys(password)

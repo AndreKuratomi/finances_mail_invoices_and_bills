@@ -12,7 +12,7 @@ from tqdm import tqdm
 import ipdb
 
 
-def recursive_robot(username: str, site_url: str, progress_bar: bool = True):
+def recursive_robot(user_email: str, site_url: str, progress_bar: bool = True):
 
     # Dictionary to store input ids:
     dict = {"user_input_id": "", "password_input_id": ""}
@@ -50,18 +50,18 @@ def recursive_robot(username: str, site_url: str, progress_bar: bool = True):
     pbar.update(1)
 
     # LOGIN:
-    # Find username input field by its ID and enter email address:
-    username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
+    # Find user_email input field by its ID and enter email address:
+    user_email_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
     # ipdb.set_trace()
     pbar.update(1)
 
-    # Enter username and submit the form:
-    username_input_id = username_input.get_attribute("id")
-    dict["user_input_id"] = username_input_id
+    # Enter user_email and submit the form:
+    user_email_input_id = user_email_input.get_attribute("id")
+    dict["user_input_id"] = user_email_input_id
     pbar.update(1)
 
-    username_input.send_keys(username)
-    username_input.send_keys(Keys.RETURN)
+    user_email_input.send_keys(user_email)
+    user_email_input.send_keys(Keys.RETURN)
     pbar.update(1)
 
     # Wait for the password input to be visible:
