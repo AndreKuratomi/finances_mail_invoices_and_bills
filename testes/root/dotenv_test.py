@@ -2,6 +2,8 @@ import os
 import re
 
 from django.conf import settings
+from django.test import TestCase
+
 from pathlib import Path
 from testes.conftest import email_pattern, link_pattern, required_variables, txt
 

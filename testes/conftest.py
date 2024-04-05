@@ -52,7 +52,7 @@ def get_venv_path() -> str:
 
 # DJANGO:
 
-@pytest.fixture(scope="session") # executed once per test session rather than once per test case
+@pytest.fixture(scope="session") # parameter: executed once per test session rather than once per test case
 def configure_django_settings():
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'finances_table_filter_mail_project.settings')
     sys.path.append("./dj_project")
