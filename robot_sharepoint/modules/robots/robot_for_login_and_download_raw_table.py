@@ -20,7 +20,7 @@ from tqdm import tqdm
 import ipdb
 
 
-def robot_for_raw_table(username: str, password: str, site_url: str, 
+def robot_for_raw_table(user_email: str, password: str, site_url: str, 
                         download_dir: str, progress_bar: bool = True) -> None:
     
     # print("CNPJ:", cnpj)
@@ -38,7 +38,7 @@ def robot_for_raw_table(username: str, password: str, site_url: str,
 
     # Driver instance:
     options = Options()
-    options.add_argument('--headless=new')
+    # options.add_argument('--headless=new')
 
     # For Windows OS:
     options.add_argument('-inprivate')
@@ -56,12 +56,12 @@ def robot_for_raw_table(username: str, password: str, site_url: str,
     pbar.update(1)
 
     # LOGIN:
-    username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
+    user_email_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
     pbar.update(1)
 
-    username_input.send_keys(username)
+    user_email_input.send_keys(user_email)
     pbar.update(1)
-    username_input.send_keys(Keys.RETURN)
+    user_email_input.send_keys(Keys.RETURN)
     pbar.update(1)
 
 

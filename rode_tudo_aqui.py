@@ -7,6 +7,14 @@ import ipdb
 from pathlib import Path
 
 
+# Empty models case:
+from management_before_django.table_managements.modules.create_model import create_model_from_database
+from utils.variables.paths import models_file_path
+from utils.functions.temos_model import temos_model
+
+if not temos_model(models_file_path):
+    create_model_from_database()
+
 # Preparing django to run outside its dir:
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'finances_table_filter_mail_project.settings')
 sys.path.append("./dj_project")
@@ -23,12 +31,12 @@ from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.path_length import temos_tabelas
 from utils.functions.deletar_elementos import temos_algo_para_deletar
-from utils.variables.envs import download_directory, username, password, raw_table_directory, sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
-from utils.variables.paths import edited_tables_path, raw_tables_path, reports_path
+from utils.variables.envs import download_directory, user_email, password, raw_table_directory, sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
+from utils.variables.paths import edited_tables_path, models_file_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, elements_reports_list, sent_title
 
 
-# Diretório da aplicação para django depois trabalhar com anexos:
+# Diretório da aplicação para django depois trabalhar com anexos na view:
 diretorio_raiz = os.path.dirname(os.path.abspath(__file__))
 diretorio_raiz = str(diretorio_raiz)
 
@@ -54,8 +62,8 @@ temos_tabela_para_trabalhar = temos_tabelas(raw_tables_path, 2)
 
 if not temos_tabela_para_trabalhar:
     print("BAIXANDO PLANILHAS DO SHAREPOINT.")
-    download_contatos_no_sharepoint(username, password, sharepoint_for_database_and_upload_url, raw_tables_path)
-    robot_for_raw_table(username, password, sharepoint_for_database_and_upload_url, raw_tables_path)
+    download_contatos_no_sharepoint(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
+    robot_for_raw_table(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
 
 try:
     tables_to_db.tables_to_db()
@@ -65,5 +73,5 @@ except Exception as e:
 finally: 
     print("ELABORANDO RELATÓRIO FINAL E ENVIANDO.")
     join_reports(not_found_list, sent_list, elements_reports_list, reports_path)
-    upload_files_to_sharepoint(username, password, reports_path, sharepoint_for_database_and_upload_url)
+    upload_files_to_sharepoint(user_email, password, reports_path, sharepoint_for_database_and_upload_url)
     print("PROCESSO ENCERRADO. CHECAR RELATÓRIOS.")

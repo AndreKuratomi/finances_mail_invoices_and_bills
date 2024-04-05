@@ -1,44 +1,41 @@
+import os
 import time
 
 from django.core.mail import EmailMessage, mail_admins
 from django.template.loader import render_to_string
 
-from datetime import datetime
-from model_to_email.models import TableName
 from pathlib import Path
 from rest_framework.views import APIView
 from tqdm import tqdm
 
 from management_before_django.table_managements.modules.openpyxl_module import status_update
-
+not_found = True
+count = 0
+while not_found:
+    print(count)
+    try:
+        print("oi")
+        from model_to_email.models import TableName
+        not_found = False
+    except ImportError:
+        count += 1
+        time.sleep(1)
+        continue
+print("TableName:", TableName)
 from robot_sharepoint.modules.robots.robo_para_download_no_sharepoint import download_anexos_no_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.deletar_elementos import temos_algo_para_deletar
-from utils.variables.envs import username, password, nfe_email, sharepoint_medicoes_url, download_directory, host_email
-from utils.variables.paths import edited_tables_path, raw_tables_path, reports_path
+from utils.functions.temos_model import temos_model
+from utils.variables.envs import user_email, password, nfe_email, sharepoint_medicoes_url, download_directory, host_email
+from utils.variables.paths import edited_tables_path, models_file_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, not_found_title, sent_title
 
 import ipdb
 
-# # While there's no model:
-# model_dir = './models.py'
-# count = 1
-# do_we_have_tablename = False
-
-# while not do_we_have_tablename:
-#     try:
-#         from .models import TableName
-#         do_we_have_tablename = True
-#     except ImportError:
-#         print(count)
-#         time.sleep(count)
-#         count += 1
-#     # module = __import__('models', fromlist=[''])
-#     # do_we_have_tablename = hasattr(module, 'TableName')
-
 # Table to work with:
 table_data = TableName.objects.all()
+print("table_data:", table_data)
 
 print("Views:", __name__)
 
@@ -47,7 +44,6 @@ class EmailAttachByTable(APIView):
     def post(self, root_dir: str):
         print(f"root_dir: {root_dir}")
         try:
-
             # Not found list report creation:
             with reports_path.joinpath(not_found_list).open("w") as file:
                 file.write(not_found_title)
@@ -82,7 +78,7 @@ class EmailAttachByTable(APIView):
 
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
                     download_anexos_no_sharepoint(
-                        username,
+                        user_email,
                         password,
                         sharepoint_medicoes_url,
                         download_directory,
