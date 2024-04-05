@@ -12,7 +12,7 @@ cd "C:\Users\andre.kuratomi\Desktop\projetos\notas_fiscais_financeiro\"
 
 REM Ativando ambiente virtual... OBS: INSTALAR AS DEPENDÊNCIAS ANTES DE RODAR!
 
-call ".\env\Scripts\activate"
+call ".\venv\Scripts\activate"
 
 REM Rodando aplicação...
 

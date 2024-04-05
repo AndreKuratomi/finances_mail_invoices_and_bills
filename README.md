@@ -169,7 +169,7 @@ python3 -m venv venv --upgrade-deps
 
 WINDOWS:
 ```
-py -m venv env
+py -m venv venv
 ```
 
 <h4>Ative o seu ambiente virtual com o comando:</h4>
@@ -190,7 +190,7 @@ Set-ExecutionPolicy RemoteSigned # para alterar o tipo de política se o comando
 Obs: Eventualmente, pode ser necessário abrir o PowerShell como administrador.
 
 ```
-.\env\Scripts\activate
+.\venv\Scripts\activate
 ```
 
 
