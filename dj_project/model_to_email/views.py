@@ -27,7 +27,7 @@ from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.deletar_elementos import temos_algo_para_deletar
 from utils.functions.temos_model import temos_model
-from utils.variables.envs import username, password, nfe_email, sharepoint_medicoes_url, download_directory, host_email
+from utils.variables.envs import user_email, password, nfe_email, sharepoint_medicoes_url, download_directory, host_email
 from utils.variables.paths import edited_tables_path, models_file_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, not_found_title, sent_title
 
@@ -78,7 +78,7 @@ class EmailAttachByTable(APIView):
 
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
                     download_anexos_no_sharepoint(
-                        username,
+                        user_email,
                         password,
                         sharepoint_medicoes_url,
                         download_directory,

@@ -23,7 +23,7 @@ from robot_sharepoint.modules.robot_utils import unzip_files
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
 
 
-def download_anexos_no_sharepoint(username: str, password: str, site_url: str, 
+def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str, 
                         download_dir: str, cnpj: str, nfe: str, refs: str, progress_bar: bool = True) -> None:
     
     # print("CNPJ:", cnpj)
@@ -40,7 +40,7 @@ def download_anexos_no_sharepoint(username: str, password: str, site_url: str,
 
     # Driver instance:
     options = Options()
-    options.add_argument('--headless=new')
+    # options.add_argument('--headless=new')
 
     # For Windows OS:
     options.add_argument('-inprivate')
@@ -58,12 +58,12 @@ def download_anexos_no_sharepoint(username: str, password: str, site_url: str,
     pbar.update(1)
 
     # LOGIN:
-    username_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
+    user_email_input = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.TAG_NAME, "input")))
     pbar.update(1)
 
-    username_input.send_keys(username)
+    user_email_input.send_keys(user_email)
     pbar.update(1)
-    username_input.send_keys(Keys.RETURN)
+    user_email_input.send_keys(Keys.RETURN)
     pbar.update(1)
 
 

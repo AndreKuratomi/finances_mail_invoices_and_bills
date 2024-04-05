@@ -170,7 +170,7 @@ python3 -m venv venv --upgrade-deps
 
 WINDOWS:
 ```
-py -m venv env
+py -m venv venv
 ```
 <br>
 <h4>Ativate your virtual enviroment with the command:</h4>
