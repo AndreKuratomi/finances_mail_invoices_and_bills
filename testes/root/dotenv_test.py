@@ -2,17 +2,19 @@ import os
 import re
 
 from django.conf import settings
+from pathlib import Path
 from testes.conftest import email_pattern, link_pattern, required_variables, txt
 
 import ipdb
 
+root_app_dir = Path(__file__).parents[2]
 
-class TestEnvsClass:
+
+class TestDotEnvClass:
     # .ENV:
     def test_se_env_existe(self) -> None:
-        if not os.path.exists('.env'):
-            raise FileNotFoundError("Arquivo '.env' não encontrado!")
-        assert os.path.exists('.env')
+        dotenv_path = root_app_dir / '.env'
+        assert dotenv_path.is_file(), f"Arquivo '{dotenv_path}' não encontrado!"
 
 
     def test_titulos_variaveis_env(self) -> None:
@@ -41,8 +43,11 @@ class TestEnvsClass:
                     assert len(secret_key_value) >= 45, f"Variável de ambiente {var} não tem uma extenção suficiente: {len(secret_key_value)}!"
 
 
-    def test_validacao_secret_key_django(self) -> None: # NÃO FUNCIONA PROPRIAMENTE
+    def test_validacao_secret_key_django(self, configure_django_settings) -> None: # NÃO FUNCIONA PROPRIAMENTE
         """Teste se variável SECRET_KEY pode ou não ser configurada em settings.py."""
+        
+        settings = configure_django_settings
+
         with open('.env', encoding='utf-8') as file:
             env_variables: str = file.read()
             for var in required_variables:
