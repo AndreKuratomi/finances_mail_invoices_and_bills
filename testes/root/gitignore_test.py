@@ -10,6 +10,7 @@ class TestGitignoreClass:
         assert os.path.exists('.gitignore')
 
     def test_conteudo_gitignore(self) -> None:
+        """Verifica se certos elementos existem ou não em .gitignore."""
         ignored_list = list()
         with open('.gitignore', encoding='utf-8') as file:
             for line in file:

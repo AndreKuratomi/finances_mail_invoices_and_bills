@@ -55,4 +55,5 @@ class TestVenvClass:
                     # ipdb.set_trace()
                     assert script == venv_scripts_dir_content, f"O diretório  tem "
 
+
     # def se instalado um mock do venv pode ser alimentado por outro do requirements.txt?
