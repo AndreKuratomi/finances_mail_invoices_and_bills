@@ -1,6 +1,7 @@
 import os
 import time
 
+from datetime import datetime
 from pathlib import Path
 
 from selenium import webdriver
@@ -14,22 +15,19 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
+from utils.variables.mes_e_ano_atual import year, mes_sharepoint
 
 from tqdm import tqdm
 
 import ipdb
 
 
-def robot_for_raw_table(user_email: str, password: str, site_url: str, 
-                        download_dir: str, progress_bar: bool = True) -> None:
+def download_base_de_dados_no_sharepoint(user_email: str, password: str, site_url: str, download_dir: str, progress_bar: bool = True) -> None:
     
     # print("CNPJ:", cnpj)
     print("sharepoint_robot:", __name__)
 
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-
-    # empty_download_directories(download_dir, default_download_dir)
-    # ipdb.set_trace()
 
     # CONNECT TO BROWSER:
     if progress_bar:
@@ -38,7 +36,7 @@ def robot_for_raw_table(user_email: str, password: str, site_url: str,
 
     # Driver instance:
     options = Options()
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
 
     # For Windows OS:
     options.add_argument('-inprivate')
@@ -72,26 +70,41 @@ def robot_for_raw_table(user_email: str, password: str, site_url: str,
     password_input.send_keys(Keys.RETURN)
     pbar.update(1)
 
+
+    # TIME LOGIC:
+    year = datetime.now().strftime("%Y")
+    month = datetime.now().strftime("%m")
+
+    months_list = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
+    month_number = int(month) - 1
+    month_name = months_list[month_number]
+
+    mes_sharepoint = month + ' ' + month_name
+
     # CLICKING FOLDERS:
     reports = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='14 - BASE DE DADOS']")))
     pbar.update(1)
     reports.click()
     pbar.update(1)
-
-    year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']")))
+    # ipdb.set_trace()
+    year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='ANO {year}']")))
     pbar.update(1)
     year.click()
     pbar.update(1)
 
     month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='JANEIRO']"))) # criar lógica para obter mês do calendário - 1
+    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']"))) # criar lógica para obter mês do calendário - 1
     pbar.update(1)
     month.click()
     pbar.update(1)
 
-
     files_to_download_amount = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[class='ms-List']")))
     files_to_download_list = files_to_download_amount.find_elements(By.CSS_SELECTOR, "div[class='ms-List-cell']")
     pbar.update(1)
+
+
+    # Lista para lógica de retirar arquivo baixado em default_download e inserir em raw_table/:
+    files_list = list()
 
     for file in tqdm(files_to_download_list, "Selecting files to download..."):
         # Create an instance of ActionChains and perform the hover action
@@ -111,6 +124,8 @@ def robot_for_raw_table(user_email: str, password: str, site_url: str,
         # Unclick the element!
         selectable_icon.click()
 
+        files_list.append(selectable_icon.accessible_name)
+
         time.sleep(1)
 
     pbar.update(1)
@@ -126,7 +141,7 @@ def robot_for_raw_table(user_email: str, password: str, site_url: str,
     driver.quit()
     # ipdb.set_trace()
     print("download_dir:", download_dir)
-    moving_files_from_virtual_dir(download_dir, default_download_dir)
+    moving_files_from_virtual_dir(default_download_dir, download_dir, files_list)
 
     # driver.close()
     # display.stop()
