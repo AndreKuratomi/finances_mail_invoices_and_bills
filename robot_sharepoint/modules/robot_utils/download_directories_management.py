@@ -70,13 +70,13 @@ def empty_download_directories(download_dir: str
     if len(destiny_dir_content) > 0:
         pbar2.update(1)
         # ipdb.set_trace()
-        slaughterhouse_jail = [elem for elem in destiny_dir_content if str(elem).endswith('.pdf') or str(elem).endswith('.xlsx')]
+        matadouro = [elem for elem in destiny_dir_content if str(elem).endswith('.pdf') or str(elem).endswith('.xlsx')]
         pbar2.update(1)
         # ipdb.set_trace()
-        if len(slaughterhouse_jail) > 0:
+        if len(matadouro) > 0:
             pbar2.update(1)
             
-            for bye in slaughterhouse_jail:
+            for bye in matadouro:
                 pbar2.update(1)
                 Path(bye).unlink()
         pbar2.update(1)
@@ -90,16 +90,18 @@ def empty_download_directories(download_dir: str
     pbar2.close()
 
 
-def moving_files_from_virtual_dir(download_dir: str, default_download_dir: str, files_list: List[str]) -> None:
-    """...to specific dir."""
-    # ipdb.set_trace()
+def moving_files_from_virtual_dir(default_download_dir: str, download_dir: str, files_list: List[str]) -> None:
+    """
+        Arquivos baixados de sharepoint para diretório 'default_download_dir' 
+        movidos para 'download_dir' de acordo com conteúdo de 'files_list'.
+    """
+
     dir_to_path = Path(default_download_dir)
     dir_content = list(dir_to_path.iterdir())
 
     for file in tqdm(dir_content, "Moving downloaded files"):
         print("file_to_be_moved_to_dir?:", file)
         if file.is_file():
-            # ipdb.set_trace()
             base_name = os.path.basename(str(file))
             print(base_name)
             if base_name in files_list:
