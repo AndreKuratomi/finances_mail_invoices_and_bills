@@ -41,7 +41,7 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
 
     # Driver instance:
     options = Options()
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
 
     # For Windows OS:
     options.add_argument('-inprivate')

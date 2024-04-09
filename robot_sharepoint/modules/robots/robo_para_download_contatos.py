@@ -38,7 +38,7 @@ def download_contatos_no_sharepoint(user_email: str, password: str, site_url: st
 
     # Driver instance:
     options = Options()
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
 
     # For Windows OS:
     options.add_argument('-inprivate')
