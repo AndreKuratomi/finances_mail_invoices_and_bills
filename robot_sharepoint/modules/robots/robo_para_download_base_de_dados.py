@@ -36,7 +36,7 @@ def download_base_de_dados_no_sharepoint(user_email: str, password: str, site_ur
 
     # Driver instance:
     options = Options()
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
 
     # For Windows OS:
     options.add_argument('-inprivate')

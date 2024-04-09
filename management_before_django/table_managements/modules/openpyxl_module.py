@@ -158,6 +158,8 @@ def workbook_para_pandas(table_sheet: Worksheet) -> pd.DataFrame:
     # Other rows for content:
     for row in tqdm(table_sheet.iter_rows(min_row=2), "Filtering rows by columns D, E, G, K, S, X, Y and Z..."):
         rows.append([cell.value for i, cell in enumerate(row) if i in [3, 4, 6, 10, 18, 23, 24, 25]]) #IMPROVE
+
+    
     # PANDAS!
     df = pd.DataFrame(rows, columns=headers)
     # ipdb.set_trace()
@@ -172,8 +174,10 @@ def workbook_para_pandas(table_sheet: Worksheet) -> pd.DataFrame:
 
     # Editing NFE column to hide first character:
     df['Numero'] = df['Numero'].apply(lambda x : x[1:])
-    # print(df['Dt Vencto'])
+    print(df['Dt Vencto'])
+    # print(df)
 
+    # ipdb.set_trace()
     # Editing date column to show only date in brazilian format:
     df['Dt Vencto'] = pd.to_datetime(df['Dt Vencto'], errors='coerce')
     df['Dt Vencto'] = df['Dt Vencto'].dt.tz_localize('UTC').dt.tz_convert('America/Sao_Paulo')
