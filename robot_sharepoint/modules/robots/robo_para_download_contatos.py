@@ -15,10 +15,9 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from tqdm import tqdm
 
-import ipdb
-
-from robot_sharepoint.modules.robot_utils import unzip_files
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
+
+import ipdb
 
 
 def download_contatos_no_sharepoint(user_email: str, password: str, site_url: str, 
@@ -86,7 +85,11 @@ def download_contatos_no_sharepoint(user_email: str, password: str, site_url: st
         files_to_download_list = files_to_download_amount.find_elements(By.CSS_SELECTOR, "div[class='ms-List-cell']")
         pbar.update(1)
 
+        # Lista para lógica de retirar arquivo baixado em default_download e inserir em raw_table/:
+        files_list = list()
+
         count = 0
+
         for file in tqdm(files_to_download_list, "Selecting files to download..."):
             if count == 0:
                 count += 1
@@ -104,7 +107,9 @@ def download_contatos_no_sharepoint(user_email: str, password: str, site_url: st
 
                 download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[name='Baixar']")))
                 download_button.click()
-        
+
+                files_list.append(selectable_icon.accessible_name)
+
             pbar.update(1)
 
         time.sleep(1)
@@ -119,7 +124,7 @@ def download_contatos_no_sharepoint(user_email: str, password: str, site_url: st
         driver.quit()
         # ipdb.set_trace()
         print("download_dir:", download_dir)
-        moving_files_from_virtual_dir(download_dir, default_download_dir)
+        moving_files_from_virtual_dir(default_download_dir, download_dir, files_list)
         # ipdb.set_trace()
 
     except:

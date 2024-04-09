@@ -1,5 +1,6 @@
 import time
 
+from datetime import datetime
 from pathlib import Path
 
 from selenium import webdriver
@@ -17,6 +18,8 @@ import ipdb
 
 
 def upload_files_to_sharepoint(user_email: str, password: str, reports_path: Path, site_url: str, progress_bar: bool = True) -> None:
+
+    
     # CONNECT TO BROWSER:
     if progress_bar:
         pbar = tqdm(desc="Connecting to browser and uploading file", total=0)
@@ -45,12 +48,25 @@ def upload_files_to_sharepoint(user_email: str, password: str, reports_path: Pat
     reports.click()
     pbar.update(1)
 
-    year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']")))
+    # TIME LOGIC:
+    year = datetime.now().strftime("%Y")
+    month = datetime.now().strftime("%m")
+
+    months_list = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
+    month_number = int(month) - 1
+    month_name = months_list[month_number]
+
+    mes_sharepoint = month + ' ' + month_name
+
+    year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='ANO {year}']")))
+    # year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='ANO 2024']")))
     pbar.update(1)
     year.click()
     pbar.update(1)
 
-    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='JANEIRO']"))) # criar lógica para obter mês do calendário - 1
+
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='JANEIRO']")))
+    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']")))
     pbar.update(1)
     month.click()
     pbar.update(1)
