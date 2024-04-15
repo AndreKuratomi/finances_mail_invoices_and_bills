@@ -14,7 +14,7 @@ import ipdb
 
 
 def adicionar_coluna_contatos(all_data: Worksheet, contacts_data: Worksheet, workbook_all_data: Workbook, complete_file_path_to_raw: str) -> None:
-    """Openpyxl para adicionar coluna 'CONTATOS'."""
+    """Openpyxl para adicionar coluna 'CONTATOS' e atualizar planilha baixada em 'raw_table/'."""
 
     nomes_colunas = [col.value for col in all_data[1]]
 
@@ -36,7 +36,10 @@ def adicionar_coluna_contatos(all_data: Worksheet, contacts_data: Worksheet, wor
 
 
 def adicionar_coluna_referencia(all_data: Worksheet, workbook_all_data: Workbook, complete_file_path_to_raw: str) -> None:
-    """Openpyxl para adicionar coluna 'REFERENCIAS' coletando informações de mês e ano da coluna 'DATA EMISSAO'."""
+    """
+        Openpyxl para adicionar coluna 'REFERENCIAS' coletando informações de mês e ano da coluna 'DATA EMISSAO'.
+        Atualiza a planilha baixada em 'raw_table/'.
+    """
 
     nomes_colunas = [col.value for col in all_data[1]]
 
@@ -90,6 +93,22 @@ def compare_spreadsheets(path_to_raw: str, path_to_edited: str, full_path_to_edi
         old_workbook.close()
     # ipdb.set_trace()
     print("DONE!")
+
+
+def coletar_datas_e_repor_dt_vencimento(all_data: Worksheet, all_edited_data: Worksheet, column_number: int, complete_file_path_to_edited: str, workbook_all_edited_data: Workbook) -> None:
+    """
+        Coleta cédulas da coluna 'dt_vencimento' tabela em raw_table/, armazena e realimenta a mesma coluna na tabela em edited_table/.
+    """
+
+    for raw_row in range(2, all_data.max_row):
+        raw_datetime_cell = all_data.cell(row=raw_row, column=column_number)
+        for trouble_row in all_edited_data:
+            all_edited_data.cell(row=trouble_row, column=column_number).value = raw_datetime_cell.value
+
+    workbook_all_edited_data.save(complete_file_path_to_edited)
+    workbook_all_edited_data.close()
+    
+    ipdb.set_trace()
 
 
 def adicionar_coluna_status(all_data: Worksheet, edited_path: Path, file_path_to_raw: str, workbook_all_data: Workbook, sheet: str) -> None:
@@ -193,11 +212,11 @@ def workbook_para_pandas(table_sheet: Worksheet) -> pd.DataFrame:
 
 
 def status_update(edited_path: Path, row_data: dict) -> None:
-    """Receives the tables' path and row_data as dict, searches for the original row by NFE value and if found updates status to 'Enviado'."""
+    """Recebe o path da tabela e dictionary row_data, procura pela linha original pelo valor da NFE e se encontrado atualiza STATUS para 'Enviado'."""
 
     (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_path)
 
-    # OPENPYXL TO ADD STATUS COLUMN:
+    # OPENPYXL:
     workbook = load_workbook(data_only=True, filename=file_path_to_edited)
     worksheet = workbook.active
 

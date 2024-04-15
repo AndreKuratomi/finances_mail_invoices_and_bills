@@ -24,13 +24,13 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
     workbook_contacts_data = load_workbook(data_only=True, filename=contatos)
     contacts_data = workbook_contacts_data[sheet_contacts]
 
-    workbook_all_data = load_workbook(data_only=True, filename=file_path_to_raw)
-    all_data = workbook_all_data[sheet]
+    workbook_all_raw_data = load_workbook(data_only=True, filename=file_path_to_raw)
+    all_raw_data = workbook_all_raw_data[sheet]
 
     # Funções Openpyxl:
-    adicionar_coluna_contatos(all_data, contacts_data, workbook_all_data, complete_file_path_to_raw)
-    adicionar_coluna_referencia(all_data, workbook_all_data, complete_file_path_to_raw)
-    adicionar_coluna_status(all_data, edited_path, file_path_to_raw, workbook_all_data, sheet)
+    adicionar_coluna_contatos(all_raw_data, contacts_data, workbook_all_raw_data, complete_file_path_to_raw)
+    adicionar_coluna_referencia(all_raw_data, workbook_all_raw_data, complete_file_path_to_raw)
+    adicionar_coluna_status(all_raw_data, edited_path, file_path_to_raw, workbook_all_raw_data, sheet)
 
 
     # PLANILHA EDITADA:
@@ -38,11 +38,11 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
     (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_path)
 
     # Workbooks:
-    workbook_edited = load_workbook(data_only=True, filename=file_path_to_edited)
-    table_sheet = workbook_edited[sheet]
+    workbook_all_edited_data = load_workbook(data_only=True, filename=file_path_to_edited)
+    all_edited_data = workbook_all_edited_data[sheet]
 
     # Funções Openpyxl:
-    contatos_teste(table_sheet, workbook_edited, complete_file_path_to_edited)
-    pandas_dataframe = workbook_para_pandas(table_sheet)
+    contatos_teste(all_edited_data, workbook_all_edited_data, complete_file_path_to_edited)
+    pandas_dataframe = workbook_para_pandas(all_edited_data)
 
     return pandas_dataframe
