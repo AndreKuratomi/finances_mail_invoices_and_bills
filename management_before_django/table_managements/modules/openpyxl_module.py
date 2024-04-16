@@ -59,6 +59,10 @@ def adicionar_coluna_referencia(all_data: Worksheet, workbook_all_data: Workbook
 
 
 def compare_spreadsheets(path_to_raw: str, path_to_edited: str, full_path_to_edited: str, sheet: str) -> None:
+    """
+        Compara a tabela recém-baixada com a tabela editada (com 'status', 'referência', etc).
+        Se a tabela recém-baixada tem novas linhas esta função compara as duas tabelas e acrescenta as novas linhas à tabela editada.
+    """
     updated_workbook = load_workbook(data_only=True, filename=path_to_raw)
     old_workbook = load_workbook(data_only=True, filename=path_to_edited)
 
