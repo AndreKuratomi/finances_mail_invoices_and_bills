@@ -26,7 +26,7 @@ def upload_files_to_sharepoint(user_email: str, password: str, reports_path: Pat
 
     # Driver instance:
     options = Options()
-    # options.add_argument('--headless=new')
+    options.add_argument('--headless=new')
     options.add_argument('-inprivate')
 
     driver = webdriver.Edge(options=options)

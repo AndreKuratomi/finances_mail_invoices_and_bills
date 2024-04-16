@@ -100,15 +100,17 @@ def coletar_datas_e_repor_dt_vencimento(all_data: Worksheet, all_edited_data: Wo
         Coleta cédulas da coluna 'dt_vencimento' tabela em raw_table/, armazena e realimenta a mesma coluna na tabela em edited_table/.
     """
 
-    for raw_row in range(2, all_data.max_row):
-        raw_datetime_cell = all_data.cell(row=raw_row, column=column_number)
-        for trouble_row in all_edited_data:
-            all_edited_data.cell(row=trouble_row, column=column_number).value = raw_datetime_cell.value
+    for raw_row in tqdm(range(2, all_data.max_row + 1), "Convertendo de volta 'data de vencimento' para datas originais..."):
+        raw_datetime_cell = all_data.cell(row=raw_row, column=column_number).value
+        # print("raw_datetime_cell:", raw_datetime_cell)
+        edited_datetime_cell = all_edited_data.cell(row=raw_row, column=column_number)
+        edited_datetime_cell.value = raw_datetime_cell
+        # print("edited_datetime_cell:", edited_datetime_cell.value)
 
+    # ipdb.set_trace()
     workbook_all_edited_data.save(complete_file_path_to_edited)
     workbook_all_edited_data.close()
     
-    ipdb.set_trace()
 
 
 def adicionar_coluna_status(all_data: Worksheet, edited_path: Path, file_path_to_raw: str, workbook_all_data: Workbook, sheet: str) -> None:
