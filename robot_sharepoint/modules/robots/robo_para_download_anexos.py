@@ -19,9 +19,9 @@ from tqdm import tqdm
 
 import ipdb
 
-from robot_sharepoint.modules.robot_utils import unzip_files
+# from robot_sharepoint.modules.robot_utils import unzip_files
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
-from utils.variables.mes_e_ano_atual import year, mes_sharepoint
+# from utils.variables.mes_e_ano_atual import year, mes_sharepoint
 
 
 def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str, 
@@ -82,8 +82,8 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
     months_list = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
     month_number = int(month_from_table) - 1
     month_name = months_list[month_number]
-    mes_sharepoint = month_from_table + ' ' + month_name
-    # mes_sharepoint = month + ' - ' + month_name
+    # mes_sharepoint = month_from_table + ' ' + month_name
+    mes_sharepoint = month_from_table + ' - ' + month_name
 
     files_list = list()
     
@@ -101,8 +101,8 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
     year.click()
     pbar.update(1)
     # ipdb.set_trace()
-    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='01  JANEIRO']"))) # lógica para obter mês do calendário - 1
-    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']"))) # lógica para obter mês do calendário - 1
+    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='01 - JANEIRO']"))) # lógica para obter mês do calendário - 1
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']"))) # lógica para obter mês do calendário - 1
     pbar.update(1)
     month.click()
     pbar.update(1)

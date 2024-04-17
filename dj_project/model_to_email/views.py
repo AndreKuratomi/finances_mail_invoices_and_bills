@@ -4,11 +4,13 @@ import time
 from django.core.mail import EmailMessage, mail_admins
 from django.template.loader import render_to_string
 
+from openpyxl import load_workbook
 from pathlib import Path
 from rest_framework.views import APIView
 from tqdm import tqdm
 
-from management_before_django.table_managements.modules.openpyxl_module import status_update
+from management_before_django.table_managements.modules.openpyxl_module import coletar_datas_e_repor_dt_vencimento, status_update
+from management_before_django.table_managements.modules.paths_module import paths_with_file_name, paths_com_muitos_nomes_de_arquivos
 
 not_found = True
 count = 0
@@ -29,9 +31,10 @@ from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.deletar_elementos import temos_algo_para_deletar
 from utils.functions.temos_model import temos_model
-from utils.variables.envs import user_email, password, nfe_email, sharepoint_medicoes_url, download_directory, host_email
+from utils.variables.envs import user_email, password, nfe_email, sheet, sharepoint_medicoes_url, download_directory, host_email
 from utils.variables.paths import edited_tables_path, models_file_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, not_found_title, sent_title
+
 
 import ipdb
 
@@ -60,8 +63,25 @@ class EmailAttachByTable(APIView):
                 valor_liquido = row.valor_liquido
                 vencimento = row.dt_vencto
 
+                # Lógica para bug dt-vencimento = 31-12-1969:
                 print("vencimento:", vencimento)
                 if vencimento[6:8] != "20":
+                    coluna_dt_vencimento: int = 11
+                                        
+                    (contatos, complete_file_path_to_raw, file_path_to_raw) = paths_com_muitos_nomes_de_arquivos(raw_tables_path)
+                    # Workbooks:
+                    workbook_all_raw_data = load_workbook(data_only=True, filename=file_path_to_raw)
+                    all_raw_data = workbook_all_raw_data[sheet]
+                    # PLANILHA EDITADA:
+                    # Paths:
+                    (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_tables_path)
+                    # Workbooks:
+                    workbook_all_edited_data = load_workbook(data_only=True, filename=file_path_to_edited)
+                    all_edited_data = workbook_all_edited_data[sheet]
+
+                    coletar_datas_e_repor_dt_vencimento(all_raw_data, all_edited_data, coluna_dt_vencimento, complete_file_path_to_edited, workbook_all_edited_data)
+                    # ipdb.set_trace()
+                    
                     raise ValueError("ERROR!: Verificar coluna 'Dt_Vencimento'! Ano alterado para antes de 2000!")
 
                 if status == "Não enviado":
@@ -70,6 +90,7 @@ class EmailAttachByTable(APIView):
                         # "competencia_por_ano": "competencia_por_ano",
                         # "contact": contato,
                         "contact": "andrekuratomi@gmail.com",
+                        # "contact": "cleidiane.souza@jcgestaoderiscos.com.br",
                         "cnpj": cnpj, 
                         "nfe": nfe, 
                         "nome_do_cliente": nome_do_cliente,
@@ -193,7 +214,7 @@ class EmailAttachByTable(APIView):
                                 ), # SUBJECT
                                 mail_content, # BODY
                                 "{}".format(host_email), # FROM
-                                [row_data['contact'], "andrekuratomi@gmail.com"], # TO
+                                [row_data['contact']], # TO
                                 [nfe_email, "andrekuratomi@gmail.com"], # BCC
                             )
                             

@@ -6,7 +6,7 @@ import ipdb
 
 
 def paths_with_file_name(path: Path) -> Tuple[str, str]:
-    """Take full path to directory raw_table."""
+    """Recebe um path e retorna o mesmo com seu conteúdo e seu path completo."""
     # ipdb.set_trace()
     # Checking path content:
     tables_path_content = list(path.iterdir())  
