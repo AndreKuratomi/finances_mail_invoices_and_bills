@@ -49,7 +49,7 @@ def adicionar_coluna_referencia(all_data: Worksheet, workbook_all_data: Workbook
         all_data.insert_cols(nova_coluna)
         all_data.cell(row=1, column=nova_coluna).value = "REFERENCIAS"
 
-        # coletar informação da coluna J, editar e inserir na coluna nova.
+        # coletar informação da coluna J (Data de emissão), editar e inserir na coluna nova.
         for index, all_data_row in enumerate(all_data.iter_rows(min_row=2, values_only=True), start=2):
             data_editada = str(all_data_row[9])[5:7] + '-' + str(all_data_row[9])[:4]
             all_data.cell(row=index, column=nova_coluna).value = data_editada
