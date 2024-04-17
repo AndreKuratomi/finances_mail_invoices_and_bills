@@ -27,6 +27,7 @@ from management_before_django.table_managements.scripts import tables_to_db
 from robot_sharepoint.modules.robots.robot_to_upload_files import upload_files_to_sharepoint
 from robot_sharepoint.modules.robots.robo_para_download_base_de_dados import download_base_de_dados_no_sharepoint
 from robot_sharepoint.modules.robots.robo_para_download_contatos import download_contatos_no_sharepoint
+from robot_sharepoint.modules.robots.robo_download_contatos_e_base import download_contatos_e_base_no_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.path_length import temos_tabelas
@@ -64,6 +65,7 @@ if not temos_tabela_para_trabalhar:
     print("BAIXANDO PLANILHAS DO SHAREPOINT.")
     download_contatos_no_sharepoint(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
     download_base_de_dados_no_sharepoint(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
+    # download_contatos_e_base_no_sharepoint(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
 
 try:
     tables_to_db.tables_to_db()
