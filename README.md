@@ -55,6 +55,58 @@ Quando não encontrados, a aplicação segue buscando pelos próximos anexos.
 
 Os anexos encontrados e não encontrados são registrados em arquivos de texto criados em './finances_table_to_db_and_mail/robot_sharepoint/reports/'. Quando o processo é finalizado ou interrompido (mas não fechado) é automaticamente criado um terceiro arquivo de texto que junta os dois anteriores. Este terceiro arquivo é enviado para o sharepoint para servir de registro para cada envio feito ou não.
 
+<h3>Padronização de arquivos e caminhos sharepoint</h3>
+
+DOWNLOAD PLANILHAS:
+    
+    Planilha CONTATOS (matr020 - CONTATOS.xlsx):
+
+        Obtida no sharepoint em: Documentos > 02 - FATURAMENTO > 14 - BASE DE DADOS
+
+        Linhas:
+            Linha 1a: Títulos das colunas
+            Demais linhas: (conteúdo)
+        Colunas usadas:
+            Coluna E (CNPJ/CPF): dd.ddd.ddd/dddd-dd (Ex: 11.222.333/4444-55) # dígitos com '.', '/' e '-'
+            Coluna H (E-Mail): formatação padrão email (Ex: nfe@jcgestaoderiscos.com.br)
+
+    Planilha BASE DE DADOS (finr940.xlsx):
+        Obtida no sharepoint em:  Documentos > 02 - FATURAMENTO > 14 - BASE DE ENVIO > ANO {número_ano} > {xx} {nome_mês} # Ex: ANO 2023 > 01 JANEIRO 
+            Obs: Tanto ano quanto mês são obtidos dinamicamente na aplicação.
+
+            Linhas:
+                Linha 1a: Títulos das colunas
+                Demais linhas: (conteúdo)
+            Colunas usadas:
+                Coluna D (Nome do Cliente): texto
+                Coluna E (CNPJ): dddddddddddddd (Ex: 01234567890123) # apenas dígitos
+                Coluna G (Numero): 0ddddd (Ex: 012345) # número da NFE iniciada por 0
+                Coluna K (Dt Vencto): dd/mm/aaaa (Ex: 28/02/2024) # formatação 'dia-mês-ano'
+                Coluna S (Valor Liquido): 00.000,00 (50.000,44) # '.' quando houver milhar e ',' para centavos
+
+DOWNLOAD ANEXOS:
+
+    Obtida no sharepoint em:  01 - MEDIÇÕES > ANO {número_ano} > {xx} {nome_mês} > {CNPJ - nome} > {número_nfe} 
+        # Ex: ANO 2023 > 01 JANEIRO > 00111222333444455 - nome > 012345
+        Obs: Os valores são obtidos dinamicamente na aplicação.
+
+    Boletos:
+        "'NFE' <número da nfe> <tipo de serviço> <competenciaano>.pdf" # considerar os espaços
+        Por exemplo: 'NFE 17758 FIXO Dezembro24.pdf'.
+    Medições:
+        "MEDIÇÃO.xlsx" 
+        Por exemplo: 'MEDIÇÃO.xlsx'
+    NFEs:
+        "BOLETO <número da nfe>.pdf"  # considerar o espaço
+        Por exemplo: 'BOLETO 17757.pdf'
+
+
+UPLOAD RELATÓRIOS:
+
+    Obtida no sharepoint em:  Documentos > 02 - FATURAMENTO > 15 - RELATÓRIOS DE ENVIO > ANO {número_ano} > {xx} {nome_mês} 
+    # Ex: ANO 2023 > 01 JANEIRO 
+    Obs: Tanto ano quanto mês são obtidos dinamicamente na aplicação.
+
 <h3>Estudos de caso</h3>
 
 Segue uma listagem resumida de como a aplicação se comporta por situação:

@@ -65,8 +65,8 @@ def upload_files_to_sharepoint(user_email: str, password: str, reports_path: Pat
     pbar.update(1)
 
 
-    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 JANEIRO']")))
-    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']")))
+    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 JANEIRO']")))
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']")))
     pbar.update(1)
     month.click()
     pbar.update(1)

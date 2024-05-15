@@ -92,8 +92,8 @@ def download_base_de_dados_no_sharepoint(user_email: str, password: str, site_ur
     year.click()
     pbar.update(1)
 
-    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 JANEIRO']"))) # criar lógica para obter mês do calendário - 1
-    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']"))) # criar lógica para obter mês do calendário - 1
+    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 JANEIRO']"))) # criar lógica para obter mês do calendário - 1
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']"))) # criar lógica para obter mês do calendário - 1
     pbar.update(1)
     month.click()
     pbar.update(1)
