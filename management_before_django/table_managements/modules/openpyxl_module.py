@@ -244,7 +244,7 @@ def status_update(edited_path: Path, row_data: dict) -> None:
         raise ValueError("Column 'Numero' not found in the worksheet")
     else:
         try:
-            success = False
+            # success = False
             for row_to_update in range(2, worksheet.max_row + 1): 
                 
                 # Quando a NFE se iniciava com 0:
@@ -253,14 +253,14 @@ def status_update(edited_path: Path, row_data: dict) -> None:
                 if worksheet.cell(row=row_to_update, column=column_index_for_nfe).value == str(like_ancient_nfe):
                     print("row_data['nfe']:", row_data['nfe'])
                     worksheet.cell(row=row_to_update, column=column_index_for_status).value = "Enviado"
-                    # ipdb.set_trace()
+                    # success = True
                     print("worksheet.cell(row=row_to_update, column=column_index_for_status).value:", worksheet.cell(row=row_to_update, column=column_index_for_status).value)
-                    success = True
+                    # success = True
                     break
 
-            if not success:
-                raise NotImplementedError("A atualização de envio não foi feita!")
-
+            # if not success:
+            #     raise NotImplementedError("A atualização de envio não foi feita!")
+ 
             workbook.save(complete_file_path_to_edited)
             workbook.close()
 
