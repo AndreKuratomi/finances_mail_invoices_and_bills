@@ -7,6 +7,7 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.common.exceptions import ElementClickInterceptedException
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
@@ -112,18 +113,52 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
     time.sleep(1)
 
     try:
-        client_folder = driver.find_element(By.XPATH, f"//*[starts-with(@title, '{cnpj}')]")
-        # print(client_folder)
+        time.sleep(1)
 
-        if client_folder:
-            client_folder.click()
-            pbar.update(1)
+        # Scroll down entire page:
+        wait = WebDriverWait(driver, 30)
+        scrollable_element = wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "div[data-is-scrollable='true']")))
 
+        last_height = driver.execute_script("return arguments[0].scrollHeight", scrollable_element)
+
+        while True:
+            # Scroll down the scrollable element
+            driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", scrollable_element)
+            
+            # Wait for new content to load
             time.sleep(1)
+            
+            # Calculate new scroll height and compare with last scroll height
+            new_height = driver.execute_script("return arguments[0].scrollHeight", scrollable_element)
+            if new_height == last_height:
+                break
+            last_height = new_height
+
+        print(cnpj)
+        client_folder = driver.find_element(By.XPATH, f"//*[starts-with(@title, '{cnpj}')]")
+        print("client_folder:", client_folder)
+        if client_folder:
+            driver.execute_script("arguments[0].scrollIntoView(true);", client_folder)
+            time.sleep(1)
+
+            try:
+                # Click using JavaScript
+                driver.execute_script("arguments[0].click();", client_folder)
+            except ElementClickInterceptedException:
+                # If another element is intercepting, find and hide it
+                overlaying_element = driver.find_element(By.CSS_SELECTOR, "overlay-element-css-selector")
+                driver.execute_script("arguments[0].style.display = 'none';", overlaying_element)
+                driver.execute_script("arguments[0].click();", client_folder)
+                client_folder.click()
+                pbar.update(1)
+
+                time.sleep(1)
+            # ipdb.set_trace()
 
             # LOOKING FOR FOLDER BY NFE:
             nfe_folder = None
             try:
+                time.sleep(1)
                 nfe_folder = driver.find_element(By.XPATH, f"//*[starts-with(@title, '{nfe}')]")
             
                 if nfe_folder:
@@ -187,8 +222,8 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
             except Exception as e:
                 print(f"Error while robot in nef folder: {e}")
 
-        else:        
-            print("No client found for {}!".format(cnpj))
+        else:     
+            raise ModuleNotFoundError("No client found for {}!".format(cnpj))
 
     except Exception as e:
         print("No client found for {}!".format(cnpj))
