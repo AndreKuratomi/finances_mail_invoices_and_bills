@@ -12,7 +12,7 @@
 ## Translates
 
 - [Português brasileiro / Brazilian portuguese](https://github.com/AndreKuratomi/notas_fiscais_financeiro)
-- [Inglês / English](./)
+- [Inglês / English](./README_en-uk.md)
 
 <br>
 
