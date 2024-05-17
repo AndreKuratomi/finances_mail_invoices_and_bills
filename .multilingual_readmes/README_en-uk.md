@@ -11,7 +11,7 @@
 
 ## Translates
 
-- [Português brasileiro / Brazilian portuguese](https://github.com/JC-GESTAO-DE-RISCOS/logistico_financeiro)
+- [Português brasileiro / Brazilian portuguese](https://github.com/AndreKuratomi/notas_fiscais_financeiro)
 - [Inglês / English](/.multilingual_readmes/README.en-uk.md)
 
 <br>
