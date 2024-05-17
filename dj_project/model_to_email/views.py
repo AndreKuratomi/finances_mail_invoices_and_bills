@@ -104,6 +104,7 @@ class EmailAttachByTable(APIView):
                     refs = str(row_data['referencias'])
 
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
+
                     download_anexos_no_sharepoint(
                         user_email,
                         password,
@@ -149,6 +150,8 @@ class EmailAttachByTable(APIView):
                                     # NFE 17757 FIXO Janeiro24.pdf
                                     if filtered.endswith('.pdf'):
                                         try:
+                                            print("FILTERED:", filtered)
+
                                             if filtered.startswith("NFE"):
 
                                                 # Extração de informação pelo título da NE:
@@ -158,6 +161,7 @@ class EmailAttachByTable(APIView):
                                                         break
                                                     else:
                                                         tipo_de_servico += charac
+                                                print("TIPO_DE_SERVICO:", tipo_de_servico)
 
                                                 competencia_por_ano = ""
                                                 count = 0
@@ -169,6 +173,7 @@ class EmailAttachByTable(APIView):
                                                             competencia_por_ano += charac
                                                     if charac == ' ':
                                                         count += 1
+                                                print("COMPETENCIA_POR_ANO:", competencia_por_ano)
 
                                             elif filtered.startswith("BOLETO"):
                                                 table_template = "table_template_boleto.html"
@@ -215,7 +220,9 @@ class EmailAttachByTable(APIView):
                                 mail_content, # BODY
                                 "{}".format(host_email), # FROM
                                 [row_data['contact']], # TO
-                                [nfe_email, "andrekuratomi@gmail.com"], # BCC
+                                [
+                                    nfe_email, 
+                                    "andrekuratomi@gmail.com"], # BCC
                             )
                             
                             # Reading HTML tags:
