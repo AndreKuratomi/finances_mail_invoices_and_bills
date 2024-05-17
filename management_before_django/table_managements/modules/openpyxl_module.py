@@ -49,7 +49,7 @@ def adicionar_coluna_referencia(all_data: Worksheet, workbook_all_data: Workbook
         all_data.insert_cols(nova_coluna)
         all_data.cell(row=1, column=nova_coluna).value = "REFERENCIAS"
 
-        # coletar informação da coluna J, editar e inserir na coluna nova.
+        # coletar informação da coluna J (Data de emissão), editar e inserir na coluna nova.
         for index, all_data_row in enumerate(all_data.iter_rows(min_row=2, values_only=True), start=2):
             data_editada = str(all_data_row[9])[5:7] + '-' + str(all_data_row[9])[:4]
             all_data.cell(row=index, column=nova_coluna).value = data_editada
@@ -197,9 +197,9 @@ def workbook_para_pandas(table_sheet: Worksheet) -> pd.DataFrame:
         df.insert(0, "id", ID)
         df.set_index('id')
 
-    # Editing NFE column to hide first character:
+    # Editing NFE column to hide first character 0:
     df['Numero'] = df['Numero'].apply(lambda x : x[1:])
-    print(df['Dt Vencto'])
+    # print(df['Dt Vencto'])
     # print(df)
 
     # ipdb.set_trace()
@@ -244,15 +244,23 @@ def status_update(edited_path: Path, row_data: dict) -> None:
         raise ValueError("Column 'Numero' not found in the worksheet")
     else:
         try:
+            # success = False
             for row_to_update in range(2, worksheet.max_row + 1): 
+                
+                # Quando a NFE se iniciava com 0:
                 like_ancient_nfe = '0' + row_data['nfe']
+
                 if worksheet.cell(row=row_to_update, column=column_index_for_nfe).value == str(like_ancient_nfe):
                     print("row_data['nfe']:", row_data['nfe'])
                     worksheet.cell(row=row_to_update, column=column_index_for_status).value = "Enviado"
-                    # ipdb.set_trace()
+                    # success = True
                     print("worksheet.cell(row=row_to_update, column=column_index_for_status).value:", worksheet.cell(row=row_to_update, column=column_index_for_status).value)
+                    # success = True
                     break
 
+            # if not success:
+            #     raise NotImplementedError("A atualização de envio não foi feita!")
+ 
             workbook.save(complete_file_path_to_edited)
             workbook.close()
 

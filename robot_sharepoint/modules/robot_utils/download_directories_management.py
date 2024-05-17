@@ -70,7 +70,10 @@ def empty_download_directories(download_dir: str
     if len(destiny_dir_content) > 0:
         pbar2.update(1)
         # ipdb.set_trace()
-        matadouro = [elem for elem in destiny_dir_content if str(elem).endswith('.pdf') or str(elem).endswith('.xlsx')]
+        matadouro = [elem for elem in destiny_dir_content if elem.name != '__init__.py'
+                    #  str(elem).endswith('.pdf') or str(elem).endswith('.xlsx')
+                     ]
+        # ipdb.set_trace()
         pbar2.update(1)
         # ipdb.set_trace()
         if len(matadouro) > 0:

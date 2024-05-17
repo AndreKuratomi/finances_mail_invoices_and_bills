@@ -38,20 +38,6 @@ from utils.variables.report_files import not_found_list, sent_list, not_found_ti
 
 import ipdb
 
-(contatos, complete_file_path_to_raw, file_path_to_raw) = paths_com_muitos_nomes_de_arquivos(raw_tables_path)
-
-
-# Workbooks:
-workbook_all_raw_data = load_workbook(data_only=True, filename=file_path_to_raw)
-all_raw_data = workbook_all_raw_data[sheet]
-# PLANILHA EDITADA:
-# Paths:
-(complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_tables_path)
-# Workbooks:
-workbook_all_edited_data = load_workbook(data_only=True, filename=file_path_to_edited)
-all_edited_data = workbook_all_edited_data[sheet]
-
-
 # Table to work with:
 table_data = TableName.objects.all()
 print("table_data:", table_data)
@@ -81,7 +67,21 @@ class EmailAttachByTable(APIView):
                 print("vencimento:", vencimento)
                 if vencimento[6:8] != "20":
                     coluna_dt_vencimento: int = 11
+                                        
+                    (contatos, complete_file_path_to_raw, file_path_to_raw) = paths_com_muitos_nomes_de_arquivos(raw_tables_path)
+                    # Workbooks:
+                    workbook_all_raw_data = load_workbook(data_only=True, filename=file_path_to_raw)
+                    all_raw_data = workbook_all_raw_data[sheet]
+                    # PLANILHA EDITADA:
+                    # Paths:
+                    (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_tables_path)
+                    # Workbooks:
+                    workbook_all_edited_data = load_workbook(data_only=True, filename=file_path_to_edited)
+                    all_edited_data = workbook_all_edited_data[sheet]
+
                     coletar_datas_e_repor_dt_vencimento(all_raw_data, all_edited_data, coluna_dt_vencimento, complete_file_path_to_edited, workbook_all_edited_data)
+                    # ipdb.set_trace()
+                    
                     raise ValueError("ERROR!: Verificar coluna 'Dt_Vencimento'! Ano alterado para antes de 2000!")
 
                 if status == "Não enviado":
@@ -104,6 +104,7 @@ class EmailAttachByTable(APIView):
                     refs = str(row_data['referencias'])
 
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
+
                     download_anexos_no_sharepoint(
                         user_email,
                         password,
@@ -149,6 +150,8 @@ class EmailAttachByTable(APIView):
                                     # NFE 17757 FIXO Janeiro24.pdf
                                     if filtered.endswith('.pdf'):
                                         try:
+                                            print("FILTERED:", filtered)
+
                                             if filtered.startswith("NFE"):
 
                                                 # Extração de informação pelo título da NE:
@@ -158,6 +161,7 @@ class EmailAttachByTable(APIView):
                                                         break
                                                     else:
                                                         tipo_de_servico += charac
+                                                print("TIPO_DE_SERVICO:", tipo_de_servico)
 
                                                 competencia_por_ano = ""
                                                 count = 0
@@ -169,6 +173,7 @@ class EmailAttachByTable(APIView):
                                                             competencia_por_ano += charac
                                                     if charac == ' ':
                                                         count += 1
+                                                print("COMPETENCIA_POR_ANO:", competencia_por_ano)
 
                                             elif filtered.startswith("BOLETO"):
                                                 table_template = "table_template_boleto.html"
@@ -215,7 +220,9 @@ class EmailAttachByTable(APIView):
                                 mail_content, # BODY
                                 "{}".format(host_email), # FROM
                                 [row_data['contact']], # TO
-                                [nfe_email, "andrekuratomi@gmail.com"], # BCC
+                                [
+                                    nfe_email, 
+                                    "andrekuratomi@gmail.com"], # BCC
                             )
                             
                             # Reading HTML tags:
