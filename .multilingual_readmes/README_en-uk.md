@@ -1,6 +1,6 @@
 # finances_table_to_db_and_mail
 
-- [Translates](#translates)
+- [Translations](#translations)
 - [About](#About)
 - [Description](#Description)
 - [Instalation](#instalation)
@@ -9,7 +9,7 @@
 
 <br>
 
-## Translates
+## Translations
 
 - [Português brasileiro / Brazilian portuguese](https://github.com/AndreKuratomi/notas_fiscais_financeiro)
 - [Inglês / English](./README_en-uk.md)
