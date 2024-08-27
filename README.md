@@ -275,7 +275,7 @@ code .
 ```
 <br>
 
-<h3>4. Create <b>.env</b> file:</h3>
+<h3>4. Criar arquivo <b>.env</b>:</h3>
 
 ./
 ```
