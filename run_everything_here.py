@@ -25,9 +25,8 @@ from dj_project.model_to_email.views import EmailAttachByTable
 from management_before_django.table_managements.scripts import tables_to_db
 
 from robot_sharepoint.modules.robots.robot_to_upload_files import upload_files_to_sharepoint
-from robot_sharepoint.modules.robots.robo_para_download_base_de_dados import download_base_de_dados_no_sharepoint
-from robot_sharepoint.modules.robots.robo_para_download_contatos import download_contatos_no_sharepoint
-from robot_sharepoint.modules.robots.robo_download_contatos_e_base import download_contatos_e_base_no_sharepoint
+from robot_sharepoint.modules.robots.robot_to_download_database_spreadsheet import download_database_from_sharepoint
+from robot_sharepoint.modules.robots.robot_to_download_contacts import download_contacts_from_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.path_length import do_we_have_spreadsheets
@@ -63,9 +62,8 @@ do_we_have_table_to_work_with = do_we_have_spreadsheets(raw_tables_path, 2)
 
 if not do_we_have_table_to_work_with:
     print("DOWNLOADING SHAREPOINT SPREADSHEETS.")
-    download_contatos_no_sharepoint(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
-    download_base_de_dados_no_sharepoint(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
-    # download_contatos_e_base_no_sharepoint(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
+    download_contacts_from_sharepoint(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
+    download_database_from_sharepoint(user_email, password, sharepoint_for_database_and_upload_url, raw_tables_path)
 
 try:
     tables_to_db.tables_to_db()

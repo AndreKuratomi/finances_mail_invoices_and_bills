@@ -20,15 +20,15 @@ from robot_sharepoint.modules.robot_utils.download_directories_management import
 import ipdb
 
 
-def download_contatos_no_sharepoint(user_email: str, password: str, site_url: str, 
+def download_contacts_from_sharepoint(user_email: str, password: str, site_url: str, 
                         download_dir: str, progress_bar: bool = True) -> None:
-    
-    # print("CNPJ:", cnpj)
+    """Selenium as RPA function that looks for specific spreadsheet on sharepoint that has clients' contacts (email) info and if found downloads it."""
+
     print("sharepoint_robot:", __name__)
 
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
 
-    # Apagar arquivos baixados em 'raw_table/':
+    # Delete downloaded files in 'raw_table/':
     empty_download_directories(download_dir, default_download_dir)
 
     # CONNECT TO BROWSER:
@@ -50,7 +50,6 @@ def download_contatos_no_sharepoint(user_email: str, password: str, site_url: st
     # Navigate to Sharepoint login page and maximize its window:
     driver.get(site_url)
     pbar.update(1)
-    # options.add_argument("--disable-infobars")
 
     driver.maximize_window()
     pbar.update(1)
@@ -85,7 +84,7 @@ def download_contatos_no_sharepoint(user_email: str, password: str, site_url: st
         files_to_download_list = files_to_download_amount.find_elements(By.CSS_SELECTOR, "div[class='ms-List-cell']")
         pbar.update(1)
 
-        # Lista para lógica de retirar arquivo baixado em default_download e inserir em raw_table/:
+        # Logic for taking off file downloaded from 'default_download' and inserting it in raw_table/:
         files_list = list()
 
         count = 0
@@ -122,10 +121,9 @@ def download_contatos_no_sharepoint(user_email: str, password: str, site_url: st
                 pbar.update(1)
         pbar.close()
         driver.quit()
-        # ipdb.set_trace()
+
         print("download_dir:", download_dir)
         moving_files_from_virtual_dir(default_download_dir, download_dir, files_list)
-        # ipdb.set_trace()
 
     except:
         print("No contacts table found!")

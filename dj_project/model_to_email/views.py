@@ -26,7 +26,7 @@ while not_found:
         continue
 print("TableName:", TableName)
 
-from robot_sharepoint.modules.robots.robo_para_download_anexos import download_anexos_no_sharepoint
+from robot_sharepoint.modules.robots.robot_to_download_attachments import download_attachments_from_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.deleting_elements import do_we_have_things_to_delete
@@ -103,8 +103,7 @@ class EmailAttachByTable(APIView):
                     refs = str(row_data['referencias'])
 
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
-
-                    download_anexos_no_sharepoint(
+                    download_attachments_from_sharepoint(
                         user_email,
                         password,
                         sharepoint_measurements_url,
@@ -114,11 +113,11 @@ class EmailAttachByTable(APIView):
                         refs
                     )
 
-                    anexos_path = "/robot_sharepoint/anexos/"
-                    full_anexos_path = root_dir + anexos_path
+                    attachments_path = "/robot_sharepoint/attachments/"
+                    full_attachments_path = root_dir + attachments_path
 
-                    # Extract info from anexos:
-                    path = Path(full_anexos_path)
+                    # Extract info from attachments:
+                    path = Path(full_attachments_path)
                     tables_path_content = list(path.iterdir())
 
                     competencia_por_ano = "02/01/2024"
@@ -138,14 +137,13 @@ class EmailAttachByTable(APIView):
                         pode_enviar_email = True
 
                         for file in tables_path_content:
-                            print("anexos:",file)
                             if file.is_file():
                                 string_file = str(file)
 
                                 if string_file.endswith('.pdf') or string_file.endswith('.xlsx'):
-                                    prefix = full_anexos_path
+                                    prefix = full_attachments_path
                                     filtered = string_file[len(prefix):]
-                                    print(filtered)
+
                                     # NFE 17757 FIXO Janeiro24.pdf
                                     if filtered.endswith('.pdf'):
                                         try:
