@@ -29,8 +29,7 @@ print("TableName:", TableName)
 from robot_sharepoint.modules.robots.robo_para_download_anexos import download_anexos_no_sharepoint
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
-from utils.functions.deletar_elementos import temos_algo_para_deletar
-from utils.functions.temos_model import temos_model
+from utils.functions.deleting_elements import do_we_have_things_to_delete
 from utils.variables.envs import user_email, password, nfe_email, sheet, sharepoint_medicoes_url, download_directory, host_email
 from utils.variables.paths import edited_tables_path, models_file_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, not_found_title, sent_title
@@ -274,7 +273,7 @@ class EmailAttachByTable(APIView):
                     continue
 
             # Deletar conteúdo de raw_table depois de processo de envio ser finalizado:
-            temos_algo_para_deletar(raw_tables_path, '.xlsx')
+            do_we_have_things_to_delete(raw_tables_path, '.xlsx')
 
             print("A APLICAÇÃO TERMINOU O PROCESSO DE ENVIO DE EMAILS COM SUCESSO!")
 

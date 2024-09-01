@@ -8,7 +8,7 @@ from openpyxl.worksheet.worksheet import Worksheet
 
 from pathlib import Path
 from tqdm import tqdm
-from utils.functions.path_length import temos_tabelas
+from utils.functions.path_length import do_we_have_spreadsheets
 
 import ipdb
 
@@ -132,7 +132,7 @@ def adicionar_coluna_status(all_data: Worksheet, edited_path: Path, file_path_to
             # print(cell)
             all_data.cell(row=cell, column=new_column).value = "Não enviado"
 
-        table_in_edited_table_path = temos_tabelas(edited_path, 1)
+        table_in_edited_table_path = do_we_have_spreadsheets(edited_path, 1)
 
         print("file_path_to_raw:", file_path_to_raw)
 
