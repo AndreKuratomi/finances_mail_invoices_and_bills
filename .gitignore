@@ -10,9 +10,9 @@ emergency_envs.py
 
 drafts
 elements_reports_list.txt
-faturamentos_enviados.txt
-faturamentos_nao_encontrados.txt
-*relatorio_diario.txt
+billings_sent.txt
+billings_not_found.txt
+*daily_report.txt
 not_found_list.txt
 script_for_bat_file.txt
 sent_list.txt

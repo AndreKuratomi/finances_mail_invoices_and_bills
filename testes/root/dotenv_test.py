@@ -73,11 +73,11 @@ class TestDotEnvClass:
 
     # LINKS:
     def test_validacao_envs_links(self) -> None:
-        """Testa se as variáveis SHAREPOINT_FATURAMENTO_URL e SHAREPOINT_MEDICOES_URL são links."""
+        """Testa se as variáveis SHAREPOINT_BILLINGS_URL e SHAREPOINT_MEASUREMENTS_URL são links."""
         with open('.env', encoding='utf-8') as file:
             env_variables: str = file.read()
             for var in required_variables:
-                if var == 'SHAREPOINT_FATURAMENTO_URL' or var == 'SHAREPOINT_MEDICOES_URL':
+                if var == 'SHAREPOINT_BILLINGS_URL' or var == 'SHAREPOINT_MEASUREMENTS_URL':
                     env = re.search(rf'{var}=(.*?)\n', env_variables)
                     env_value = env.group(1).strip('"')
                     assert re.match(link_pattern, env_value)

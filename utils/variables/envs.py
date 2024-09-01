@@ -1,7 +1,7 @@
 import os
 import ipdb
 
-# from emergency_envs import sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
+# from emergency_envs import sharepoint_for_database_and_upload_url, sharepoint_measurements_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -22,8 +22,8 @@ download_directory = os.getenv("DOWNLOAD_DIRECTORY")
 raw_table_directory = os.getenv("RAW_TABLE_DIRECTORY")
 
 # IT IS IMPORTED INCOMPLETE! It doens't accept '=' character.
-sharepoint_for_database_and_upload_url = os.getenv("SHAREPOINT_FATURAMENTO_URL").replace('*', '=')
-sharepoint_medicoes_url = os.getenv("SHAREPOINT_MEDICOES_URL").replace('*', '=')
+sharepoint_for_database_and_upload_url = os.getenv("SHAREPOINT_BILLINGS_URL").replace('*', '=')
+sharepoint_measurements_url = os.getenv("SHAREPOINT_MEASUREMENTS_URL").replace('*', '=')
 # ipdb.set_trace()
 
 # Table sheets:

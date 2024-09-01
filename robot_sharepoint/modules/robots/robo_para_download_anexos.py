@@ -22,7 +22,6 @@ import ipdb
 
 # from robot_sharepoint.modules.robot_utils import unzip_files
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
-# from utils.variables.mes_e_ano_atual import year, mes_sharepoint
 
 
 def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str, 

@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
-from utils.variables.mes_e_ano_atual import year, mes_sharepoint
+from utils.variables.current_month_and_year import year, mes_sharepoint
 
 from tqdm import tqdm
 

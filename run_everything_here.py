@@ -32,7 +32,7 @@ from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.path_length import do_we_have_spreadsheets
 from utils.functions.deleting_elements import do_we_have_things_to_delete
-from utils.variables.envs import download_directory, user_email, password, raw_table_directory, sharepoint_for_database_and_upload_url, sharepoint_medicoes_url
+from utils.variables.envs import download_directory, user_email, password, raw_table_directory, sharepoint_for_database_and_upload_url, sharepoint_measurements_url
 from utils.variables.paths import edited_tables_path, models_file_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, elements_reports_list, sent_title
 

@@ -19,8 +19,8 @@ email_pattern: str = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 link_pattern: str = r'https?://(?:[-\w.]|(?:%[\da-fA-F]{2}))+'
 
 required_variables: List[str] = [
-    "SECRET_KEY", "EMAIL_HOST_USER", "EMAIL_HOST_PASSWORD", "EMAIL_NFE", "SHAREPOINT_FATURAMENTO_URL", 
-    "SHAREPOINT_MEDICOES_URL", "DOWNLOAD_DIRECTORY", "RAW_TABLE_DIRECTORY", "SHEET", "SHEET_CONTACTS"
+    "SECRET_KEY", "EMAIL_HOST_USER", "EMAIL_HOST_PASSWORD", "EMAIL_NFE", "SHAREPOINT_BILLINGS_URL", 
+    "SHAREPOINT_MEASUREMENTS_URL", "DOWNLOAD_DIRECTORY", "RAW_TABLE_DIRECTORY", "SHEET", "SHEET_CONTACTS"
 ]
 
 txt: str = 'django-insecure-'
@@ -28,7 +28,7 @@ txt: str = 'django-insecure-'
 
 # .GITIGNORE:
 
-gitignore_list: List[str] = ["venv/", ".env", "faturamentos_enviados.txt", "faturamentos_nao_encontrados.txt", "*relatorio_diario.txt"]
+gitignore_list: List[str] = ["venv/", ".env", "billings_sent.txt", "billings_not_found.txt", "*daily_report.txt"]
 
 
 # REQUIREMENTS.TXT:
