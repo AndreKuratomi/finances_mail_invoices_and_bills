@@ -44,21 +44,21 @@
     <body>
         <main id="main">
             <section class="for-border-bottom">
-                <p>Prezados,</p>
+                <p>Dear Sir,</p>
                 <br>
-                <p>Segue faturamento {{tipo_de_servico}} {{competencia_por_ano}} ({{nome_do_cliente}})</p>
+                <p>Your bill follows bellow {{tipo_de_servico}} {{competencia_por_ano}} ({{nome_do_cliente}})</p>
                 <br>
             </section>
             <section class="for-border-bottom">
-                <p class="section_content"><span>Relatório e NF:</span> --{{nfe}}</p>
+                <p class="section_content"><span>Report and invoice:</span> --{{nfe}}</p>
                 <br>
-                <p class="section_content"><span class="to_red_and_bold">Vencimento:</span>	{{vencimento}}</p>
+                <p class="section_content"><span class="to_red_and_bold">Due date:</span>	{{vencimento}}</p>
                 <br>
-                <p class="section_content"><span class="to_red_and_bold">Valor líquido a pagar: R$</span> {{valor_liquido}}</p>
+                <p class="section_content"><span class="to_red_and_bold">Net payment value: $</span> {{valor_liquido}}</p>
             </section>
             <section>
-                <!-- Pagamento boletos -->
-                <p id="boleto">O pagamento deve ser efetuado através do boleto bancário anexo à nota fiscal.</p>
+                <!-- Bills payment -->
+                <p id="boleto">The payment must be done through the bank bill attached to the invoice.</p>
             </section>
         </main>
     </body>
