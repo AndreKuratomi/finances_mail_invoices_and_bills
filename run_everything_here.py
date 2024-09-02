@@ -74,4 +74,4 @@ finally:
     print("ELABORATING FINAL REPORT AND UPLOADING....")
     join_reports(not_found_list, sent_list, elements_reports_list, reports_path)
     upload_files_to_sharepoint(user_email, password, reports_path, sharepoint_for_database_and_upload_url)
-    print("PROCESS FINISHED! CHECK REPORTS.")
+    print("PROCESS FINISHED! CHECK REPORT UPLOADED.")

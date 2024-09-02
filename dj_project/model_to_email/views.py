@@ -30,7 +30,7 @@ from robot_sharepoint.modules.robots.robot_to_download_attachments import downlo
 from robot_sharepoint.modules.robot_utils.join_reports import join_reports
 
 from utils.functions.deleting_elements import do_we_have_things_to_delete
-from utils.variables.envs import user_email, password, nfe_email, sheet, sharepoint_measurements_url, download_directory, host_email
+from utils.variables.envs import user_email, password, invoice_email, sheet, sharepoint_measurements_url, download_directory, host_email
 from utils.variables.paths import edited_tables_path, models_file_path, raw_tables_path, reports_path
 from utils.variables.report_files import not_found_list, sent_list, not_found_title, sent_title
 
@@ -46,61 +46,66 @@ print("Views:", __name__)
 
 class EmailAttachByTable(APIView):
     def post(self, root_dir: str):
-        print(f"root_dir: {root_dir}")
+        """
+            Extracts data from model, from each row of this data triggers selenium 'robot' for looking for attachments.
+            If succesful, elaborates the email with the templates according to their content, attaches the files downloaded and send the email while register the successful case in the sent report.
+            If not, the unsuccessful case is registered in the not sent report.
+            At the end of the process a final report is made and sent triggering selenium 'robot' for uploading it.
+        """
+
         try:
             # Not found list report creation:
             with reports_path.joinpath(not_found_list).open("w") as file:
                 file.write(not_found_title)
 
             for row in tqdm(table_data, "Each line, each search and email"):
-                cnpj = row.cnpj
-                contato = row.contatos
-                nfe = row.numero
-                nome_do_cliente = row.nome_do_cliente
-                referencias = row.referencias
+                client_id = row.client_id
+                contact = row.contacts
+                invoice = row.number
+                clients_name = row.clients_name
+                references = row.references
                 status = row.status
-                valor_liquido = row.valor_liquido
-                vencimento = row.dt_vencto
+                net_value = row.net_value
+                due_date = row.due_date
 
-                # Lógica para bug dt-vencimento = 31-12-1969:
-                print("vencimento:", vencimento)
-                if vencimento[6:8] != "20":
-                    coluna_dt_vencimento: int = 11
+                # logic for bug due_date = 31-12-1969:
+
+                if due_date[6:8] != "20":
+                    coluna_dt_due_date: int = 11
                                         
-                    (contatos, complete_file_path_to_raw, file_path_to_raw) = paths_with_many_file_names(raw_tables_path)
+                    (contacts, complete_file_path_to_raw, file_path_to_raw) = paths_with_many_file_names(raw_tables_path)
                     # Workbooks:
                     workbook_all_raw_data = load_workbook(data_only=True, filename=file_path_to_raw)
                     all_raw_data = workbook_all_raw_data[sheet]
 
-                    # PLANILHA EDITADA:
+                    # EDITED TABLE:
                     # Paths:
                     (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_tables_path)
                     # Workbooks:
                     workbook_all_edited_data = load_workbook(data_only=True, filename=file_path_to_edited)
                     all_edited_data = workbook_all_edited_data[sheet]
 
-                    colect_data_and_reset_due_date(all_raw_data, all_edited_data, coluna_dt_vencimento, complete_file_path_to_edited, workbook_all_edited_data)
+                    colect_data_and_reset_due_date(all_raw_data, all_edited_data, coluna_dt_due_date, complete_file_path_to_edited, workbook_all_edited_data)
                     # ipdb.set_trace()
                     
-                    raise ValueError("ERROR!: Verificar coluna 'Dt_Vencimento'! Ano alterado para antes de 2000!")
+                    raise ValueError("ERROR!: Verify column 'Due_date'! Year altered for before 2000!")
 
-                if status == "Não enviado":
+                if status == "Not sent":
 
                     row_data = {
-                        # "competencia_por_ano": "competencia_por_ano",
-                        # "contact": contato,
-                        "contact": "andrekuratomi@gmail.com",
-                        "cnpj": cnpj, 
-                        "nfe": nfe, 
-                        "nome_do_cliente": nome_do_cliente,
-                        "referencias": referencias,
-                        "valor_liquido": valor_liquido, 
-                        "vencimento": vencimento, 
+                        # "competency_by_year": "competency_by_year",
+                        # "contact": contact,
+                        "contact": "test_1@company.com",
+                        "client_id": client_id, 
+                        "invoice": invoice, 
+                        "clients_name": clients_name,
+                        "references": references,
+                        "net_value": net_value, 
+                        "due_date": due_date, 
                     }
-                    # ipdb.set_trace()
                     
-                    # Extração de mês e ano:
-                    refs = str(row_data['referencias'])
+                    # Month and year extraction:
+                    refs = str(row_data['references'])
 
                     # PLACING TABLE TO WORK WITH WITH SELENIUM ROBOT:
                     download_attachments_from_sharepoint(
@@ -108,8 +113,8 @@ class EmailAttachByTable(APIView):
                         password,
                         sharepoint_measurements_url,
                         download_directory,
-                        cnpj,
-                        nfe,
+                        client_id,
+                        invoice,
                         refs
                     )
 
@@ -120,21 +125,19 @@ class EmailAttachByTable(APIView):
                     path = Path(full_attachments_path)
                     tables_path_content = list(path.iterdir())
 
-                    competencia_por_ano = "02/01/2024"
-                    tipo_de_servico = ""
-                    table_template = "table_template_deposito.html"
+                    # competency_by_year = "02/01/2024"
+                    service_type = ""
+                    table_template = "table_template_deposit.html"
 
-                    # ipdb.set_trace()
-                    # NOT FOUND CNPJ AND/OR NFE:
+                    # NOT FOUND client_id AND/OR invoice:
                     if len(tables_path_content) <= 1:
                         
                         # Fill element not found list:
-                        not_found_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
+                        not_found_elem = f"client_id: {client_id} and/or invoice {invoice}. \n"
                         with reports_path.joinpath(not_found_list).open("a") as file:
                             file.write(not_found_elem)
 
                     else:
-                        pode_enviar_email = True
 
                         for file in tables_path_content:
                             if file.is_file():
@@ -144,136 +147,101 @@ class EmailAttachByTable(APIView):
                                     prefix = full_attachments_path
                                     filtered = string_file[len(prefix):]
 
-                                    # NFE 17757 FIXO Janeiro24.pdf
+                                    # invoice pdf title example: 'invoice 17757 FIX January24.pdf'
+
                                     if filtered.endswith('.pdf'):
                                         try:
                                             print("FILTERED:", filtered)
 
-                                            if filtered.startswith("NFE"):
+                                            if filtered.startswith("invoice"):
 
-                                                # Extração de informação pelo título da NE:
-                                                tipo_de_servico = ""
-                                                for charac in filtered[10:]: # a partir de 'NFE <número_nfe> '
+                                                # 'Service type' and 'competency by year' info extraction from invoice pdf title:
+                                                service_type = ""
+                                                for charac in filtered[10:]: # from 'invoice <invoice_number> ' on
                                                     if charac == ' ':
                                                         break
                                                     else:
-                                                        tipo_de_servico += charac
-                                                print("TIPO_DE_SERVICO:", tipo_de_servico)
+                                                        service_type += charac
 
-                                                competencia_por_ano = ""
+                                                competency_by_year = ""
                                                 count = 0
                                                 for charac in filtered:
                                                     if count == 3:
                                                         if charac == '.':
                                                             break
                                                         else:
-                                                            competencia_por_ano += charac
+                                                            competency_by_year += charac
                                                     if charac == ' ':
                                                         count += 1
-                                                print("COMPETENCIA_POR_ANO:", competencia_por_ano)
 
-                                            elif filtered.startswith("BOLETO"):
-                                                table_template = "table_template_boleto.html"
-
-                                            else:
-                                                pode_enviar_email = False
+                                            elif filtered.startswith("BILL"):
+                                                table_template = "table_template_bill.html"
 
                                         except Exception as e:
-                                            print(f"ERRO! Arquivo pdf encontrado '{filtered}' não é nem NFE nem BOLETO e não pode ser considerado.")
+                                            print(f"ERRO! The pdf file found '{filtered}' is neither an invoice nor a bill and cannot be processed.")
 
                             else:
                                 print("Error! Verify the file.")
 
-                        print("competencia_por_ano:", competencia_por_ano)
-                        print("nome_do_cliente_data:", row_data['nome_do_cliente'])
-                        print("table_template:", table_template)
-                        print("tipo_de_servico:", tipo_de_servico)
+                        # Insert table to mail body:
+                        mail_content = render_to_string(
+                            table_template, {
+                                'competency_by_year': competency_by_year, 
+                                'contact': row_data['contact'], 
+                                'invoice': row_data['invoice'], 
+                                'clients_name':  row_data['clients_name'],
+                                'service_type': service_type,
+                                'net_value': row_data['net_value'],
+                                'due_date': row_data['due_date']
+                            }
+                        )
 
-                        if pode_enviar_email:
+                        time.sleep(2)  # wait for file to be created
 
-                            # Insert table to mail body:
-                            mail_content = render_to_string(
-                                table_template, {
-                                    'competencia_por_ano': competencia_por_ano, 
-                                    'contact': row_data['contact'], 
-                                    'nfe': row_data['nfe'], 
-                                    'nome_do_cliente':  row_data['nome_do_cliente'],
-                                    'tipo_de_servico': tipo_de_servico,
-                                    'valor_liquido': row_data['valor_liquido'],
-                                    'vencimento': row_data['vencimento']
-                                }
-                            )
+                        email = EmailMessage(
+                            "INVOICE - Company billings - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
+                            .format(
+                                a1=service_type, 
+                                a2=competency_by_year,
+                                a3=row_data['clients_name'], 
+                                a4=row_data['invoice']
+                            ), # SUBJECT
+                            mail_content, # BODY
+                            "{}".format(host_email), # FROM
+                            [row_data['contact']], # TO
+                            [
+                                invoice_email, 
+                                "test_1@company.com"], # BCC
+                        )
+                        
+                        # Reading HTML tags:
+                        email.content_subtype = 'html'
 
-                            time.sleep(2)  # wait for file to be created
+                        # Attach files to email:
+                        for file in tables_path_content:
+                            print(file)
+                            stringfy = str(file)
+                            if stringfy.endswith('.pdf') or stringfy.endswith('.xlsx'):
+                                email.attach_file(file)
 
-                            email = EmailMessage(
-                                "Nota Fiscal Eletrônica - J&C Faturamento - {a1}  {a2}  ( {a3} )  NF -  -  - {a4}"
-                                .format(
-                                    a1=tipo_de_servico, 
-                                    a2=competencia_por_ano,
-                                    a3=row_data['nome_do_cliente'], 
-                                    a4=row_data['nfe']
-                                ), # SUBJECT
-                                mail_content, # BODY
-                                "{}".format(host_email), # FROM
-                                [row_data['contact']], # TO
-                                [
-                                    nfe_email, 
-                                    "andrekuratomi@gmail.com"], # BCC
-                            )
-                            
-                            # Reading HTML tags:
-                            email.content_subtype = 'html'
+                        email.send()
+                        print("Email successfully sent! Check inbox.")
 
-                            # Attach files to email:
-                            for file in tables_path_content:
-                                print(file)
-                                stringfy = str(file)
-                                if stringfy.endswith('.pdf') or stringfy.endswith('.xlsx'):
-                                    email.attach_file(file)
+                        # Fill element sent list:
+                        sent_elem = f"client_id: {client_id} and/or invoice {invoice}. \n"
+                        with reports_path.joinpath(sent_list).open("a") as file:
+                            file.write(sent_elem)
 
-                            email.send()
-                            print("Email successfully sent! Check inbox.")
-
-                            # # FORMATAÇÃO DE DATA:
-
-                            # dia = (datetime.now()).strftime("%d/%m/%Y")
-                            # horas = (datetime.now()).strftime("%H:%M:%S")
-
-                            # admin_email_message = """\
-                            #     <html>
-                            #         <head></head>
-                            #         <body>
-                            #             <p>Notificação: Foi enviado email para o usuário %s às %s em %s.</p>
-                            #             <br>
-                                        
-                            #             <h3>J&C</h3>
-                            #         </body>
-                            #     </html>
-                            # """ % (nome_do_cliente, horas, dia)
-
-                            # mail_admins(
-                            #     "Aviso de envio de email - Usuário {b1}".format(b1=nome_do_cliente), 
-                            #     "",
-                            #     fail_silently=False,
-                            #     html_message=admin_email_message
-                            # )
-
-                            # Fill element sent list:
-                            sent_elem = f"CNPJ: {cnpj} and/or NFE {nfe}. \n"
-                            with reports_path.joinpath(sent_list).open("a") as file:
-                                file.write(sent_elem)
-
-                            # STATUS UPDATE:
-                            status_update(edited_tables_path, row_data)
+                        # STATUS UPDATE:
+                        status_update(edited_tables_path, row_data)
 
                 else:
                     continue
 
-            # Deletar conteúdo de raw_table depois de processo de envio ser finalizado:
+            # Delete raw_table content when the whole view process finishes:
             do_we_have_things_to_delete(raw_tables_path, '.xlsx')
 
-            print("A APLICAÇÃO TERMINOU O PROCESSO DE ENVIO DE EMAILS COM SUCESSO!")
+            print("THE APPLICATION FINISHED THE EMAIL SENT PROCESS SUCCESSFULLY!")
 
         except Exception as e:
             print(f"error:Something went wrong: {e} ! Contact the dev!")
