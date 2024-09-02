@@ -27,7 +27,7 @@ while not_found:
 print("TableName:", TableName)
 
 from robot_sharepoint.modules.robots.robot_to_download_attachments import download_attachments_from_sharepoint
-from robot_sharepoint.modules.robot_utils.join_reports import join_reports
+from robot_sharepoint.reports.reports_utils.join_reports import join_reports
 
 from utils.functions.deleting_elements import do_we_have_things_to_delete
 from utils.variables.envs import user_email, password, invoice_email, sheet, sharepoint_measurements_url, download_directory, host_email

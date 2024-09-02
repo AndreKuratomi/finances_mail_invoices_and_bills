@@ -3,7 +3,7 @@ env/
 
 tests/dj/*
 tests/errors/*
-tests/roots/*
+tests/robots/*
 tests/table_manipulations/*
 tests/templates/*
 
