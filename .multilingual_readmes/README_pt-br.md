@@ -11,14 +11,18 @@
 
 ## Traduções
 
-- [Português brasileiro / Brazilian portuguese](https://github.com/AndreKuratomi/finances_mail_invoices_and_bills)
-- [Inglês / English](/.multilingual_readmes/README_en-uk.md)
+- [Português brasileiro / Brazilian portuguese](/.multilingual_readmes/README_pt-br.md)
+- [Inglês / English](https://github.com/AndreKuratomi/finances_mail_invoices_and_bills)
 
 <br>
 
 ## Sobre
 
-A aplicação <strong>finances_mail_invoices_and_bills</strong> se propõe a buscar e baixar no sharepoint por arquivos de faturamento para serem anexados e enviados por email a partir de uma planilha fornecida. Junto com isso é enviado para o sharepoint relatório descrevendo casos bem-sucedidos e mal-sucedidos de envio no processo.
+<p>A aplicação <b>finances_mail_invoices_and_bills</b> foi desenvolvida para automatizar o envio mensal de notas fiscais e boletos para os clientes de uma empresa. Ela trabalha com as pastas <strong>sharepoint</strong> fornecidos por ela, elabora emails com anexos baixados e relatórios de envios bem sucedidos e mal sucedidos. 
+
+Esta aplicação é feita para não-desenvolvedores operarem ela e pode ser usada uma ou mais vezes por mês dependendo da demanda. Para esta versão ela é acionada manualmente.
+
+Ela foi originalmente desenvolvida para o SO Windows.
 
 Esta aplicação utiliza o framework <strong>[Django](https://www.djangoproject.com/)</strong>, as bibliotecas <strong>[OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)</strong>, <strong>[Pandas](https://pandas.pydata.org/docs/)</strong> e <strong>[Selenium](https://pypi.org/project/selenium/)</strong> e o banco de dados <strong>[SQLite3](https://docs.python.org/3/library/sqlite3.html)</strong>.
 
