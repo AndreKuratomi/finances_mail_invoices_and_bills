@@ -15,17 +15,15 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
-from utils.variables.mes_e_ano_atual import year, mes_sharepoint
+from utils.variables.current_month_and_year import year, mes_sharepoint
 
 from tqdm import tqdm
 
 import ipdb
 
 
-def download_base_de_dados_no_sharepoint(user_email: str, password: str, site_url: str, download_dir: str, progress_bar: bool = True) -> None:
-    
-    # print("CNPJ:", cnpj)
-    print("sharepoint_robot:", __name__)
+def download_database_from_sharepoint(user_email: str, password: str, site_url: str, download_dir: str, progress_bar: bool = True) -> None:
+    """Selenium as RPA function that looks for specific spreadsheet on sharepoint that has all clients' info and if found downloads it."""
 
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
 
@@ -48,7 +46,6 @@ def download_base_de_dados_no_sharepoint(user_email: str, password: str, site_ur
     # Navigate to Sharepoint login page and maximize its window:
     driver.get(site_url)
     pbar.update(1)
-    # options.add_argument("--disable-infobars")
 
     driver.maximize_window()
     pbar.update(1)
@@ -75,25 +72,24 @@ def download_base_de_dados_no_sharepoint(user_email: str, password: str, site_ur
     year = datetime.now().strftime("%Y")
     month = datetime.now().strftime("%m")
 
-    months_list = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
+    months_list = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
     month_number = int(month) - 1
     month_name = months_list[month_number]
 
-    mes_sharepoint = month + ' ' + month_name
+    month_sharepoint = month + ' ' + month_name
 
     # CLICKING FOLDERS:
     reports = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='14 - BASE DE DADOS']")))
     pbar.update(1)
     reports.click()
     pbar.update(1)
-    # ipdb.set_trace()
+
     year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='ANO {year}']")))
     pbar.update(1)
     year.click()
     pbar.update(1)
 
-    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 JANEIRO']"))) # criar lógica para obter mês do calendário - 1
-    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']"))) # criar lógica para obter mês do calendário - 1
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{month_sharepoint}']")))
     pbar.update(1)
     month.click()
     pbar.update(1)
@@ -103,7 +99,7 @@ def download_base_de_dados_no_sharepoint(user_email: str, password: str, site_ur
     pbar.update(1)
 
 
-    # Lista para lógica de retirar arquivo baixado em default_download e inserir em raw_table/:
+    # Logic for taking off file downloaded from 'default_download' and inserting it in raw_table/:
     files_list = list()
 
     for file in tqdm(files_to_download_list, "Selecting files to download..."):
@@ -119,7 +115,6 @@ def download_base_de_dados_no_sharepoint(user_email: str, password: str, site_ur
 
         download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[name='Baixar']")))
         download_button.click()
-        # ipdb.set_trace()
 
         # Unclick the element!
         selectable_icon.click()
@@ -139,8 +134,7 @@ def download_base_de_dados_no_sharepoint(user_email: str, password: str, site_ur
             pbar.update(1)
     pbar.close()
     driver.quit()
-    # ipdb.set_trace()
-    print("download_dir:", download_dir)
+
     moving_files_from_virtual_dir(default_download_dir, download_dir, files_list)
 
     # driver.close()

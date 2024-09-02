@@ -295,7 +295,7 @@ EMAIL_HOST_PASSWORD=host_password
 # SHAREPOINT VARIABLES:
 SHAREPOINT_FOR_UPLOAD_URL=sharepoint_for_upload_url
 SHAREPOINT_FATURAMENTO_URL=faturamento
-SHAREPOINT_MEDICOES_URL=medicoes
+SHAREPOINT_MEASUREMENTS_URL=measurements
 
 DOWNLOAD_DIRECTORY=download_directory
 RAW_TABLE_DIRECTORY=raw_table_url
@@ -362,11 +362,11 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 
 4. Para a primeira operação do mês:
 
-    Antes de rodar a aplicação pela primeira vez no mês (para os faturamentos do mês) é preciso manualmente apagar na aplicação o arquivo <b>ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</b>.
+    Antes de rodar a aplicação pela primeira vez no mês (para os faturamentos do mês) é preciso manualmente apagar na aplicação o arquivo <b>DELETE_ME_BEFORE_FIRST_MONTH_OPERATION</b>.
 
     <figure>
-        <img src="./assets/ME_APAGUE.png" alt="ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS">
-        <!-- <figcaption style="display: none;">ME_APAGUE_ANTES_DA_PRIMEIRA_OPERAÇÃO_DO_MÊS</figcaption> -->
+        <img src="./assets/ME_APAGUE.png" alt="DELETE_ME_BEFORE_FIRST_MONTH_OPERATION">
+        <!-- <figcaption style="display: none;">DELETE_ME_BEFORE_FIRST_MONTH_OPERATION</figcaption> -->
     </figure>
 
     Só isso já fará a aplicação apagar o que ela contém do mês anterior e buscar conteúdo novo.

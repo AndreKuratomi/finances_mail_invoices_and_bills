@@ -5,16 +5,16 @@ from errors.custom_exceptions import TooManyFilesError
 import ipdb
 
 
-def temos_tabelas(path: Path, num: int) -> bool:
-    """Checa se há uma ou mais tabelas excel."""
+def do_we_have_spreadsheets(path: Path) -> bool:
+    """Checks if there are one or more excel tables."""
 
     dir_content = list(path.iterdir())
 
-    temos_alguma_tabela = [elem for elem in dir_content if str(elem).endswith('.xlsx')]
+    do_we_have_any_spreadsheet = [elem for elem in dir_content if str(elem).endswith('.xlsx')]
 
-    if len(temos_alguma_tabela) == num:
+    if len(do_we_have_any_spreadsheet) == 1:
         return True
-    elif len(temos_alguma_tabela) > num:
+    elif len(do_we_have_any_spreadsheet) > 1:
         raise TooManyFilesError
     else:
         return False

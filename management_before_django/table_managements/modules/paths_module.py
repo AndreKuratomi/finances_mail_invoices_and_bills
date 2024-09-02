@@ -6,8 +6,8 @@ import ipdb
 
 
 def paths_with_file_name(path: Path) -> Tuple[str, str]:
-    """Recebe um path e retorna o mesmo com seu conteúdo e seu path completo."""
-    # ipdb.set_trace()
+    """Takes a path and returns it with its content and its complete path."""
+
     # Checking path content:
     tables_path_content = list(path.iterdir())  
     tables = list()
@@ -34,9 +34,9 @@ def paths_with_file_name(path: Path) -> Tuple[str, str]:
         raise Exception("Something went wrong with this file... ")
     
 
-def paths_com_muitos_nomes_de_arquivos(path: Path) -> Tuple[str, str, str]:
+def paths_with_many_file_names(path: Path) -> Tuple[str, str, str]:
     """Take full path to directory edited_table."""
-    # ipdb.set_trace()
+
     # Checking path content:
     tables_path_content = list(path.iterdir())  
     tables = list()
@@ -51,13 +51,13 @@ def paths_com_muitos_nomes_de_arquivos(path: Path) -> Tuple[str, str, str]:
     elif len(tables) > 2:
         raise TooManyFilesError
 
-    contatos = ""
+    contacts = ""
 
-    for elemento_para_trabalhar_com in tables:
-        if str(elemento_para_trabalhar_com).endswith('CONTATOS.xlsx'):
-            contatos = elemento_para_trabalhar_com
+    for element_to_work_with in tables:
+        if str(element_to_work_with).endswith('.xlsx'): # CONTACTS
+            contacts = element_to_work_with
         else:
-            outro = elemento_para_trabalhar_com
-            complete_path_to_dir = str(path.resolve() / elemento_para_trabalhar_com.name)
+            outro = element_to_work_with
+            complete_path_to_dir = str(path.resolve() / element_to_work_with.name)
     
-    return (contatos, complete_path_to_dir, outro)
+    return (contacts, complete_path_to_dir, outro)

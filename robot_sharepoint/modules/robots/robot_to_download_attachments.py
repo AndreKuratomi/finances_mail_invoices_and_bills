@@ -22,14 +22,11 @@ import ipdb
 
 # from robot_sharepoint.modules.robot_utils import unzip_files
 from robot_sharepoint.modules.robot_utils.download_directories_management import empty_download_directories, moving_files_from_virtual_dir
-# from utils.variables.mes_e_ano_atual import year, mes_sharepoint
 
 
-def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str, 
+def download_attachments_from_sharepoint(user_email: str, password: str, site_url: str, 
                         download_dir: str, cnpj: str, nfe: str, refs: str, progress_bar: bool = True) -> None:
-    
-    # print("CNPJ:", cnpj)
-    print("sharepoint_robot:", __name__)
+    """Selenium as RPA function that looks for specific files on sharepoint that may serve as email attachments and if found downloads them."""
 
     default_download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
 
@@ -54,7 +51,6 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
     # Navigate to Sharepoint login page and maximize its window:
     driver.get(site_url)
     pbar.update(1)
-    # options.add_argument("--disable-infobars")
 
     driver.maximize_window()
     pbar.update(1)
@@ -80,30 +76,19 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
     year = refs[3:]
 
     month_from_table = refs[0:2]
-    months_list = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO']
+    months_list = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER']
     month_number = int(month_from_table) - 1
     month_name = months_list[month_number]
-    # mes_sharepoint = month_from_table + ' ' + month_name
-    mes_sharepoint = month_from_table + ' - ' + month_name
+    month_sharepoint = month_from_table + ' - ' + month_name
 
     files_list = list()
     
-    # time.sleep(3)
-    # print(driver.page_source)
-    # CLICKING FOLDERS:
-    # root_folder = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "button[title='01 - MEDIÇÕES']")))
-    # pbar.update(1)
-    # root_folder.click()
-    # pbar.update(1)
-    
-    # ipdb.set_trace()
     year = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='ANO {year}']"))) # lógica para obter ano do calendário
     pbar.update(1)
     year.click()
     pbar.update(1)
-    # ipdb.set_trace()
-    # month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='01 - JANEIRO']"))) # lógica para obter mês do calendário - 1
-    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{mes_sharepoint}']"))) # lógica para obter mês do calendário - 1
+
+    month = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f"button[title='{month_sharepoint}']"))) # lógica para obter mês do calendário - 1
     pbar.update(1)
     month.click()
     pbar.update(1)
@@ -153,7 +138,6 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
                 pbar.update(1)
 
                 time.sleep(1)
-            # ipdb.set_trace()
 
             # LOOKING FOR FOLDER BY NFE:
             nfe_folder = None
@@ -180,7 +164,6 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
                         actions.move_to_element(file).perform()
 
                         selectable_icon = file.find_element(By.CSS_SELECTOR, "div[role='gridcell']")
-                        # selectable_icon
                         selectable_icon.click()
 
                         pre_download_button = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, "i[data-icon-name='More']")))
@@ -214,7 +197,6 @@ def download_anexos_no_sharepoint(user_email: str, password: str, site_url: str,
                     driver.quit()
 
                     moving_files_from_virtual_dir(default_download_dir, download_dir, files_list)
-                    # ipdb.set_trace()
 
                 else:
                     print("No nfe found for {}!".format(nfe))
