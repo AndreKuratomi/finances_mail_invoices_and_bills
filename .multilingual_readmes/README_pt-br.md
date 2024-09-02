@@ -225,7 +225,7 @@ python3 -m venv venv --upgrade-deps
 
 WINDOWS:
 ```
-py -m venv venv
+py -m venv venv --upgrade-deps
 ```
 
 <h4>Ative o seu ambiente virtual com o comando:</h4>
