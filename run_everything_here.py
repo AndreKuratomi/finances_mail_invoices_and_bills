@@ -6,12 +6,11 @@ import ipdb
 
 from pathlib import Path
 
-
-# Empty models case:
 from management_before_django.table_managements.modules.create_model import create_model_from_database
 from utils.variables.paths import models_file_path
 from utils.functions.do_we_have_model import do_we_have_model
 
+# Empty models case:
 if not do_we_have_model(models_file_path):
     create_model_from_database()
 
