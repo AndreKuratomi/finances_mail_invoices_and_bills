@@ -354,8 +354,6 @@ REPORTS UPLOAD:
 
 - A <b>code editor</b>, also known as <b>IDE</b>. For instance, <strong>[Visual Studio Code (VSCode)](https://code.visualstudio.com/)</strong>.
 
-- A <b> client API REST </b> program. <strong>[Insomnia](https://insomnia.rest/download)</strong> or <b>[Postman](https://www.postman.com/product/rest-client/)</b>, for instance.
-
 - <p> And versioning your directory to receive the aplication clone:</p>
 
 ```
@@ -366,7 +364,7 @@ git init
 <h3>1. Clone the repository <b>finances_tables_to_db_and_mail</b> by your machine terminal or by the IDE:</h3>
 
 ```
-git clone https://github.com/AndreKuratomi/finances_tables_to_db_and_mail.git
+git clone https://github.com/AndreKuratomi/finances_mail_invoices_and_bills.git.git
 ```
 
 WINDOWS:
@@ -374,7 +372,7 @@ WINDOWS:
 Obs: In case of any mistake similar to this one: 
 
 ```
-unable to access 'https://github.com/AndreKuratomi/finances_tables_to_db_and_mail.git/': SSL certificate problem: self-signed certificate in certificate chain
+unable to access 'https://github.com/AndreKuratomi/finances_mail_invoices_and_bills.git': SSL certificate problem: self-signed certificate in certificate chain
 ```
 
 Configure git to disable SSL certification:
