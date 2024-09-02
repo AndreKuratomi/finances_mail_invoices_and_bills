@@ -14,6 +14,7 @@ def create_model_from_database() -> None:
     script_absolute_path = Path(__file__).resolve() # absolute path from computer to here
     django_project_path = script_absolute_path.parents[3] / 'dj_project'
     models_file_path = django_project_path / 'model_to_email' / 'models.py'
+    
     # From 'python3 manage.py inspectdb > model_to_email/models.py' to a command:
     # Linux:
     # command = f'cd ../.. && python3 manage.py inspectdb > model_to_email/models.py'
@@ -42,6 +43,7 @@ def create_model_from_database() -> None:
     # Edit model content directly: 
     with open(f"{models_file_path}", "w") as file:
         file.writelines(updated_lines)
+
         # Ensure file is flushed and changes are committed before proceeding
         file.flush()
         os.fsync(file.fileno())

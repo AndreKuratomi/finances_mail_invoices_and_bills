@@ -5,8 +5,8 @@ from openpyxl import load_workbook
 from pathlib import Path
 from tqdm import tqdm
 
-from management_before_django.table_managements.modules.openpyxl_module import adicionar_coluna_contatos, adicionar_coluna_referencia, adicionar_coluna_status, contatos_teste, workbook_para_pandas
-from management_before_django.table_managements.modules.paths_module import paths_with_file_name, paths_com_muitos_nomes_de_arquivos
+from management_before_django.table_managements.modules.openpyxl_module import adding_contacts_column, adding_references_column, adding_status_column, test_contacts, workbook_for_pandas
+from management_before_django.table_managements.modules.paths_module import paths_with_file_name, paths_with_many_file_names
 
 from utils.variables.envs import sheet, sheet_contacts
 
@@ -14,11 +14,11 @@ import ipdb
 
 
 def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.DataFrame:
-    """Módulo para trabalhar com todos os scripts que usam openpyxl fornecendo paths e workbooks."""
+    """Module for working with all scripts that use openpyxl providing paths and workbooks."""
 
-    # PLANILHAS RECÉM-BAIXADAS:
+    # JUST DOWNLOADED TABLES:
     # Paths:
-    (contatos, complete_file_path_to_raw, file_path_to_raw) = paths_com_muitos_nomes_de_arquivos(raw_path)
+    (contatos, complete_file_path_to_raw, file_path_to_raw) = paths_with_many_file_names(raw_path)
 
     # Workbooks:
     workbook_contacts_data = load_workbook(data_only=True, filename=contatos)
@@ -27,13 +27,13 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
     workbook_all_raw_data = load_workbook(data_only=True, filename=file_path_to_raw)
     all_raw_data = workbook_all_raw_data[sheet]
 
-    # Funções Openpyxl:
-    adicionar_coluna_contatos(all_raw_data, contacts_data, workbook_all_raw_data, complete_file_path_to_raw)
-    adicionar_coluna_referencia(all_raw_data, workbook_all_raw_data, complete_file_path_to_raw)
-    adicionar_coluna_status(all_raw_data, edited_path, file_path_to_raw, workbook_all_raw_data, sheet)
+    # Openpyxl functions:
+    adding_contacts_column(all_raw_data, contacts_data, workbook_all_raw_data, complete_file_path_to_raw)
+    adding_references_column(all_raw_data, workbook_all_raw_data, complete_file_path_to_raw)
+    adding_status_column(all_raw_data, edited_path, file_path_to_raw, workbook_all_raw_data, sheet)
 
 
-    # PLANILHA EDITADA:
+    # EDITED TABLE:
     # Paths:
     (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_path)
 
@@ -41,8 +41,8 @@ def filter_table_column(raw_path: Path, edited_path: Path, sheet: str) -> pd.Dat
     workbook_all_edited_data = load_workbook(data_only=True, filename=file_path_to_edited)
     all_edited_data = workbook_all_edited_data[sheet]
 
-    # Funções Openpyxl:
-    contatos_teste(all_edited_data, workbook_all_edited_data, complete_file_path_to_edited)
-    pandas_dataframe = workbook_para_pandas(all_edited_data)
+    # Openpyxl functions:
+    test_contacts(all_edited_data, workbook_all_edited_data, complete_file_path_to_edited)
+    pandas_dataframe = workbook_for_pandas(all_edited_data)
 
     return pandas_dataframe

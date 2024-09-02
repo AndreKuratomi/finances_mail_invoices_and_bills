@@ -9,8 +9,8 @@ from pathlib import Path
 from rest_framework.views import APIView
 from tqdm import tqdm
 
-from management_before_django.table_managements.modules.openpyxl_module import coletar_datas_e_repor_dt_vencimento, status_update
-from management_before_django.table_managements.modules.paths_module import paths_with_file_name, paths_com_muitos_nomes_de_arquivos
+from management_before_django.table_managements.modules.openpyxl_module import colect_data_and_reset_due_date, status_update
+from management_before_django.table_managements.modules.paths_module import paths_with_file_name, paths_with_many_file_names
 
 not_found = True
 count = 0
@@ -67,10 +67,11 @@ class EmailAttachByTable(APIView):
                 if vencimento[6:8] != "20":
                     coluna_dt_vencimento: int = 11
                                         
-                    (contatos, complete_file_path_to_raw, file_path_to_raw) = paths_com_muitos_nomes_de_arquivos(raw_tables_path)
+                    (contatos, complete_file_path_to_raw, file_path_to_raw) = paths_with_many_file_names(raw_tables_path)
                     # Workbooks:
                     workbook_all_raw_data = load_workbook(data_only=True, filename=file_path_to_raw)
                     all_raw_data = workbook_all_raw_data[sheet]
+
                     # PLANILHA EDITADA:
                     # Paths:
                     (complete_file_path_to_edited, file_path_to_edited) = paths_with_file_name(edited_tables_path)
@@ -78,7 +79,7 @@ class EmailAttachByTable(APIView):
                     workbook_all_edited_data = load_workbook(data_only=True, filename=file_path_to_edited)
                     all_edited_data = workbook_all_edited_data[sheet]
 
-                    coletar_datas_e_repor_dt_vencimento(all_raw_data, all_edited_data, coluna_dt_vencimento, complete_file_path_to_edited, workbook_all_edited_data)
+                    colect_data_and_reset_due_date(all_raw_data, all_edited_data, coluna_dt_vencimento, complete_file_path_to_edited, workbook_all_edited_data)
                     # ipdb.set_trace()
                     
                     raise ValueError("ERROR!: Verificar coluna 'Dt_Vencimento'! Ano alterado para antes de 2000!")
@@ -89,7 +90,6 @@ class EmailAttachByTable(APIView):
                         # "competencia_por_ano": "competencia_por_ano",
                         # "contact": contato,
                         "contact": "andrekuratomi@gmail.com",
-                        # "contact": "cleidiane.souza@jcgestaoderiscos.com.br",
                         "cnpj": cnpj, 
                         "nfe": nfe, 
                         "nome_do_cliente": nome_do_cliente,

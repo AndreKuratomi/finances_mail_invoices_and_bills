@@ -9,10 +9,10 @@ import ipdb
 
 
 def tables_to_db() -> None:
-    """Todas as funções que trabalham desde a manipulação da tabela baixada em raw table até a criação da model django."""
+    """All functions that work from manipulation of table downloaded in 'raw table' till the creation of a django model."""
 
-    # Read Excel file and return it filtered by color into Dataframe:
-    pandas_dataframe = filter_table_column(raw_tables_path, edited_tables_path, sheet) # HOW TO AUTOMATIZE THIS 2nd PARAMETER???
+    # Read Excel file and return it filtered into Dataframe:
+    pandas_dataframe = filter_table_column(raw_tables_path, edited_tables_path, sheet)
 
     insert_table_to_db(db, pandas_dataframe)
 
