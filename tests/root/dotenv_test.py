@@ -5,7 +5,7 @@ from django.conf import settings
 from django.test import TestCase
 
 from pathlib import Path
-from testes.conftest import email_pattern, link_pattern, required_variables, txt
+from tests.conftest import email_pattern, link_pattern, required_variables, txt
 
 import ipdb
 
@@ -14,39 +14,39 @@ root_app_dir = Path(__file__).parents[2]
 
 class TestDotEnvClass:
     # .ENV:
-    def test_se_env_existe(self) -> None:
+    def test_whether_env_file_exists(self) -> None:
         dotenv_path = root_app_dir / '.env'
-        assert dotenv_path.is_file(), f"Arquivo '{dotenv_path}' não encontrado!"
+        assert dotenv_path.is_file(), f"File '{dotenv_path}' not found!"
 
 
-    def test_titulos_variaveis_env(self) -> None:
+    def test_variables_titles_env(self) -> None:
         with open('.env', encoding='utf-8') as file:
             env_variables: str = file.read()
             for var in required_variables:
-                assert var in env_variables, f"Variável de ambiente {var} está faltando em .env!"
+                assert var in env_variables, f"Environment variable {var} is missing in .env!"
 
     # SECRET_KEY:
-    def test_formatacao_secret_key_env(self) -> None:
-        """Testa se variável se inicia com 'django-insecure-'."""
+    def test_secret_key_env_format(self) -> None:
+        """Test if the variable begins with 'django-insecure-'."""
         with open('.env', encoding='utf-8') as file:
             env_variables: str = file.read()
             for var in required_variables:
                 if var == 'SECRET_KEY':
-                    assert txt in env_variables, f"Variável de ambiente {var} não se inicia no formato universal '{txt}'!"
+                    assert txt in env_variables, f"Environment variable {var} doesn't begin with the universal format '{txt}'!"
     
 
-    def test_45_caracteres(self) -> None:
+    def test_45_characteres(self) -> None:
         with open('.env', encoding='utf-8') as file:
             env_variables: str = file.read()
             for var in required_variables:
                 if var == 'SECRET_KEY':
                     env = re.search(rf'{var}=(.*?)\n', env_variables)
                     secret_key_value = env.group(1)
-                    assert len(secret_key_value) >= 45, f"Variável de ambiente {var} não tem uma extenção suficiente: {len(secret_key_value)}!"
+                    assert len(secret_key_value) >= 45, f"Environment variable {var} has not enought length: {len(secret_key_value)}!"
 
 
-    def test_validacao_secret_key_django(self, configure_django_settings) -> None: # NÃO FUNCIONA PROPRIAMENTE
-        """Teste se variável SECRET_KEY pode ou não ser configurada em settings.py."""
+    def test_secret_key_django_validation(self, configure_django_settings) -> None: # DOESN'T REALLY WORK PROPERLY
+        """Tests whether variable 'secret_key' can or can't be configured in settings.py."""
         
         settings = configure_django_settings
 
@@ -58,11 +58,11 @@ class TestDotEnvClass:
                     secret_key_value = env.group(1).strip('"')
 
                     settings.configure(SECRET_KEY=secret_key_value)
-                    assert settings.SECRET_KEY == secret_key_value, f"Variável de ambiente {var} falhou na aplicação da "
+                    assert settings.SECRET_KEY == secret_key_value, f"Environment variable {var} falhou na aplicação da "
 
     # EMAILS:
-    def test_validacao_envs_emails(self) -> None:
-        """Testa se as variáveis EMAIL_HOST_USER e EMAIL_NFE são emails."""
+    def test_envs_emails_validation(self) -> None:
+        """Tests whether the variables EMAIL_HOST_USER and EMAIL_NFE are emails."""
         with open('.env', encoding='utf-8') as file:
             env_variables: str = file.read()
             for var in required_variables:
@@ -72,8 +72,8 @@ class TestDotEnvClass:
                     assert re.match(email_pattern, env_value) is not None
 
     # LINKS:
-    def test_validacao_envs_links(self) -> None:
-        """Testa se as variáveis SHAREPOINT_BILLINGS_URL e SHAREPOINT_MEASUREMENTS_URL são links."""
+    def test_envs_links(_validationself) -> None:
+        """Tests whether the variables SHAREPOINT_BILLINGS_URL and SHAREPOINT_MEASUREMENTS_URL are links."""
         with open('.env', encoding='utf-8') as file:
             env_variables: str = file.read()
             for var in required_variables:
