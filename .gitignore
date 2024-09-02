@@ -9,6 +9,8 @@ robot_sharepoint/attachments/*.xlsx
 emergency_envs.py
 
 drafts
+ISSUES_LIST.txt
+
 elements_reports_list.txt
 billings_sent.txt
 billings_not_found.txt
