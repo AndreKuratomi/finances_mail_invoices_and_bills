@@ -1,6 +1,12 @@
 venv/
 env/
 
+tests/dj/*
+tests/errors/*
+tests/roots/*
+tests/table_manipulations/*
+tests/templates/*
+
 management_before_django/db/db_sqlite3.db
 robot_sharepoint/attachments/*.pdf
 robot_sharepoint/attachments/*.xlsx

@@ -1,16 +1,16 @@
 import os
 
-from testes.conftest import gitignore_list
+from tests.conftest import gitignore_list
 
 
 class TestGitignoreClass:
-    def test_se_gitignore_existe(self) -> None:
+    def test_if_gitignore_exists(self) -> None:
         if not os.path.exists('.gitignore'):
-            raise FileNotFoundError("Arquivo '.gitignore' não encontrada!")
+            raise FileNotFoundError("File '.gitignore' not found!")
         assert os.path.exists('.gitignore')
 
-    def test_conteudo_gitignore(self) -> None:
-        """Verifica se certos elementos existem ou não em .gitignore."""
+    def test_gitignore_content(self) -> None:
+        """Tests whether certain elements exist or not in .gitignore."""
         ignored_list = list()
         with open('.gitignore', encoding='utf-8') as file:
             for line in file:
@@ -23,4 +23,4 @@ class TestGitignoreClass:
                 set_ignored = set(ignored_list)
                 set_gitignore = set(gitignore_list)
                 remained = set_gitignore.difference(set_ignored)
-                raise FileNotFoundError(f"Não foram encontrados os itens {remained} em .gitignore!")
+                raise FileNotFoundError(f"It wasn't found the items {remained} in .gitignore!")
