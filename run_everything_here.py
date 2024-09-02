@@ -27,7 +27,7 @@ from management_before_django.table_managements.scripts import tables_to_db
 from robot_sharepoint.modules.robots.robot_to_upload_files import upload_files_to_sharepoint
 from robot_sharepoint.modules.robots.robot_to_download_database_spreadsheet import download_database_from_sharepoint
 from robot_sharepoint.modules.robots.robot_to_download_contacts import download_contacts_from_sharepoint
-from robot_sharepoint.modules.robot_utils.join_reports import join_reports
+from robot_sharepoint.reports.reports_utils.join_reports import join_reports
 
 from utils.functions.path_length import do_we_have_spreadsheets
 from utils.functions.deleting_elements import do_we_have_things_to_delete
