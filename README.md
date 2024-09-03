@@ -361,10 +361,10 @@ git init
 ```
 
 <br>
-<h3>1. Clone the repository <b>finances_tables_to_db_and_mail</b> by your machine terminal or by the IDE:</h3>
+<h3>1. Clone the repository <b>finances_mail_invoices_and_bills</b> by your machine terminal or by the IDE:</h3>
 
 ```
-git clone https://github.com/AndreKuratomi/finances_mail_invoices_and_bills.git.git
+git clone https://github.com/AndreKuratomi/finances_mail_invoices_and_bills.git
 ```
 
 WINDOWS:
@@ -400,7 +400,7 @@ python3 -m venv venv --upgrade-deps
 
 WINDOWS:
 ```
-py -m venv env
+py -m venv venv --upgrade-deps
 ```
 <br>
 <h4>Ativate your virtual enviroment with the command:</h4>
