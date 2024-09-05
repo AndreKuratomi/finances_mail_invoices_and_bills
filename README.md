@@ -392,7 +392,7 @@ cd finances_tables_to_db_and_mail
 
 <h3>2. After cloning the repository install:</h3>
 
-<h5>Virtual enviroment* and update its dependencies with the following command:</h5>
+<h4>Virtual enviroment* and update its dependencies with the following command:</h4>
 
 
 LINUX:
@@ -419,6 +419,7 @@ package, recreate your virtual environment.
 ```
 
 *It is a good practice to work with virtual enviroments because different projects may need different dependencies. A virtual enviroment is only a separated enviroment from the user machine. If not used, the user's machine may have lots of dependencies intalled that may only be used in a single project.
+
 <h4>Ativate your virtual enviroment with the command:</h4>
 
 LINUX:
@@ -439,7 +440,9 @@ Obs: It may often be necessary to open PowerShell as administrador for that.
 ```
 .\env\Scripts\activate
 ```
+
 <br>
+
 <h4>Install its dependencies:</h4>
 
 ```
