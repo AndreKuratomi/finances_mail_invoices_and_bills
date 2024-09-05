@@ -350,9 +350,11 @@ REPORTS UPLOAD:
 
 <h3>0. It is first necessary to have instaled the following devices:</h3>
 
-- The code versioning <b>[Git](https://git-scm.com/downloads)</b>.
+- The code versioning <b>[Git](https://git-scm.com/downloads)</b>,
 
-- A <b>code editor</b>, also known as <b>IDE</b>. For instance, <strong>[Visual Studio Code (VSCode)](https://code.visualstudio.com/)</strong>.
+- The programming language <b>[Python](https://www.python.org/downloads/)</b>,
+
+- A <b>code editor</b>, also known as <b>IDE</b>. For instance, <strong>[Visual Studio Code (VSCode)](https://code.visualstudio.com/)</strong>,
 
 - <p> And versioning your directory to receive the aplication clone:</p>
 
