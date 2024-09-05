@@ -392,7 +392,7 @@ cd finances_tables_to_db_and_mail
 
 <h3>2. After cloning the repository install:</h3>
 
-<h4>Virtual enviroment and update its dependencies with the following command:</h4>
+<h5>Virtual enviroment* and update its dependencies with the following command:</h5>
 
 
 LINUX:
@@ -404,7 +404,21 @@ WINDOWS:
 ```
 py -m venv venv --upgrade-deps
 ```
-<br>
+
+In case an error like this one is returned just follow the command displayed:
+
+```
+The virtual environment was not created successfully because ensurepip is not
+available.  On Debian/Ubuntu systems, you need to install the python3-venv
+package using the following command.
+
+    apt install python3.10-venv
+
+You may need to use sudo with that command.  After installing the python3-venv
+package, recreate your virtual environment.
+```
+
+*It is a good practice to work with virtual enviroments because different projects may need different dependencies. A virtual enviroment is only a separated enviroment from the user machine. If not used, the user's machine may have lots of dependencies intalled that may only be used in a single project.
 <h4>Ativate your virtual enviroment with the command:</h4>
 
 LINUX:
