@@ -14,8 +14,8 @@
 
 ## Translations
 
-- [English](https://github.com/AndreKuratomi/finances_mail_invoices_and_bills)
 - [Português Brasileiro / Brazilian portuguese](/.multilingual_readmes/README_pt-br.md)
+- [English](https://github.com/AndreKuratomi/finances_mail_invoices_and_bills)
 
 <br>
 
