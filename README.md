@@ -27,7 +27,7 @@ This application is made to non-developers operate it and can be used once a mon
 
 It was originally developed for Windows OS.
 
-This application uses <strong>[Python](https://www.python.org/downloads/)</strong>'s framework <strong>[Django](https://www.djangoproject.com/)</strong>, the libs <strong>[OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)</strong>, <strong>[Pandas](https://pandas.pydata.org/docs/)</strong>, <strong>[Selenium](https://pypi.org/project/selenium/)</strong> as <strong>RPA</strong>, the <strong>[SQLite3](https://docs.python.org/3/library/sqlite3.html)</strong> database and a windows <b>.bat</b> file that runs the whole application.
+This application uses <strong>[Python](https://www.python.org/downloads/)</strong>'s framework <strong>[Django](https://www.djangoproject.com/)</strong>, the libs <strong>[OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)</strong>, <strong>[Pandas](https://pandas.pydata.org/docs/)</strong>, <strong>[Selenium](https://pypi.org/project/selenium/)</strong> as <strong>RPA</strong>, the <strong>[SQLite3](https://docs.python.org/3/library/sqlite3.html)</strong> database and a windows <b>.bat</b> file that runs the whole application. It also works with <strong>[Pytest](https://docs.pytest.org/en/stable/)</strong> test cases.
 
 <br>
 
@@ -536,6 +536,7 @@ pytest
 - [Git](https://git-scm.com/downloads)
 - [OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)
 - [Pandas](https://pandas.pydata.org/docs/)
+- [Pytest](https://docs.pytest.org/en/stable/)
 - [Python](https://www.python.org/downloads/)
 - [Selenium](https://pypi.org/project/selenium/)
 - [SQLite3](https://docs.python.org/3/library/sqlite3.html)
