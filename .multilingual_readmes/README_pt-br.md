@@ -24,7 +24,7 @@ Esta aplicação é feita para não-desenvolvedores operarem ela e pode ser usad
 
 Ela foi originalmente desenvolvida para o SO Windows.
 
-Esta aplicação utiliza o framework <strong>[Django](https://www.djangoproject.com/)</strong>, as bibliotecas <strong>[OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)</strong>, <strong>[Pandas](https://pandas.pydata.org/docs/)</strong> e <strong>[Selenium](https://pypi.org/project/selenium/)</strong> e o banco de dados <strong>[SQLite3](https://docs.python.org/3/library/sqlite3.html)</strong>.
+Esta aplicação utiliza o framework <strong>[Django](https://www.djangoproject.com/)</strong>, as bibliotecas <strong>[OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)</strong>, <strong>[Pandas](https://pandas.pydata.org/docs/)</strong> e <strong>[Selenium](https://pypi.org/project/selenium/)</strong> e o banco de dados <strong>[SQLite3](https://docs.python.org/3/library/sqlite3.html)</strong>. Ela também trabalha com bateria de testes com <strong>[Pytest](https://docs.pytest.org/en/stable/)</strong>.
 
 <br>
 
@@ -386,6 +386,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
 - [Git](https://git-scm.com/downloads)
 - [OpenPyXl](https://openpyxl.readthedocs.io/en/stable/tutorial.html)
 - [Pandas](https://pandas.pydata.org/docs/)
+- [Pytest](https://docs.pytest.org/en/stable/)
 - [Python](https://www.python.org/downloads/)
 - [Selenium](https://pypi.org/project/selenium/)
 - [SQLite3](https://docs.python.org/3/library/sqlite3.html)
