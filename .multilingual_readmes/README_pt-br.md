@@ -318,7 +318,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
     Para o usuário leigo basta apenas clicar duas vezes no arquivo rode_aplicacao_aqui.bat*: 
 
     <figure>
-        <img src="./assets/double_click_.bat_file.png" alt="Double-click .bat file" style="">
+        <img src="../assets/double_click_.bat_file.png" alt="Double-click .bat file" style="">
         <!-- <figcaption style="display: none;">Double-click .bat file</figcaption> -->
     </figure>
 
@@ -357,7 +357,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
     Basta clicar <b>"CTRL + C"</b> UMA ÚNICA VEZ que o programa enviará o relatório automaticamente. Se clicar várias vezes nenhum relatório será enviado.
 
     <figure>
-        <img src="./assets/process_partially_interrupted.png" alt="Double-click .bat file" style="">
+        <img src="../assets/process_partially_interrupted.png" alt="Double-click .bat file" style="">
         <!-- <figcaption style="display: none;">Double-click .bat file</figcaption> -->
     </figure>
 
@@ -369,7 +369,7 @@ Obs: As informações contidas no arquivo .env não devem ser compartilhadas. O 
     Antes de rodar a aplicação pela primeira vez no mês (para os faturamentos do mês) é preciso manualmente apagar na aplicação o arquivo <b>DELETE_ME_BEFORE_FIRST_MONTH_OPERATION</b>.
 
     <figure>
-        <img src="./assets/ME_APAGUE.png" alt="DELETE_ME_BEFORE_FIRST_MONTH_OPERATION">
+        <img src="../assets/ME_APAGUE.png" alt="DELETE_ME_BEFORE_FIRST_MONTH_OPERATION">
         <!-- <figcaption style="display: none;">DELETE_ME_BEFORE_FIRST_MONTH_OPERATION</figcaption> -->
     </figure>
 
